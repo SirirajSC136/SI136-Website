@@ -1,0 +1,36 @@
+/* app/_components/main/main.module.css */
+
+@keyframes slow-zoom {
+    0% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(1.1);
+    }
+}
+
+@keyframes fade-in-up {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 
+  Exportable class names for our components.
+  CSS Modules will generate unique class names during build.
+*/
+.animateSlowZoom {
+    animation: slow-zoom 15s ease-in-out infinite alternate;
+}
+
+.animateFadeInUp {
+    opacity: 0;
+    animation: fade-in-up 0.8s ease-out forwards;
+}
