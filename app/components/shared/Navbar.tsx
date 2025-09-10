@@ -1,13 +1,14 @@
-// app/_components/shared/Navbar.tsx
-
 'use client';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import Image, { StaticImageData } from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Search, Menu, X } from 'lucide-react';
-import monke from '../../assets/images/monke.jpg'
+
+// FIX: Corrected the import path to use the standard alias for robustness.
+import monke from '@/app/assets/images/monke.jpg';
+
 // A more robust NavLink sub-component for the new "pill" animation
 const NavLink = ({ href, children, isScrolled }: { href: string; children: React.ReactNode; isScrolled: boolean }) => {
     const pathname = usePathname();
@@ -36,6 +37,9 @@ const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
 
+    // FIX: Call usePathname once at the top level of the component.
+    const pathname = usePathname();
+
     useEffect(() => {
         const handleScroll = () => setIsScrolled(window.scrollY > 10);
         window.addEventListener('scroll', handleScroll);
@@ -61,7 +65,7 @@ const Navbar = () => {
                 <div className="container mx-auto flex items-center justify-between p-4">
                     {/* Logo */}
                     <Link href="/" className="flex items-center space-x-3 transition-transform hover:scale-105">
-                        <Image src={monke} alt="SI136 Logo" width={40} height={40} className={!isScrolled ? 'drop-shadow-lg' : ''} />
+                        <Image src={monke} alt="SI136 Logo" width={40} height={40} className={`rounded-full ${!isScrolled ? 'drop-shadow-lg' : ''}`} />
                         <span className={`text-xl font-bold tracking-wide transition-colors ${isScrolled ? 'text-slate-800' : 'text-black drop-shadow-md'
                             }`}>
                             SI136
@@ -97,7 +101,8 @@ const Navbar = () => {
             >
                 <div className="flex flex-col items-center justify-center h-full space-y-8">
                     {navLinks.map((link) => {
-                        const isActive = usePathname() === link.href;
+                        // FIX: Use the 'pathname' variable here instead of calling the hook again.
+                        const isActive = pathname === link.href;
                         return (
                             <Link
                                 key={link.name}
