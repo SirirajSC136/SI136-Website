@@ -11,14 +11,19 @@ type Props = {
     params: { subjectId: string };
 };
 
-// Mock fetch function - replace with your actual API call logic
 async function getSubject(id: string): Promise<Subject | undefined> {
-    // In a real app, you'd fetch from your API endpoint
-    // const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/subjects`);
-    // const subjects: Subject[] = await res.json();
-    // For now, we'll simulate it
-    const { mockSubjects } = await import('@/app/api/subjects/route'); // Using the mock data directly
-    return mockSubjects.find(s => s.id === id);
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/subjects/${id}`, {
+            next: { revalidate: 3600 }, // Cache for 1 hour
+        });
+        if (!res.ok) {
+            return undefined;
+        }
+        return res.json();
+    } catch (error) {
+        console.error("Failed to fetch subject:", error);
+        return undefined;
+    }
 }
 
 

@@ -5,12 +5,9 @@ import Image from 'next/image';
 import { Subject } from '@/types';
 
 const SubjectCard = ({ subject }: { subject: Subject }) => (
-    <Link href={`/academics/${subject.id}`} className="group block overflow-hidden rounded-xl border shadow-sm transition-shadow hover:shadow-lg">
-        {/* The parent div MUST be relative for layout="fill" to work */}
+    <Link href={`/academics/${subject.courseCode}`} className="group block overflow-hidden rounded-xl border shadow-sm transition-shadow hover:shadow-lg">
         <div className="relative h-56">
             <Image
-                // The `src` prop correctly receives a string from `subject.imageUrl`.
-                // Next.js handles this correctly because we use `layout="fill"`.
                 src={subject.imageUrl}
                 alt={`Image for ${subject.title}`}
                 layout="fill"

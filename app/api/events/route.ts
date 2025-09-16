@@ -36,7 +36,7 @@ export async function GET() {
         const response = await calendar.events.list({
             calendarId: process.env.GOOGLE_CALENDAR_ID,
             timeMin: new Date().toISOString(),
-            maxResults: 15,
+            maxResults: 8,
             singleEvents: true,
             orderBy: 'startTime',
         });

@@ -51,7 +51,7 @@ const Navbar = () => {
         { name: 'Academics', href: '/academics' },
         { name: 'Archive', href: '/archive' },
         { name: 'Student Impact', href: '/StudentImpacts' },
-        { name: 'Useful Info', href: '/info' },
+        { name: 'Useful Info', href: '/UsefulInfo' },
     ];
 
     return (

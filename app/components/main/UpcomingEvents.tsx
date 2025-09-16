@@ -1,10 +1,7 @@
-// app/components/main/HomePageContent.tsx
-
 import { CalendarDays, ClipboardList, Pencil, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 // --- UPDATED TYPE DEFINITIONS (Should be in @/types) ---
-// We'll define more specific types instead of a generic IActivity
 export interface CalendarEvent {
     id: string;
     courseCode: string;
@@ -12,7 +9,7 @@ export interface CalendarEvent {
     startTime: string;
     tag: string;
     details: string;
-    subjectPageUrl: string;
+    subjectPageUrl: string; // This will now be ignored in favor of the generated URL
 }
 
 export interface Task {
@@ -24,10 +21,9 @@ export interface Task {
 }
 
 // --- API FETCHING LOGIC ---
-// In a real app, these functions would fetch from your /api routes
 async function getUpcomingEvents(): Promise<CalendarEvent[]> {
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/events`, { cache: 'no-store' });
+        const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/events`, { next: { revalidate: 600 } });
         if (!res.ok) return [];
         return res.json();
     } catch (error) {
@@ -38,7 +34,7 @@ async function getUpcomingEvents(): Promise<CalendarEvent[]> {
 
 async function getUpcomingTasks(): Promise<Task[]> {
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/tasks`, { cache: 'no-store' });
+        const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/tasks`, { next: { revalidate: 600 } });
         if (!res.ok) return [];
         return res.json();
     } catch (error) {
@@ -48,7 +44,7 @@ async function getUpcomingTasks(): Promise<Task[]> {
 }
 
 
-// --- HELPER FUNCTION ---
+// --- HELPER FUNCTIONS ---
 const formatRemainingTime = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -60,7 +56,30 @@ const formatRemainingTime = (dateString: string) => {
     return `${hours} ชั่วโมง`;
 };
 
-// --- SUB-COMPONENTS (Largely unchanged, but with better props) ---
+// NEW: Helper function to extract course code and generate a URL
+const generateUrlFromTitle = (title: string): string => {
+    const topicMarker = '(Topic';
+    const topicIndex = title.indexOf(topicMarker);
+
+    // If the "(Topic" marker is not found, return a default link
+    if (topicIndex === -1) {
+        return '/academics';
+    }
+
+    // Extract the part of the string before the marker and trim whitespace
+    const courseCode = title.substring(0, topicIndex).trim();
+
+    // If the extracted code is empty, return the default link
+    if (!courseCode) {
+        return '/academics';
+    }
+
+    // Return the URL with the encoded course code
+    return `/academics/${encodeURIComponent(courseCode)}`;
+};
+
+
+// --- SUB-COMPONENTS ---
 
 const SectionTitle = ({ children }: { children: React.ReactNode }) => (
     <h2 className="text-3xl font-bold text-slate-800 mb-6 pb-2 border-b-2 border-emerald-200">
@@ -68,25 +87,31 @@ const SectionTitle = ({ children }: { children: React.ReactNode }) => (
     </h2>
 );
 
-const EventCard = ({ event }: { event: CalendarEvent }) => (
-    <div className="group flex items-start space-x-4 p-4 bg-white rounded-xl shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-        <div className="flex-shrink-0 mt-1 p-2 bg-emerald-100 rounded-full">
-            <CalendarDays className="h-5 w-5 text-emerald-600" />
-        </div>
-        <div className="flex-grow">
-            <p className="text-sm font-semibold text-emerald-700">
-                {`${event.courseCode} - ${new Date(event.startTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })} - ${event.tag}`}
-            </p>
-            <p className="text-lg font-medium text-gray-800">{event.title}</p>
-            <div className="flex items-center justify-between mt-2">
-                <span className="text-sm text-gray-500">{event.details}</span>
-                <Link href={event.subjectPageUrl} className="flex items-center text-sm text-emerald-600 font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    View Subject <ArrowRight className="h-4 w-4 ml-1" />
-                </Link>
+const EventCard = ({ event }: { event: CalendarEvent }) => {
+    // UPDATED: Generate the navigation link directly from the event title
+    const subjectPageUrl = generateUrlFromTitle(event.title);
+
+    return (
+        <div className="group flex items-start space-x-4 p-4 bg-white rounded-xl shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+            <div className="flex-shrink-0 mt-1 p-2 bg-emerald-100 rounded-full">
+                <CalendarDays className="h-5 w-5 text-emerald-600" />
+            </div>
+            <div className="flex-grow">
+                <p className="text-sm font-semibold text-emerald-700">
+                    {`${event.courseCode} - ${new Date(event.startTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })} - ${event.tag}`}
+                </p>
+                <p className="text-lg font-medium text-gray-800">{event.title}</p>
+                <div className="flex items-center justify-between mt-2">
+                    <span className="text-sm text-gray-500">{event.details}</span>
+                    {/* UPDATED: Use the dynamically generated URL in the Link component */}
+                    <Link href={subjectPageUrl} className="flex items-center text-sm text-emerald-600 font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        View Subject <ArrowRight className="h-4 w-4 ml-1" />
+                    </Link>
+                </div>
             </div>
         </div>
-    </div>
-);
+    );
+};
 
 const TaskCard = ({ task }: { task: Task }) => {
     const isAssignment = task.type === 'assignment';
@@ -119,7 +144,6 @@ const TaskCard = ({ task }: { task: Task }) => {
 // --- MAIN ASYNC COMPONENT ---
 
 const HomePageContent = async () => {
-    // Fetch all data in parallel for maximum performance
     const [events, tasks] = await Promise.all([
         getUpcomingEvents(),
         getUpcomingTasks(),
@@ -146,7 +170,7 @@ const HomePageContent = async () => {
                             <div key={date} className="mb-8">
                                 <h3 className="text-lg font-semibold mb-4 text-gray-600 pl-4 border-l-4 border-emerald-300">{date}</h3>
                                 <div className="space-y-4">
-                                    {activities.map(activity => <EventCard key={activity.id} event={activity} />)}
+                                    {activities.map((activity, index) => <EventCard key={activity.id || index} event={activity} />)}
                                 </div>
                             </div>
                         ))}
@@ -156,11 +180,11 @@ const HomePageContent = async () => {
                     <div className="space-y-10">
                         <div>
                             <SectionTitle>Assignments</SectionTitle>
-                            {assignments.map(task => <TaskCard key={task.id} task={task} />)}
+                            {assignments.map((task, index) => <TaskCard key={task.id || index} task={task} />)}
                         </div>
                         <div>
                             <SectionTitle>Examinations</SectionTitle>
-                            {examinations.map(task => <TaskCard key={task.id} task={task} />)}
+                            {examinations.map((task, index) => <TaskCard key={task.id || index} task={task} />)}
                         </div>
                     </div>
                 </div>

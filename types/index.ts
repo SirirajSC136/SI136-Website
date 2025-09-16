@@ -14,7 +14,6 @@ export interface IActivity {
 // Define the possible tags for a topic
 export type TopicTag = 'Lec' | 'Async' | 'GA' | 'LAB' | 'Test' | 'FC' | 'TBL' | 'Online';
 
-// Define the type for a resource link (e.g., PDF, Slides)
 export interface Resource {
     type: 'PDF' | 'Slides' | 'Video' | 'Link';
     title: string;
@@ -29,19 +28,21 @@ export interface Assignment {
 }
 
 // Update the Topic interface to include all the new fields
+// Update the Topic interface to include _id from MongoDB
 export interface Topic {
-    id: string;
+    _id?: string; // Optional: from MongoDB
+    id: string; // The original identifier like "1", "2"
     title: string;
-    // Optional fields
     dateTime?: string;
     tag?: TopicTag;
-    resources: Resource[]; // Can be an empty array
-    assignments?: Assignment[]; // Can be undefined or empty
+    resources: Resource[];
+    assignments?: Assignment[];
 }
 
-// The Subject type remains mostly the same, just uses the new Topic type
+// Update the Subject interface
 export interface Subject {
-    id: string;
+    _id?: string; // Add the optional _id from MongoDB
+    // id: string; // REMOVE the old 'id' property
     courseCode: string;
     title: string;
     year: number;
@@ -49,6 +50,16 @@ export interface Subject {
     imageUrl: string;
     canvasUrl: string | null;
     topics: Topic[];
+}
+
+// Update the Task interface
+export interface Task {
+    _id?: string; // Add the optional _id from MongoDB
+    type: 'assignment' | 'examination';
+    courseCode: string;
+    title: string;
+    deadline: string;
+    resources: Resource[];
 }
 
 export interface AssignmentItem {
@@ -69,11 +80,5 @@ export interface CalendarEvent {
     subjectPageUrl: string; // e.g., "/academics/siid350"
 }
 
-// Represents an assignment or examination
-export interface Task {
-    id: string;
-    type: 'assignment' | 'examination';
-    courseCode: string;
-    title: string;
-    deadline: string; // ISO 8601 format string
-}
+
+

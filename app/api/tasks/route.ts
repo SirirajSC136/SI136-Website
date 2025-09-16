@@ -1,57 +1,80 @@
 // app/api/tasks/route.ts
 
 import { NextResponse } from 'next/server';
-import { Task } from '@/types';
+import connectToDatabase from '@/lib/mongodb';
+import Task from '@/models/Task';
+import { Task as ITask } from '@/types';
 
-// This is our simulated database for assignments and exams.
-const mockTasks: Task[] = [
-    {
-        id: 'asg-past',
-        type: 'assignment',
-        courseCode: 'SIID350',
-        title: 'Pre-course Survey',
-        deadline: '2025-09-01T23:59:00' // A past deadline to test the "Past" state
-    },
-    {
-        id: 'asg1',
-        type: 'assignment',
-        courseCode: 'SIID351',
-        title: 'CLO assessment 1-3',
-        deadline: '2025-10-17T23:59:00'
-    },
-    {
-        id: 'asg2',
-        type: 'assignment',
-        courseCode: 'SIID347',
-        title: 'CLO assessment 1-4',
-        deadline: '2025-11-10T23:59:00'
-    },
-    {
-        id: 'exm1',
-        type: 'examination',
-        courseCode: 'SIID351',
-        title: 'Summative',
-        deadline: '2025-12-14T13:00:00'
-    },
-    {
-        id: 'exm2',
-        type: 'examination',
-        courseCode: 'SIID347',
-        title: 'Mid-term Exam',
-        deadline: '2025-10-25T09:00:00'
-    },
-];
-
+/**
+ * GET handler to fetch all tasks from MongoDB for the admin panel.
+ * Fetches all tasks regardless of deadline and sorts by most recently created.
+ */
 export async function GET() {
     try {
-        // In the future, this is where you would fetch from your Headless CMS / Database.
-        // For now, we return the combined list of mock tasks.
-        return NextResponse.json(mockTasks);
+        await connectToDatabase();
+
+        // For the admin panel, we want to see all tasks, including past ones.
+        // We sort by deadline descending to show upcoming/recent tasks first.
+        const tasks: ITask[] = await Task.find({}).sort({ deadline: -1 });
+
+        return NextResponse.json(tasks);
     } catch (error) {
         console.error('Error fetching tasks:', error);
         return NextResponse.json(
             { error: 'An internal server error occurred while fetching tasks.' },
             { status: 500 }
         );
+    }
+}
+
+/**
+ * POST handler for the admin panel to create a new task.
+ */
+export async function POST(request: Request) {
+    try {
+        await connectToDatabase();
+        const body = await request.json();
+
+        // More robust validation
+        const { title, courseCode, deadline, type, resources } = body;
+        if (!title || !courseCode || !deadline || !type) {
+            return NextResponse.json({ error: 'Missing required fields: title, courseCode, deadline, type' }, { status: 400 });
+        }
+
+        if (!['assignment', 'examination'].includes(type)) {
+            return NextResponse.json({ error: 'Invalid task type' }, { status: 400 });
+        }
+
+        // Validate resources if they exist
+        if (resources && !Array.isArray(resources)) {
+            return NextResponse.json({ error: 'Resources must be an array' }, { status: 400 });
+        }
+
+        const newTask = new Task({
+            title,
+            courseCode,
+            deadline: new Date(deadline),
+            type,
+            resources: resources || [], // Default to empty array if not provided
+        });
+
+        await newTask.save();
+
+        return NextResponse.json(newTask, { status: 201 }); // 201 Created
+
+    } catch (error) {
+        // Handle potential validation errors from Mongoose
+
+        if (error instanceof Error) {
+            if (error.name === 'ValidationError') {
+                return NextResponse.json({ error: error.message }, { status: 400 });
+            }
+            console.error('Error creating task:', error);
+            return NextResponse.json(
+                { error: 'An internal server error occurred while creating the task.' },
+                { status: 500 }
+            );
+        }
+
     }
 }

@@ -4,21 +4,17 @@ import AcademicHero from '@/app/components/academics/AcademicHero';
 import SubjectCard from '@/app/components/academics/SubjectCard';
 import { Subject } from '@/types';
 
-// This function fetches data from our new API endpoint
 async function getSubjects(): Promise<Subject[]> {
-    // Use the absolute URL for server-side fetching
-    const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/subjects`, {
-        // Cache data to avoid re-fetching on every request
-        cache: 'force-cache',
-        next: { tags: ['subjects'] } // Tag for on-demand revalidation if needed
-    });
-
-    if (!res.ok) {
-        // You can render an error state here
-        console.error("Failed to fetch subjects");
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/subjects`, {
+            next: { revalidate: 600 }, // Cache for 1 hour
+        });
+        if (!res.ok) return [];
+        return res.json();
+    } catch (error) {
+        console.error("Failed to fetch subjects:", error);
         return [];
     }
-    return res.json();
 }
 
 const AcademicPage = async () => {
@@ -49,7 +45,7 @@ const AcademicPage = async () => {
                                     {semester}
                                 </h3>
                                 <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-                                    {subjectList.map(subject => <SubjectCard key={subject.id} subject={subject} />)}
+                                    {subjectList.map(subject => <SubjectCard key={subject._id} subject={subject} />)}
                                 </div>
                             </div>
                         ))}

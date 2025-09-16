@@ -6,7 +6,7 @@ import { AssignmentItem } from '@/types';
 // Helper function to fetch and parse CSV data
 async function fetchAndParseCsv(url: string): Promise<any[]> {
     try {
-        const response = await fetch(url, { next: { revalidate: 3600 } }); // Revalidate every hour
+        const response = await fetch(url, { next: { revalidate: 1 } }); // Revalidate every hour
         if (!response.ok) throw new Error(`Failed to fetch CSV from ${url}`);
 
         const text = await response.text();
