@@ -1,6 +1,7 @@
 // app/_components/main/Introduction.tsx
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { GraduationCap, BookOpen, Info, MessageSquare } from 'lucide-react';
 import heroBackground from '@/app/assets/images/hero-background.jpg';
 
@@ -8,6 +9,8 @@ import heroBackground from '@/app/assets/images/hero-background.jpg';
 import styles from './main.module.css';
 
 const Introduction = () => {
+    const title = "SIRIRAJ 136";
+
     return (
         <div className="relative h-[70vh] w-full overflow-hidden bg-gray-900">
             <Image
@@ -18,7 +21,6 @@ const Introduction = () => {
                 quality={100}
                 priority
                 placeholder="blur"
-                // Use the imported style class
                 className={styles.animateSlowZoom}
             />
 
@@ -26,11 +28,19 @@ const Introduction = () => {
 
             <div className="relative z-10 flex flex-col items-center justify-center h-full text-center p-4">
                 <h1
-                    // Combine Tailwind classes with the module class
-                    className={`text-6xl md:text-8xl font-extrabold tracking-wider bg-gradient-to-b from-white to-gray-300 bg-clip-text text-transparent ${styles.animateFadeInUp}`}
+                    className={`flex text-6xl md:text-8xl font-extrabold tracking-wider text-white ${styles.animateFadeInUp}`}
                     style={{ animationDelay: '0.3s' }}
                 >
-                    SIRIRAJ 136
+                    {title.split('').map((char, index) => (
+                        <span
+                            key={index}
+                            // This class applies the animation from the CSS module
+                            className={styles.titleCharacter}
+                        >
+                            {/* Use a non-breaking space to ensure spacing is preserved */}
+                            {char === ' ' ? '\u00A0' : char}
+                        </span>
+                    ))}
                 </h1>
                 <p
                     className={`mt-2 text-xl md:text-2xl font-light text-gray-200 ${styles.animateFadeInUp}`}
@@ -44,33 +54,40 @@ const Introduction = () => {
                 className={`absolute bottom-0 left-0 right-0 z-10 ${styles.animateFadeInUp}`}
                 style={{ animationDelay: '0.7s' }}
             >
-                {/* ... rest of the icon section remains the same ... */}
                 <div className="container mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 p-6 text-center">
                     {/* Icon with glow, lift, and gradient effects */}
-                    <div className="group flex flex-col items-center p-3 rounded-lg cursor-pointer transition-all duration-300 hover:-translate-y-2">
-                        <div className="relative rounded-full p-4 bg-white/10 backdrop-blur-sm transition-all duration-300 group-hover:bg-violet-500/30 group-hover:shadow-lg group-hover:shadow-violet-500/50">
-                            <GraduationCap size={40} className="text-emerald-300 transition-colors duration-300 group-hover:text-white" />
+                    <Link href="/academics">
+                        <div className="group flex flex-col items-center p-3 rounded-lg cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:scale-110">
+                            <div className="relative rounded-full p-4 bg-white/10 backdrop-blur-sm transition-all duration-300 group-hover:bg-violet-500/30 group-hover:shadow-lg group-hover:shadow-violet-500/50">
+                                <GraduationCap size={40} className="text-emerald-300 transition-colors duration-300 group-hover:text-white" />
+                            </div>
+                            <span className="mt-3 font-semibold text-gray-200 transition-colors duration-300 group-hover:text-emerald-300">Academic</span>
                         </div>
-                        <span className="mt-3 font-semibold text-gray-200 transition-colors duration-300 group-hover:text-emerald-300">Academic</span>
-                    </div>
-                    <div className="group flex flex-col items-center p-3 rounded-lg cursor-pointer transition-all duration-300 hover:-translate-y-2">
-                        <div className="relative rounded-full p-4 bg-white/10 backdrop-blur-sm transition-all duration-300 group-hover:bg-amber-500/30 group-hover:shadow-lg group-hover:shadow-amber-500/50">
-                            <BookOpen size={40} className="text-emerald-300 transition-colors duration-300 group-hover:text-white" />
+                    </Link>
+                    <Link href="">
+                        <div className="group flex flex-col items-center p-3 rounded-lg cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:scale-110">
+                            <div className="relative rounded-full p-4 bg-white/10 backdrop-blur-sm transition-all duration-300 group-hover:bg-amber-500/30 group-hover:shadow-lg group-hover:shadow-amber-500/50">
+                                <BookOpen size={40} className="text-emerald-300 transition-colors duration-300 group-hover:text-white" />
+                            </div>
+                            <span className="mt-3 font-semibold text-gray-200 transition-colors duration-300 group-hover:text-emerald-300">Books</span>
                         </div>
-                        <span className="mt-3 font-semibold text-gray-200 transition-colors duration-300 group-hover:text-emerald-300">Books</span>
-                    </div>
-                    <div className="group flex flex-col items-center p-3 rounded-lg cursor-pointer transition-all duration-300 hover:-translate-y-2">
-                        <div className="relative rounded-full p-4 bg-white/10 backdrop-blur-sm transition-all duration-300 group-hover:bg-violet-500/30 group-hover:shadow-lg group-hover:shadow-violet-500/50">
-                            <Info size={40} className="text-emerald-300 transition-colors duration-300 group-hover:text-white" />
+                    </Link>
+                    <Link href="/UsefulInfo">
+                        <div className="group flex flex-col items-center p-3 rounded-lg cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:scale-110">
+                            <div className="relative rounded-full p-4 bg-white/10 backdrop-blur-sm transition-all duration-300 group-hover:bg-violet-500/30 group-hover:shadow-lg group-hover:shadow-violet-500/50">
+                                <Info size={40} className="text-emerald-300 transition-colors duration-300 group-hover:text-white" />
+                            </div>
+                            <span className="mt-3 font-semibold text-gray-200 transition-colors duration-300 group-hover:text-emerald-300">Useful Info</span>
                         </div>
-                        <span className="mt-3 font-semibold text-gray-200 transition-colors duration-300 group-hover:text-emerald-300">Useful Info</span>
-                    </div>
-                    <div className="group flex flex-col items-center p-3 rounded-lg cursor-pointer transition-all duration-300 hover:-translate-y-2">
-                        <div className="relative rounded-full p-4 bg-white/10 backdrop-blur-sm transition-all duration-300 group-hover:bg-amber-500/30 group-hover:shadow-lg group-hover:shadow-amber-500/50">
-                            <MessageSquare size={40} className="text-emerald-300 transition-colors duration-300 group-hover:text-white" />
+                    </Link>
+                    <Link href="">
+                        <div className="group flex flex-col items-center p-3 rounded-lg cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:scale-110">
+                            <div className="relative rounded-full p-4 bg-white/10 backdrop-blur-sm transition-all duration-300 group-hover:bg-amber-500/30 group-hover:shadow-lg group-hover:shadow-amber-500/50">
+                                <MessageSquare size={40} className="text-emerald-300 transition-colors duration-300 group-hover:text-white" />
+                            </div>
+                            <span className="mt-3 font-semibold text-gray-200 transition-colors duration-300 group-hover:text-emerald-300">Feedback</span>
                         </div>
-                        <span className="mt-3 font-semibold text-gray-200 transition-colors duration-300 group-hover:text-emerald-300">Feedback</span>
-                    </div>
+                    </Link>
                 </div>
             </div>
         </div>

@@ -1,4 +1,6 @@
-import { subjects } from '@/app/data/subjects';
+// app/academics/[subjectId]/page.tsx
+
+import { Subject } from '@/types';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -9,8 +11,19 @@ type Props = {
     params: { subjectId: string };
 };
 
-const SubjectDetailPage = ({ params }: Props) => {
-    const subject = subjects.find(s => s.id === params.subjectId);
+// Mock fetch function - replace with your actual API call logic
+async function getSubject(id: string): Promise<Subject | undefined> {
+    // In a real app, you'd fetch from your API endpoint
+    // const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/subjects`);
+    // const subjects: Subject[] = await res.json();
+    // For now, we'll simulate it
+    const { mockSubjects } = await import('@/app/api/subjects/route'); // Using the mock data directly
+    return mockSubjects.find(s => s.id === id);
+}
+
+
+const SubjectDetailPage = async ({ params }: Props) => {
+    const subject = await getSubject(params.subjectId);
 
     if (!subject) {
         notFound();
@@ -34,11 +47,14 @@ const SubjectDetailPage = ({ params }: Props) => {
                 <aside className="lg:col-span-1 lg:sticky lg:top-24 self-start">
                     <div className="rounded-xl border bg-white p-6 shadow-sm">
                         <Image
+                            // The `src` prop correctly receives a string.
+                            // This works because we provide explicit `width` and `height` props,
+                            // which is required for remote images to prevent layout shift.
                             src={subject.imageUrl}
                             alt={`Image for ${subject.title}`}
                             width={400}
                             height={400}
-                            className="w-full rounded-lg"
+                            className="h-auto w-full rounded-lg object-cover"
                         />
                         <div className="mt-5">
                             <p className="text-sm font-semibold text-emerald-600">

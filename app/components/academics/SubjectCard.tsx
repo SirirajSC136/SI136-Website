@@ -1,11 +1,16 @@
+// app/components/academics/SubjectCard.tsx
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { Subject } from '@/types';
 
 const SubjectCard = ({ subject }: { subject: Subject }) => (
-    <Link href={`/academics/${subject.id}`} className="group block overflow-hidden rounded-xl shadow-lg">
-        <div className="relative h-64">
+    <Link href={`/academics/${subject.id}`} className="group block overflow-hidden rounded-xl border shadow-sm transition-shadow hover:shadow-lg">
+        {/* The parent div MUST be relative for layout="fill" to work */}
+        <div className="relative h-56">
             <Image
+                // The `src` prop correctly receives a string from `subject.imageUrl`.
+                // Next.js handles this correctly because we use `layout="fill"`.
                 src={subject.imageUrl}
                 alt={`Image for ${subject.title}`}
                 layout="fill"
@@ -19,7 +24,7 @@ const SubjectCard = ({ subject }: { subject: Subject }) => (
             </div>
         </div>
         <div className="bg-white p-4 text-center font-semibold text-gray-700 transition-colors group-hover:bg-emerald-500 group-hover:text-white">
-            View {subject.courseCode}
+            View Details
         </div>
     </Link>
 );

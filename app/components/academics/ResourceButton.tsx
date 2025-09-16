@@ -1,23 +1,30 @@
-import { FileText, Video, BookOpen, ClipboardCheck, FileQuestion, Book } from 'lucide-react';
 import { Resource } from '@/types';
+import { FileText, Presentation, Video, Link as LinkIcon } from 'lucide-react';
 
-const ResourceButton = ({ resource }: { resource: Resource }) => {
-    const icons = {
-        Handout: <FileText size={16} />,
-        Video: <Video size={16} />,
-        Lecture: <BookOpen size={16} />,
-        Exercise: <ClipboardCheck size={16} />,
-        'GA Problems': <FileQuestion size={16} />,
-        Summary: <Book size={16} />,
-        Other: <FileText size={16} />,
-    };
-
-    return (
-        <a href={resource.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-full border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-700 transition-colors hover:border-emerald-500 hover:bg-emerald-50 hover:text-emerald-700">
-            {icons[resource.type]}
-            <span>{resource.label || resource.type}</span>
-        </a>
-    );
+// Helper to get an icon based on the resource type
+const getIcon = (type: Resource['type']) => {
+    switch (type) {
+        case 'PDF':
+            return <FileText size={16} />;
+        case 'Slides':
+            return <Presentation size={16} />;
+        case 'Video':
+            return <Video size={16} />;
+        default:
+            return <LinkIcon size={16} />;
+    }
 };
+
+const ResourceButton = ({ resource }: { resource: Resource }) => (
+    <a
+        href={resource.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-2 rounded-full bg-gray-100 px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-emerald-100 hover:text-emerald-800"
+    >
+        {getIcon(resource.type)}
+        <span>{resource.title}</span>
+    </a>
+);
 
 export default ResourceButton;

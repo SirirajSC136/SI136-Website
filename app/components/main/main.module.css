@@ -34,3 +34,26 @@
     opacity: 0;
     animation: fade-in-up 0.8s ease-out forwards;
 }
+
+.titleCharacter {
+    /* Use inline-block to allow transforms, but it won't change the look */
+    display: inline-block;
+
+    /* Define a smooth and quick transition for the hover effect */
+    transition: transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+        text-shadow 0.25s ease-in-out;
+
+    /* Optimize animation performance by telling the browser what will change */
+    will-change: transform, text-shadow;
+
+    cursor: default;
+}
+
+/* This style is ONLY applied when the mouse is over a character */
+.titleCharacter:hover {
+    /* Lifts the character up and makes it slightly larger */
+    transform: translateY(-10px) scale(1.1);
+
+    /* Adds a soft white glow. Because the text is transparent, this glow shines through. */
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
