@@ -1,190 +1,137 @@
 import { CalendarDays, ClipboardList, Pencil, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { CalendarEvent, Task } from '@/types';
 
-// --- UPDATED TYPE DEFINITIONS (Should be in @/types) ---
-export interface CalendarEvent {
-    id: string;
-    courseCode: string;
-    title: string;
-    startTime: string;
-    tag: string;
-    details: string;
-    subjectPageUrl: string; // This will now be ignored in favor of the generated URL
-}
-
-export interface Task {
-    id: string;
-    type: 'assignment' | 'examination';
-    courseCode: string;
-    title: string;
-    deadline: string;
-}
-
-// --- API FETCHING LOGIC ---
-async function getUpcomingEvents(): Promise<CalendarEvent[]> {
+async function getGoogleCalendarEvents(): Promise<CalendarEvent[]> {
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/events`, { next: { revalidate: 600 } });
+        const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/events`, { cache: 'no-store' });
         if (!res.ok) return [];
         return res.json();
     } catch (error) {
-        console.error("Failed to fetch events:", error);
+        console.error("Failed to fetch Google Calendar events:", error);
         return [];
     }
 }
 
-async function getUpcomingTasks(): Promise<Task[]> {
+async function getCanvasTasks(): Promise<Task[]> {
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/tasks`, { next: { revalidate: 600 } });
+        const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/canvas/upcoming`, { cache: 'no-store' });
         if (!res.ok) return [];
-        return res.json();
+        const data = await res.json();
+        return data.tasks || [];
     } catch (error) {
-        console.error("Failed to fetch tasks:", error);
+        console.error("Failed to fetch Canvas tasks:", error);
         return [];
     }
 }
 
-
-// --- HELPER FUNCTIONS ---
 const formatRemainingTime = (dateString: string) => {
+    if (!dateString) return "No deadline";
     const date = new Date(dateString);
     const now = new Date();
     const diff = date.getTime() - now.getTime();
     if (diff < 0) return "Past";
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    if (days > 0) return `${days} วัน ${hours} ชั่วโมง`;
-    return `${hours} ชั่วโมง`;
+    if (days > 0) return `${days}d ${hours}h left`;
+    if (hours > 0) return `${hours}h left`;
+    return "Less than an hour left";
 };
 
-// NEW: Helper function to extract course code and generate a URL
-const generateUrlFromTitle = (title: string): string => {
-    const topicMarker = '(Topic';
-    const topicIndex = title.indexOf(topicMarker);
-
-    // If the "(Topic" marker is not found, return a default link
-    if (topicIndex === -1) {
-        return '/academics';
-    }
-
-    // Extract the part of the string before the marker and trim whitespace
-    const courseCode = title.substring(0, topicIndex).trim();
-
-    // If the extracted code is empty, return the default link
-    if (!courseCode) {
-        return '/academics';
-    }
-
-    // Return the URL with the encoded course code
-    return `/academics/${encodeURIComponent(courseCode)}`;
-};
-
-
-// --- SUB-COMPONENTS ---
-
-const SectionTitle = ({ children }: { children: React.ReactNode }) => (
-    <h2 className="text-3xl font-bold text-slate-800 mb-6 pb-2 border-b-2 border-emerald-200">
-        {children}
-    </h2>
+const SectionTitle = ({ icon, title }: { icon: React.ReactNode, title: string }) => (
+    <div className="flex items-center gap-3 mb-6">
+        {icon}
+        <h2 className="text-2xl font-bold text-slate-800">{title}</h2>
+    </div>
 );
 
-const EventCard = ({ event }: { event: CalendarEvent }) => {
-    // UPDATED: Generate the navigation link directly from the event title
-    const subjectPageUrl = generateUrlFromTitle(event.title);
-
-    return (
-        <div className="group flex items-start space-x-4 p-4 bg-white rounded-xl shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-            <div className="flex-shrink-0 mt-1 p-2 bg-emerald-100 rounded-full">
-                <CalendarDays className="h-5 w-5 text-emerald-600" />
-            </div>
-            <div className="flex-grow">
-                <p className="text-sm font-semibold text-emerald-700">
-                    {`${event.courseCode} - ${new Date(event.startTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })} - ${event.tag}`}
-                </p>
-                <p className="text-lg font-medium text-gray-800">{event.title}</p>
-                <div className="flex items-center justify-between mt-2">
-                    <span className="text-sm text-gray-500">{event.details}</span>
-                    {/* UPDATED: Use the dynamically generated URL in the Link component */}
-                    <Link href={subjectPageUrl} className="flex items-center text-sm text-emerald-600 font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        View Subject <ArrowRight className="h-4 w-4 ml-1" />
-                    </Link>
-                </div>
+const EventCard = ({ event }: { event: CalendarEvent }) => (
+    <div className="group flex items-start space-x-4 p-4 bg-white rounded-lg border border-gray-200 transition-shadow hover:shadow-md">
+        <div className="flex-shrink-0 mt-1">
+            <CalendarDays className="h-5 w-5 text-emerald-600" />
+        </div>
+        <div className="flex-grow">
+            <p className="text-sm font-semibold text-emerald-700">{event.courseCode}</p>
+            <p className="font-medium text-gray-800">{event.title}</p>
+            <div className="flex items-center justify-between mt-2">
+                <span className="text-sm text-gray-500">{new Date(event.startTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} - {event.details}</span>
+                <Link href={event.subjectPageUrl} className="flex items-center text-sm text-emerald-600 font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                    View <ArrowRight className="h-4 w-4 ml-1" />
+                </Link>
             </div>
         </div>
-    );
-};
+    </div>
+);
 
 const TaskCard = ({ task }: { task: Task }) => {
     const isAssignment = task.type === 'assignment';
     const theme = {
         icon: isAssignment ? ClipboardList : Pencil,
-        bgColor: isAssignment ? 'bg-amber-100' : 'bg-rose-100',
         textColor: isAssignment ? 'text-amber-700' : 'text-rose-700',
-        pillBgColor: isAssignment ? 'bg-amber-200' : 'bg-rose-200',
-        pillTextColor: isAssignment ? 'text-amber-800' : 'text-rose-800',
     };
 
     return (
-        <div className="group p-4 mb-3 bg-white rounded-xl shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
-            <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center space-x-3">
-                    <div className={`p-2 ${theme.bgColor} rounded-full`}>
-                        <theme.icon className={`h-5 w-5 ${theme.textColor}`} />
+        <Link href={`/academics/${task.subjectId}`} className="group block p-4 mb-3 bg-white rounded-lg border border-gray-200 transition-shadow hover:shadow-md">
+            <div className="flex items-start justify-between">
+                <div className="flex items-start space-x-3">
+                    <theme.icon className={`h-5 w-5 mt-0.5 ${theme.textColor}`} />
+                    <div>
+                        <p className={`font-semibold ${theme.textColor}`}>{task.courseCode}</p>
+                        <p className="text-xs text-gray-500">{task.subjectTitle}</p>
+                        <p className="text-gray-800 font-medium mt-1">{task.title}</p>
                     </div>
-                    <p className={`font-bold ${theme.textColor}`}>{task.courseCode}</p>
                 </div>
-                <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${theme.pillBgColor} ${theme.pillTextColor}`}>
+                <span className="text-xs text-gray-500 font-medium flex-shrink-0 ml-2">
                     {formatRemainingTime(task.deadline)}
                 </span>
             </div>
-            <p className="text-gray-800 font-medium my-1 ml-11">{task.title}</p>
-        </div>
+        </Link>
     );
 };
 
-// --- MAIN ASYNC COMPONENT ---
+const EmptyState = ({ message }: { message: string }) => (
+    <div className="text-center py-10 px-4 bg-gray-50 rounded-lg border border-dashed">
+        <p className="text-gray-500">{message}</p>
+    </div>
+);
 
 const HomePageContent = async () => {
-    const [events, tasks] = await Promise.all([
-        getUpcomingEvents(),
-        getUpcomingTasks(),
-    ]);
-
+    const [events, tasks] = await Promise.all([getGoogleCalendarEvents(), getCanvasTasks()]);
     const assignments = tasks.filter(t => t.type === 'assignment');
     const examinations = tasks.filter(t => t.type === 'examination');
 
     const groupedEvents = events.reduce((acc, event) => {
-        const dateKey = new Date(event.startTime).toLocaleDateString('th-TH', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+        const dateKey = new Date(event.startTime).toLocaleDateString('th-TH', { weekday: 'long', day: 'numeric', month: 'long' });
         if (!acc[dateKey]) acc[dateKey] = [];
         acc[dateKey].push(event);
         return acc;
     }, {} as Record<string, CalendarEvent[]>);
 
     return (
-        <div className="bg-gray-50 py-16">
+        <div className="bg-slate-50 py-12">
             <div className="container mx-auto px-4">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-                    {/* Upcoming Events Column */}
-                    <div className="lg:col-span-2">
-                        <SectionTitle>Upcoming Events</SectionTitle>
-                        {Object.entries(groupedEvents).map(([date, activities]) => (
-                            <div key={date} className="mb-8">
-                                <h3 className="text-lg font-semibold mb-4 text-gray-600 pl-4 border-l-4 border-emerald-300">{date}</h3>
-                                <div className="space-y-4">
-                                    {activities.map((activity, index) => <EventCard key={activity.id || index} event={activity} />)}
+                <h1 className="text-4xl font-extrabold text-slate-900 mb-10">Dashboard</h1>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                    <div className="lg:col-span-2 bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                        <SectionTitle icon={<CalendarDays className="text-emerald-500" />} title="Upcoming Events" />
+                        {Object.keys(groupedEvents).length > 0 ? Object.entries(groupedEvents).map(([date, activities]) => (
+                            <div key={date} className="mb-6">
+                                <h3 className="text-md font-semibold mb-3 text-gray-500">{date}</h3>
+                                <div className="space-y-3">
+                                    {activities.map((activity) => <EventCard key={activity.id} event={activity} />)}
                                 </div>
                             </div>
-                        ))}
+                        )) : <EmptyState message="No upcoming events found in the calendar." />}
                     </div>
 
-                    {/* Assignments & Examinations Column */}
-                    <div className="space-y-10">
-                        <div>
-                            <SectionTitle>Assignments</SectionTitle>
-                            {assignments.map((task, index) => <TaskCard key={task.id || index} task={task} />)}
+                    <div className="space-y-8">
+                        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                            <SectionTitle icon={<ClipboardList className="text-amber-500" />} title="Assignments" />
+                            {assignments.length > 0 ? assignments.map((task) => <TaskCard key={task.id} task={task} />) : <EmptyState message="No pending assignments." />}
                         </div>
-                        <div>
-                            <SectionTitle>Examinations</SectionTitle>
-                            {examinations.map((task, index) => <TaskCard key={task.id || index} task={task} />)}
+                        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                            <SectionTitle icon={<Pencil className="text-rose-500" />} title="Examinations" />
+                            {examinations.length > 0 ? examinations.map((task) => <TaskCard key={task.id} task={task} />) : <EmptyState message="No upcoming examinations." />}
                         </div>
                     </div>
                 </div>

@@ -1,7 +1,6 @@
 // app/academics/[subjectId]/page.tsx
 
 import { Subject } from '@/types';
-import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import TopicItem from '@/app/components/academics/TopicItem';
@@ -14,8 +13,10 @@ type Props = {
 async function getSubject(id: string): Promise<Subject | undefined> {
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/subjects/${id}`, {
-            next: { revalidate: 3600 }, // Cache for 1 hour
+            // Use no-store to prevent caching bad responses during development
+            cache: 'no-store',
         });
+        // If the response is not OK (e.g., 404 or 500), return undefined immediately
         if (!res.ok) {
             return undefined;
         }
@@ -34,6 +35,7 @@ const SubjectDetailPage = async ({ params }: Props) => {
         notFound();
     }
 
+    // ... the rest of your component is correct and does not need to change
     return (
         <div className="min-h-screen bg-slate-50">
             {/* Breadcrumbs Header */}
@@ -51,14 +53,9 @@ const SubjectDetailPage = async ({ params }: Props) => {
                 {/* Left Column: Subject Info */}
                 <aside className="lg:col-span-1 lg:sticky lg:top-24 self-start">
                     <div className="rounded-xl border bg-white p-6 shadow-sm">
-                        <Image
-                            // The `src` prop correctly receives a string.
-                            // This works because we provide explicit `width` and `height` props,
-                            // which is required for remote images to prevent layout shift.
+                        <img
                             src={subject.imageUrl}
                             alt={`Image for ${subject.title}`}
-                            width={400}
-                            height={400}
                             className="h-auto w-full rounded-lg object-cover"
                         />
                         <div className="mt-5">

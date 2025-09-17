@@ -27,40 +27,8 @@ export interface Assignment {
     url: string;
 }
 
-// Update the Topic interface to include all the new fields
-// Update the Topic interface to include _id from MongoDB
-export interface Topic {
-    _id?: string; // Optional: from MongoDB
-    id: string; // The original identifier like "1", "2"
-    title: string;
-    dateTime?: string;
-    tag?: TopicTag;
-    resources: Resource[];
-    assignments?: Assignment[];
-}
 
-// Update the Subject interface
-export interface Subject {
-    _id?: string; // Add the optional _id from MongoDB
-    // id: string; // REMOVE the old 'id' property
-    courseCode: string;
-    title: string;
-    year: number;
-    semester: number;
-    imageUrl: string;
-    canvasUrl: string | null;
-    topics: Topic[];
-}
 
-// Update the Task interface
-export interface Task {
-    _id?: string; // Add the optional _id from MongoDB
-    type: 'assignment' | 'examination';
-    courseCode: string;
-    title: string;
-    deadline: string;
-    resources: Resource[];
-}
 
 export interface AssignmentItem {
     id: string; // A unique ID, we'll use the row index for this
@@ -70,15 +38,48 @@ export interface AssignmentItem {
     detailsUrl: string;
 }
 
+
+export interface TopicFile {
+    id: string;
+    title: string;
+    url: string;
+}
+
+export interface Topic {
+    id: string;
+    title: string;
+    files: TopicFile[];
+}
+
+export interface Subject {
+    _id: string;
+    courseCode: string;
+    title: string;
+    year: number;
+    semester: number;
+    imageUrl: string;
+    canvasUrl?: string;
+    filesUrl?: string; // NEW: Direct link to the Canvas Files page
+    syllabus?: string; // NEW: The course syllabus/description HTML
+    topics: Topic[];
+}
+
 export interface CalendarEvent {
     id: string;
     courseCode: string;
     title: string;
-    startTime: string; // ISO 8601 format string (e.g., "2025-10-10T10:00:00")
+    startTime: string;
     tag: string;
     details: string;
-    subjectPageUrl: string; // e.g., "/academics/siid350"
+    subjectPageUrl: string;
 }
 
-
-
+export interface Task {
+    id: string;
+    type: 'assignment' | 'examination';
+    courseCode: string;
+    subjectTitle: string;
+    title: string;
+    deadline: string;
+    subjectId: string;
+}

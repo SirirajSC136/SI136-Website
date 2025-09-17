@@ -7,6 +7,7 @@ import { Loader2, AlertCircle, BookOpen, ClipboardList, Trash2 } from 'lucide-re
 import SubjectCreation from './components/SubjectCreation';
 import TaskCreation from './components/TaskCreation';
 import TaskList from './components/TaskList';
+import MyCoursesPage from './components/CourseFetch';
 
 const AdminPage = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
@@ -50,7 +51,7 @@ const AdminPage = () => {
     };
 
     const handleTaskDeleted = (taskId: string) => {
-        setTasks(prev => prev.filter(task => task._id !== taskId));
+        setTasks(prev => prev.filter(task => (task as any)._id !== taskId));
     };
 
     if (isLoading) return <div className="flex justify-center items-center h-screen"><Loader2 className="animate-spin h-12 w-12 text-slate-500" /></div>;
@@ -85,6 +86,7 @@ const AdminPage = () => {
                     <TaskCreation subjects={subjects} onTaskCreated={handleTaskCreated} />
                     <TaskList tasks={tasks} onTaskDeleted={handleTaskDeleted} />
                 </section>
+                <MyCoursesPage />
             </div>
         </div>
     );

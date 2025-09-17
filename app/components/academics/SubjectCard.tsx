@@ -1,29 +1,28 @@
 // app/components/academics/SubjectCard.tsx
 
-import Link from 'next/link';
-import Image from 'next/image';
 import { Subject } from '@/types';
+import Link from 'next/link';
+// import Image from 'next/image'; // We no longer need this
 
-const SubjectCard = ({ subject }: { subject: Subject }) => (
-    <Link href={`/academics/${subject.courseCode}`} className="group block overflow-hidden rounded-xl border shadow-sm transition-shadow hover:shadow-lg">
-        <div className="relative h-56">
-            <Image
+const SubjectCard = ({ subject }: { subject: Subject }) => {
+    return (
+        <Link href={`/academics/${subject._id}`} className="group block rounded-xl border bg-white shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+            {/* --- THE FIX IS HERE --- */}
+            {/* Replaced next/image with a standard img tag. */}
+            <img
                 src={subject.imageUrl}
                 alt={`Image for ${subject.title}`}
-                layout="fill"
-                objectFit="cover"
-                className="transition-transform duration-500 ease-in-out group-hover:scale-110"
+                className="w-full h-48 object-cover rounded-t-xl"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-            <div className="absolute bottom-0 left-0 p-4 text-white">
-                <h3 className="text-2xl font-bold">{subject.courseCode}</h3>
-                <p className="text-sm font-light uppercase tracking-wider">{subject.title}</p>
+            <div className="p-5">
+                <p className="text-sm font-semibold text-emerald-600">
+                    Year {subject.year} &middot; Semester {subject.semester}
+                </p>
+                <h3 className="mt-2 text-xl font-bold text-slate-800 group-hover:text-emerald-700">{subject.courseCode}</h3>
+                <p className="mt-1 text-slate-600 truncate">{subject.title}</p>
             </div>
-        </div>
-        <div className="bg-white p-4 text-center font-semibold text-gray-700 transition-colors group-hover:bg-emerald-500 group-hover:text-white">
-            View Details
-        </div>
-    </Link>
-);
+        </Link>
+    );
+};
 
 export default SubjectCard;
