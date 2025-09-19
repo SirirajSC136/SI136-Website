@@ -83,12 +83,12 @@ const InfoButton = ({ href, children }: { href: string; children: React.ReactNod
 const UsefulInfoPage = () => {
     // --- Data (replace with your actual links and image paths) ---
     const classroomLinks = [
-        { name: 'SmartEdu', href: '#' },
-        { name: 'MUx', href: '#' },
-        { name: 'Canvas', href: '#' },
-        { name: 'MUGE 100', href: '#' },
-        { name: 'LATH 100', href: '#' },
-        { name: 'GE PLUS', href: '#' },
+        { name: 'SmartEdu', href: 'https://smartedu.mahidol.ac.th/' },
+        { name: 'MUx', href: 'https://mux.mahidol.ac.th/' },
+        { name: 'Canvas', href: 'https://www.sieduit.org/education/sirirajcanvas/' },
+        { name: 'MUGE 100', href: 'https://clil.mahidol.ac.th/muge100/' },
+        { name: 'LATH 100', href: 'https://sites.google.com/mahidol.edu/lath100/' },
+        { name: 'GE PLUS', href: 'https://sites.google.com/view/geplusmahidol/' },
     ];
 
     const departmentLinks = [
@@ -130,13 +130,13 @@ const UsefulInfoPage = () => {
                 <section className="mb-16">
                     <SectionTitle>การเดินทาง (ศาลายา)</SectionTitle>
                     <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
-                        <InfoButton href="#">ตารางรถ Shuttle Bus</InfoButton>
-                        <InfoButton href="#">ตารางรถราง</InfoButton>
+                        <InfoButton href="https://op.mahidol.ac.th/ga/shuttle-bus/">ตารางรถ Shuttle Bus</InfoButton>
+                        <InfoButton href="https://mustudent.mahidol.ac.th/2022/08/28281/">การเดินทางในศาลายา</InfoButton>
                     </div>
                     <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
                         {/* Replace with your schedule images */}
-                        <Image src="/path/to/your/salaya-to-siriraj.png" alt="Salaya to Siriraj Schedule" width={800} height={1200} className="rounded-xl shadow-lg" />
-                        <Image src="/path/to/your/siriraj-to-salaya.png" alt="Siriraj to Salaya Schedule" width={800} height={1200} className="rounded-xl shadow-lg" />
+                        <Image src="/images/directions/salaya-to-siriraj.jpg" alt="Salaya to Siriraj Schedule" width={800} height={1200} className="rounded-xl shadow-lg" />
+                        <Image src="/images/directions/siriraj-to-salaya.jpg" alt="Siriraj to Salaya Schedule" width={800} height={1200} className="rounded-xl shadow-lg" />
                     </div>
                 </section>
 
@@ -144,7 +144,7 @@ const UsefulInfoPage = () => {
                 <section>
                     <SectionTitle>การเดินทาง (ศิริราช)</SectionTitle>
                     <div className="flex justify-center">
-                        <InfoButton href="#">ไฟล์แผนที่ศิริราชฉบับเต็ม</InfoButton>
+                        <InfoButton href="https://www2.si.mahidol.ac.th/en/wp-content/uploads/2016/12/MAP-UPDATED-18-01-2017-1.pdf">ไฟล์แผนที่ศิริราชฉบับเต็ม</InfoButton>
                     </div>
                 </section>
             </div>

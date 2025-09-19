@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Laptop, Library, Users, ArrowUpRight } from 'lucide-react';
+import { Laptop, Library, Users, ArrowUpRight, University } from 'lucide-react';
 
 // A redesigned, more interactive LinkButton component
 const LinkButton = ({ href, children }: { href: string; children: ReactNode }) => (
@@ -38,26 +38,34 @@ const Materials = () => {
             title: 'Learning System & Portal',
             icon: <Laptop size={24} />,
             links: [
-                { name: 'Canvas', href: '#' },
-                { name: 'SELECx', href: '#' },
-                { name: 'SmartEDU', href: '#' },
+                { name: 'Canvas', href: 'https://www.sieduit.org/education/sirirajcanvas/' },
+                { name: 'SELECx', href: 'https://selecx-new.si.mahidol.ac.th/' },
+                { name: 'SmartEDU', href: 'https://smartedu.mahidol.ac.th/' },
+                { name: 'Siriraj SSO', href: 'https://si-eservice3.si.mahidol.ac.th/selfservice/' },
+                { name: 'MU Life Pass', href: 'https://mustudent.mahidol.ac.th/' },
             ],
         },
         {
             title: 'Academic Sites',
             icon: <Library size={24} />,
             links: [
-                { name: 'SI133', href: '#' }, { name: 'SI132', href: '#' }, { name: 'SI131', href: '#' },
-                { name: 'SI130', href: '#' }, { name: 'SI129', href: '#' }, { name: 'SI128', href: '#' },
-                { name: 'SI127', href: '#' }, { name: 'SI126', href: '#' },
+                { name: 'SI135', href: 'https://sites.google.com/student.mahidol.edu/siriraj135/' }, { name: 'SI134', href: 'https://siriraj134.com/' }, { name: 'SI133', href: 'https://sites.google.com/view/siriraj133official/' }, 
+                { name: 'SI132', href: 'https://sites.google.com/view/siriraj132/' }, { name: 'SI131', href: 'https://sites.google.com/view/siriraj131official/' }, { name: 'SI130', href: 'https://sites.google.com/view/siriraj130/' }, 
             ],
         },
         {
             title: 'SMSU (สพศ.)',
             icon: <Users size={24} />,
             links: [
-                { name: 'Linktree SMSU', href: '#' }, { name: 'IG SMSU', href: '#' },
-                { name: 'IG PD (Personal Development)', href: '#' }, { name: '101 Research Guidebook', href: '#' },
+                { name: 'SMSU One Stop Guide', href: 'https://guide.smsu.in.th/?fbclid=PAZXh0bgNhZW0CMTEAAad6Ris-c2JEvZ0ZJIgGcKk6iBY6nH5KC7v8-NdPcKPOyl847_0pUXESTSwXTA_aem_SC3yrdWx8Tle9h4rTyN_nw' }, { name: 'IG SMSU', href: 'https://www.instagram.com/smsusiriraj/' },
+                { name: 'IG PD (Personal Development)', href: 'https://www.instagram.com/pdsiriraj/' }, { name: '101 Research Guidebook', href: 'https://drive.google.com/drive/folders/1-FcrdoYpiVwZCKjlQvcamLto4BTvLPhT' },
+            ],
+        },
+        {
+            title: 'SI136',
+            icon: <University size={24} />,
+            links: [
+                { name: 'IG SI136', href: '#' }, { name: 'LineOA', href: '#/' },
                 { name: 'บริจาคงบทำเว็บ', href: '#' },
             ],
         },
@@ -72,7 +80,7 @@ const Materials = () => {
                 </div>
 
                 {/* Grid layout for the resource cards */}
-                <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
                     {resourceSections.map((section) => (
                         <ResourceCard
                             key={section.title}
