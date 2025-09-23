@@ -4,7 +4,7 @@ import { CalendarEvent, Task } from '@/types';
 
 async function getGoogleCalendarEvents(): Promise<CalendarEvent[]> {
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/events`, { cache: 'no-store' });
+        const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/events`, { next: { revalidate: 900 } });
         if (!res.ok) return [];
         return res.json();
     } catch (error) {
@@ -15,7 +15,7 @@ async function getGoogleCalendarEvents(): Promise<CalendarEvent[]> {
 
 async function getCanvasTasks(): Promise<Task[]> {
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/canvas/upcoming`, { cache: 'no-store' });
+        const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/canvas/upcoming`, { next: { revalidate: 900 } });
         if (!res.ok) return [];
         const data = await res.json();
         return data.tasks || [];

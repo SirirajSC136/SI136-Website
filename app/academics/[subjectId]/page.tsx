@@ -14,7 +14,7 @@ async function getSubject(id: string): Promise<Subject | undefined> {
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/subjects/${id}`, {
             // Use no-store to prevent caching bad responses during development
-            cache: 'no-store',
+            next: { revalidate: 900 },
         });
         // If the response is not OK (e.g., 404 or 500), return undefined immediately
         if (!res.ok) {
