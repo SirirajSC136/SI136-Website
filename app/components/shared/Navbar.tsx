@@ -56,12 +56,11 @@ const Navbar = () => {
 
     return (
         <>
-            <nav
-                className={`sticky top-0 z-50 w-full transition-all duration-300 ease-in-out ${isScrolled
-                    ? 'border-b border-gray-200/80 bg-white/80 shadow-sm backdrop-blur-lg'
-                    : 'bg-transparent'
-                    }`}
-            >
+            <nav className={`sticky mx-auto z-50 transition-all duration-300 ease-in-out${
+                isScrolled
+                    ? 'border-b border-gray-200/80 bg-white/50 shadow-sm backdrop-blur-lg w-3/5 top-1 rounded-2xl border'
+                    : 'bg-transparent w-full top-0'
+            }`}>
                 <div className="container mx-auto flex items-center justify-between p-4">
                     {/* Logo */}
                     <Link href="/" className="flex items-center space-x-3 transition-transform hover:scale-105">
@@ -86,7 +85,7 @@ const Navbar = () => {
                     </div>
 
                     {/* Mobile Menu Button */}
-                    <div className="md:hidden">
+                    <div className="md:hidden flex items-center">
                         <button onClick={() => setIsOpen(!isOpen)} className={`transition-colors ${isScrolled ? 'text-slate-800' : 'text-black'}`}>
                             {isOpen ? <X size={28} /> : <Menu size={28} />}
                         </button>

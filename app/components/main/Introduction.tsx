@@ -24,7 +24,7 @@ const Introduction = () => {
                 className={styles.animateSlowZoom}
             />
 
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-black/40 to-transparent" />
 
             <div className="relative z-10 flex flex-col items-center justify-center h-full text-center p-4">
                 <h1
