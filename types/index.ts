@@ -39,30 +39,36 @@ export interface AssignmentItem {
 }
 
 
-export interface TopicFile {
+export type TopicItemType = 'File' | 'Page' | 'Link' | 'Header' | 'Other';
+
+export type TopicItemData = {
     id: string;
     title: string;
-    url: string;
-}
-
-export interface Topic {
+    type: TopicItemType;
+    url?: string;
+    htmlContent?: string;
+    canvasUrl?: string; // <-- ADD THIS PROPERTY
+};
+// Update the Topic type to hold these new, richer items
+export type Topic = {
     id: string;
     title: string;
-    files: TopicFile[];
-}
+    items: TopicItemData[]; // <-- Changed from 'files: TopicFile[]'
+};
 
-export interface Subject {
+// The main Subject type
+export type Subject = {
     _id: string;
     courseCode: string;
     title: string;
     year: number;
     semester: number;
     imageUrl: string;
-    canvasUrl?: string;
-    filesUrl?: string; // NEW: Direct link to the Canvas Files page
-    syllabus?: string; // NEW: The course syllabus/description HTML
-    topics: Topic[];
-}
+    canvasUrl: string;
+    filesUrl: string;
+    syllabus: string;
+    topics: Topic[]; // This now contains the richer Topic structure
+};
 
 export interface CalendarEvent {
     id: string;

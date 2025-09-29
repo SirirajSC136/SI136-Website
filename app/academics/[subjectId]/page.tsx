@@ -14,7 +14,7 @@ async function getSubject(id: string): Promise<Subject | undefined> {
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/subjects/${id}`, {
             // Use no-store to prevent caching bad responses during development
-            next: { revalidate: 900 },
+            next: { revalidate: 0 },
         });
         // If the response is not OK (e.g., 404 or 500), return undefined immediately
         if (!res.ok) {
@@ -79,13 +79,16 @@ const SubjectDetailPage = async ({ params }: Props) => {
                     </div>
                 </aside>
 
-                {/* Right Column: Topics List */}
                 <section className="lg:col-span-2">
                     <div className="rounded-xl border bg-white p-6 shadow-sm">
-                        <h3 className="text-2xl font-bold text-slate-800 border-b pb-4">
+                        <h3 className="text-2xl font-bold text-slate-800 border-b pb-4 mb-6">
                             Course Summary & Materials
                         </h3>
-                        <div className="divide-y divide-gray-200">
+                        {/* 
+                          Replace the old container with a new one that provides
+                          spacing between each accordion item.
+                        */}
+                        <div className="space-y-4">
                             {subject.topics.map(topic => <TopicItem key={topic.id} topic={topic} />)}
                         </div>
                     </div>

@@ -2,18 +2,18 @@
 
 import { NextResponse } from 'next/server';
 import { mapCanvasCourseToSubject } from '@/lib/canvasAdapter';
-import { fetchAllCanvasCourses } from '@/lib/canvas'; // <-- Import our new function
+import { fetchEnrolledCourses } from '@/lib/canvas'; // <-- Use the new shallow fetch function
 
-export const dynamic = 'force-dynamic'; // Ensures the route is re-evaluated on each request
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
     try {
-        // 1. Fetch all the raw data from Canvas using our dedicated function
-        const rawCanvasCourses = await fetchAllCanvasCourses();
+        // 1. Fetch only the list of courses. This will be much faster.
+        const enrolledCourses = await fetchEnrolledCourses();
 
-        // 2. Use the adapter to transform the raw data into the shape our frontend needs
-        // The '.map' will now work because rawCanvasCourses is a proper array.
-        const subjects = rawCanvasCourses.map(mapCanvasCourseToSubject);
+        // 2. The adapter transforms the shallow course data.
+        // This works because the adapter likely only needs top-level course info.
+        const subjects = enrolledCourses.map(mapCanvasCourseToSubject);
 
         // 3. Return the transformed data
         return NextResponse.json(subjects);

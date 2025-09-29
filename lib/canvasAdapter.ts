@@ -1,19 +1,14 @@
-import { Subject, Topic, TopicFile } from '@/types';
-import { CanvasCourse } from '@/lib/canvas'; // Assuming your raw Canvas types are in this file
+// lib/canvasAdapter.ts (Replace the entire file with this)
 
-/**
- * Parses a Canvas term name (e.g., "1st Semester 2025") into year and semester.
- * This may need adjustment if your term names have a different format.
- */
+import { Subject, Topic, TopicItemData } from '@/types';
+import { CanvasCourse, CanvasModuleItem } from '@/lib/canvas';
+
 function parseTerm(termName: string | undefined): { year: number, semester: number } {
     if (!termName) {
-        // Fallback to the current year and a default semester if no term is provided
         return { year: new Date().getFullYear(), semester: 1 };
     }
-
     const yearMatch = termName.match(/\d{4}/);
-    const semesterMatch = termName.match(/(\d)/); // Gets the first digit
-
+    const semesterMatch = termName.match(/(\d)/);
     return {
         year: yearMatch ? parseInt(yearMatch[0], 10) : new Date().getFullYear(),
         semester: semesterMatch ? parseInt(semesterMatch[0], 10) : 1,
@@ -21,36 +16,83 @@ function parseTerm(termName: string | undefined): { year: number, semester: numb
 }
 
 /**
- * Transforms a single raw Canvas course object into the `Subject` shape
- * that your frontend components expect.
+ * Maps a single raw Canvas module item to our clean frontend TopicItemData type.
+ */
+function mapCanvasItemToTopicItem(item: CanvasModuleItem): TopicItemData | null {
+    switch (item.type) {
+        case 'SubHeader':
+            return {
+                id: item.id.toString(),
+                title: item.title,
+                type: 'Header',
+            };
+        case 'File':
+            if (!item.url) return null;
+            return {
+                id: item.id.toString(),
+                title: item.title,
+                type: 'File',
+                url: item.url,
+            };
+        case 'ExternalUrl':
+            if (!item.external_url) return null;
+            return {
+                id: item.id.toString(),
+                title: item.title,
+                type: 'Link',
+                url: item.external_url,
+            };
+        case 'Page':
+            // We prioritize rendering the full page content
+            if (item.html_content) {
+                return {
+                    id: item.id.toString(),
+                    title: item.title,
+                    type: 'Page',
+                    htmlContent: item.html_content,
+                    canvasUrl: item.url,
+                };
+            }
+            return null; // Don't render empty pages
+
+        // For now, we will treat these as simple links to their Canvas pages
+        case 'Assignment':
+        case 'Quiz':
+        case 'Discussion':
+            return {
+                id: item.id.toString(),
+                title: item.title,
+                type: 'Link',
+                url: item.url,
+            };
+
+        default:
+            return null; // Ignore any other types
+    }
+}
+
+/**
+ * Transforms a single raw Canvas course object into the `Subject` shape.
  */
 export function mapCanvasCourseToSubject(course: CanvasCourse): Subject {
     const { year, semester } = parseTerm(course.term?.name);
 
     const topics: Topic[] = course.modules.map(module => {
-        const files: TopicFile[] = [];
+        const items: TopicItemData[] = [];
 
-        // Ensure module.items exists and is an array before iterating
         if (Array.isArray(module.items)) {
-            module.items.forEach(item => {
-                // Add direct files from the module
-                if (item.type === 'File' && item.url) {
-                    files.push({ id: item.id.toString(), title: item.title, url: item.url });
+            for (const item of module.items) {
+                const mappedItem = mapCanvasItemToTopicItem(item);
+                if (mappedItem) {
+                    items.push(mappedItem);
                 }
-                // Add files found embedded inside of Pages
-                if (item.page_content_files) {
-                    item.page_content_files.forEach(file => {
-                        // Create a unique-ish ID for embedded files
-                        files.push({ id: `${item.id}-${file.name}`, title: file.name, url: file.url });
-                    });
-                }
-            });
+            }
         }
 
         return {
             id: module.id.toString(),
             title: module.name,
-            files: files,
+            items: items, // Use the new, rich items array
         };
     });
 
@@ -63,7 +105,6 @@ export function mapCanvasCourseToSubject(course: CanvasCourse): Subject {
         imageUrl: `https://placehold.co/400x400/0056d2/FFF?text=${encodeURIComponent(course.course_code)}`,
         canvasUrl: `https://sirirajcanvas.instructure.com/courses/${course.id}`,
         filesUrl: `https://sirirajcanvas.instructure.com/courses/${course.id}/files`,
-        // This safely handles cases where syllabus_body is null, undefined, or missing.
         syllabus: '',
         topics: topics,
     };
