@@ -1,22 +1,18 @@
-// app/academics/[subjectId]/page.tsx
+"use client"; // This directive makes it a Client Component
 
+import { useState, useEffect } from 'react'; // Import hooks
 import { Subject } from '@/types';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { useParams } from 'next/navigation'; // Import the correct hook
 import TopicItem from '@/app/components/academics/TopicItem';
 import { Home } from 'lucide-react';
 
-type Props = {
-    params: { subjectId: string };
-};
-
+// This helper function is fine and can be kept as is
 async function getSubject(id: string): Promise<Subject | undefined> {
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/subjects/${id}`, {
-            // Use no-store to prevent caching bad responses during development
             next: { revalidate: 0 },
         });
-        // If the response is not OK (e.g., 404 or 500), return undefined immediately
         if (!res.ok) {
             return undefined;
         }
@@ -27,15 +23,47 @@ async function getSubject(id: string): Promise<Subject | undefined> {
     }
 }
 
+// The component is no longer async
+const SubjectDetailPage = () => {
+    // State for managing data, loading, and errors
+    const [subject, setSubject] = useState<Subject | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-const SubjectDetailPage = async ({ params }: Props) => {
-    const subject = await getSubject(params.subjectId);
+    // Get URL parameters using the hook
+    const params = useParams();
+    const subjectId = params.subjectId as string;
 
-    if (!subject) {
-        notFound();
+    // Fetch data inside a useEffect hook
+    useEffect(() => {
+        if (!subjectId) return; // Don't fetch if the ID isn't available yet
+
+        const fetchData = async () => {
+            setIsLoading(true);
+            setError(null);
+            const fetchedSubject = await getSubject(subjectId);
+
+            if (fetchedSubject) {
+                setSubject(fetchedSubject);
+            } else {
+                setError("Subject not found."); // Set an error state instead of calling notFound()
+            }
+            setIsLoading(false);
+        };
+
+        fetchData();
+    }, [subjectId]); // Re-run the effect if the subjectId changes
+
+    // --- Render loading and error states ---
+    if (isLoading) {
+        return <div className="flex h-screen items-center justify-center">Loading subject...</div>;
     }
 
-    // ... the rest of your component is correct and does not need to change
+    if (error || !subject) {
+        return <div className="flex h-screen items-center justify-center text-red-600">{error || "Could not load subject."}</div>;
+    }
+
+    // --- Render the page with the fetched data ---
     return (
         <div className="min-h-screen bg-slate-50">
             {/* Breadcrumbs Header */}
@@ -51,7 +79,7 @@ const SubjectDetailPage = async ({ params }: Props) => {
 
             <main className="container mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8 p-4 md:p-8">
                 {/* Left Column: Subject Info */}
-                <aside className="lg:col-span-1 lg:sticky lg:top-24 self-start">
+                <aside className="lg-col-span-1 lg:sticky lg:top-24 self-start">
                     <div className="rounded-xl border bg-white p-6 shadow-sm">
                         <img
                             src={subject.imageUrl}
@@ -84,10 +112,6 @@ const SubjectDetailPage = async ({ params }: Props) => {
                         <h3 className="text-2xl font-bold text-slate-800 border-b pb-4 mb-6">
                             Course Summary & Materials
                         </h3>
-                        {/* 
-                          Replace the old container with a new one that provides
-                          spacing between each accordion item.
-                        */}
                         <div className="space-y-4">
                             {subject.topics.map(topic => <TopicItem key={topic.id} topic={topic} />)}
                         </div>

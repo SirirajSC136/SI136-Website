@@ -103,61 +103,64 @@ async function processModuleItem(item: any): Promise<CanvasModuleItem> {
         external_url: item.external_url,
     };
 
-    // --- Handle standard 'File' items ---
     if (item.type === 'File' && item.url) {
-        // Use the simple, reliable API resolver
         moduleItem.url = await resolveApiFileUrl(item.url);
     }
 
-    // --- Handle 'ExternalUrl' items that might be files ---
     if (item.type === 'ExternalUrl') {
         const externalUrl = item.external_url;
         if (externalUrl && (externalUrl.includes('/files/') || externalUrl.includes('instructure_file_link'))) {
-            // This is a file, but it's a web page link, not an API link.
-            // We will transform it into the correct download link directly.
             const url = new URL(externalUrl);
             const baseUrl = `${url.origin}${url.pathname}`;
-
             moduleItem.type = 'File';
             moduleItem.url = `${baseUrl}/download?download_frd=1`;
         }
     }
 
-    // --- Handle 'Page' items that are secretly file downloads ---
     if (item.type === 'Page' && item.url) {
         try {
             const headers = getHeaders();
-            const pageData = await (await fetch(item.url, { headers })).json();
-            if (pageData.body) {
-                const $ = cheerio.load(pageData.body);
-                const fileLinks = $('a.instructure_file_link');
+            const response = await fetch(item.url, { headers });
 
-                if (fileLinks.length === 1) {
-                    const link = fileLinks.first();
-                    let fileHref = link.attr('href');
-                    const fileTitle = link.text().trim();
+            // 1. Check if the fetch was successful
+            if (!response.ok) {
+                console.warn(`Failed to fetch Page item ${item.id}, status: ${response.status}`);
+                return moduleItem; // Return the item without content to prevent a crash
+            }
 
-                    if (fileHref) {
-                        // ==================================================
-                        // === THE DEFINITIVE FIX IS RIGHT HERE ===
-                        // ==================================================
-                        // Transform the web page URL into the correct download URL.
-                        const url = new URL(fileHref);
-                        const baseUrl = `${url.origin}${url.pathname}`;
-                        const correctDownloadUrl = `${baseUrl}/download?download_frd=1`;
-                        // ==================================================
+            // 2. Check if the response is actually JSON before trying to parse it
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                const pageData = await response.json();
+                if (pageData.body) {
+                    const $ = cheerio.load(pageData.body);
+                    const fileLinks = $('a.instructure_file_link');
 
-                        moduleItem.type = 'File';
-                        moduleItem.title = fileTitle || moduleItem.title;
-                        moduleItem.url = correctDownloadUrl; // Use the corrected URL directly
-                        moduleItem.html_content = undefined;
-                        return moduleItem;
+                    if (fileLinks.length === 1) {
+                        const link = fileLinks.first();
+                        let fileHref = link.attr('href');
+                        const fileTitle = link.text().trim();
+                        if (fileHref) {
+                            const url = new URL(fileHref);
+                            const baseUrl = `${url.origin}${url.pathname}`;
+                            const correctDownloadUrl = `${baseUrl}/download?download_frd=1`;
+
+                            moduleItem.type = 'File';
+                            moduleItem.title = fileTitle || moduleItem.title;
+                            moduleItem.url = correctDownloadUrl;
+                            moduleItem.html_content = undefined;
+                            return moduleItem;
+                        }
                     }
-                }
 
-                moduleItem.html_content = pageData.body;
+                    moduleItem.html_content = pageData.body;
+                }
+            } else {
+                // 3. If not JSON, log it for debugging and move on gracefully
+                console.warn(`Page item ${item.id} did not return JSON. Content-Type: ${contentType}. Skipping content processing.`);
             }
         } catch (error) {
+            // This will catch any other unexpected errors during processing
             console.error(`Failed to process Page item ${item.id}:`, error);
         }
     }

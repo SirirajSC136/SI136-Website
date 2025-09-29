@@ -3,31 +3,51 @@
 import { NextResponse } from 'next/server';
 import { mapCanvasCourseToSubject } from '@/lib/canvasAdapter';
 import { fetchCourseDetails } from '@/lib/canvas';
+import { fetchCustomMaterialsForCourse } from '@/lib/externalData';
 
+// THE FIX IS IN THE FUNCTION SIGNATURE AND THE FIRST LINE INSIDE THE 'try' BLOCK
 export async function GET(
     request: Request,
-    { params: { subjectId } }: { params: { subjectId: string } }
+    context: { params: { subjectId: string } } // 1. Accept the whole context object
 ) {
     try {
-        const rawCanvasCourse = await fetchCourseDetails(subjectId);
+        const { subjectId } = await context.params; // 2. Destructure 'subjectId' here
+
+        const courseId = parseInt(subjectId, 10);
+        if (isNaN(courseId)) {
+            return NextResponse.json({ error: "Invalid subject ID" }, { status: 400 });
+        }
+
+        // 1. Fetch from both sources in parallel
+        const [rawCanvasCourse, customMaterialsMap] = await Promise.all([
+            fetchCourseDetails(subjectId),
+            fetchCustomMaterialsForCourse(courseId)
+        ]);
 
         if (!rawCanvasCourse) {
             return NextResponse.json({ error: "Subject not found" }, { status: 404 });
         }
 
-        // *** ADDING FINAL LOGGING ***
-        // This will log the complete, raw data structure to your server console.
-        // It's useful for debugging the adapter logic if needed.
-        console.log(`\nSuccessfully assembled all data for course ${subjectId}. Sending to adapter.`);
-        // For very detailed view, uncomment the next line, but be warned it can be huge!
-        // console.log(JSON.stringify(rawCanvasCourse, null, 2));
-
-
+        // 2. First, adapt the raw Canvas data into our clean 'Subject' shape
         const subject = mapCanvasCourseToSubject(rawCanvasCourse);
+
+        // 3. Now, merge the custom materials into the CLEAN 'subject' object
+        if (customMaterialsMap.size > 0) {
+            for (const topic of subject.topics) {
+                if (customMaterialsMap.has(topic.id)) {
+                    const customItems = customMaterialsMap.get(topic.id)!;
+                    topic.items.push(...customItems);
+                }
+            }
+        }
+
+        // 4. Return the final, merged, and clean subject data
         return NextResponse.json(subject);
 
     } catch (error) {
-        console.error(`Failed to fetch Canvas data for subject ${subjectId}:`, error);
+        // Use a dynamic subjectId for better error logging
+        const subjectIdForError = context.params.subjectId || 'unknown';
+        console.error(`Failed to fetch and merge data for subject ${subjectIdForError}:`, error);
         const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
         return NextResponse.json({ error: "Internal Server Error", details: errorMessage }, { status: 500 });
     }

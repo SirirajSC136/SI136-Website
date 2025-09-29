@@ -42,13 +42,15 @@ export interface AssignmentItem {
 export type TopicItemType = 'File' | 'Page' | 'Link' | 'Header' | 'Other';
 
 export type TopicItemData = {
-    id: string;
+    id: string; // The Canvas or custom unique ID (e.g., "custom-123")
+    _id?: string; // <-- ADD THIS LINE. The optional MongoDB document ID
     title: string;
     type: TopicItemType;
     url?: string;
     htmlContent?: string;
-    canvasUrl?: string; // <-- ADD THIS PROPERTY
+    canvasUrl?: string;
 };
+
 // Update the Topic type to hold these new, richer items
 export type Topic = {
     id: string;
