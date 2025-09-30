@@ -6,29 +6,33 @@ import { TopicItemData } from '@/types';
 
 type CustomMaterialsMap = Map<string, TopicItemData[]>;
 
-export async function fetchCustomMaterialsForCourse(canvasCourseId: number): Promise<CustomMaterialsMap> {
+export async function fetchCustomMaterialsForCourse(courseId: string): Promise<CustomMaterialsMap> {
     const materialsMap: CustomMaterialsMap = new Map();
 
     try {
         await connectToDatabase();
-        const customDocs = await CustomMaterial.find({ canvasCourseId: canvasCourseId });
+        const customDocs = await CustomMaterial.find({ courseId: courseId });
 
         for (const doc of customDocs) {
-            const moduleId = doc.canvasModuleId.toString();
+            const topicId = doc.topicId.toString();
 
             const plainDoc = doc.toObject();
 
-            // THE FIX IS HERE: We cast _id to 'any' to safely call .toString()
-            // This tells TypeScript to trust us that this operation is valid.
+            // ==================================================
+            // === THE DEFINITIVE FIX IS RIGHT HERE ===
+            // ==================================================
+            // We use a type assertion '(plainDoc._id as any)' to tell TypeScript
+            // to trust us that this value has a .toString() method.
             const item: TopicItemData = {
                 _id: (plainDoc._id as any).toString(),
                 ...plainDoc.item
             };
+            // ==================================================
 
-            if (!materialsMap.has(moduleId)) {
-                materialsMap.set(moduleId, []);
+            if (!materialsMap.has(topicId)) {
+                materialsMap.set(topicId, []);
             }
-            materialsMap.get(moduleId)!.push(item);
+            materialsMap.get(topicId)!.push(item);
         }
     } catch (error) {
         console.error("Failed to fetch custom materials from MongoDB:", error);

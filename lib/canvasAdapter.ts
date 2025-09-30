@@ -2,6 +2,27 @@
 
 import { Subject, Topic, TopicItemData } from '@/types';
 import { CanvasCourse, CanvasModuleItem } from '@/lib/canvas';
+import { ICustomCourse } from '@/models/CustomCourse'; // Import the new type
+
+export function mapCustomCourseToSubject(course: ICustomCourse): Subject {
+    return {
+        _id: course.id.toString(),
+        courseCode: course.courseCode,
+        title: course.title,
+        year: course.year,
+        semester: course.semester,
+        imageUrl: `https://placehold.co/400x400/6366f1/FFF?text=${encodeURIComponent(course.courseCode)}`, // Different color for custom
+        canvasUrl: '', // No Canvas URL for custom courses
+        filesUrl: '',
+        syllabus: '',
+        // Map the topics from the custom course document
+        topics: course.topics.map(topic => ({
+            id: topic._id.toString(),
+            title: topic.title,
+            items: [], // Items will be merged in the detail page API
+        })),
+    };
+}
 
 function parseTerm(termName: string | undefined): { year: number, semester: number } {
     if (!termName) {

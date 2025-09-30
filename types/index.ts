@@ -66,10 +66,10 @@ export type Subject = {
     year: number;
     semester: number;
     imageUrl: string;
-    canvasUrl: string;
-    filesUrl: string;
+    canvasUrl?: string; // <-- MAKE THIS OPTIONAL
+    filesUrl?: string;  // <-- MAKE THIS OPTIONAL
     syllabus: string;
-    topics: Topic[]; // This now contains the richer Topic structure
+    topics: Topic[];
 };
 
 export interface CalendarEvent {

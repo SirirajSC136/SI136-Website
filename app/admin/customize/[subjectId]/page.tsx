@@ -4,10 +4,16 @@ import { useState, useEffect } from 'react';
 import { Subject, TopicItemData } from '@/types';
 import { useParams } from 'next/navigation';
 import { File as FileIcon, Link as LinkIcon, Edit, Trash, PlusCircle, Save, X } from 'lucide-react';
+import mongoose from 'mongoose';
 
 /**
  * A simplified form for adding/editing items. It now only handles URL inputs.
  */
+
+const isValidObjectId = (id: string): boolean => {
+    return /^[0-9a-fA-F]{24}$/.test(id);
+};
+
 const ItemForm = ({ topic, itemToEdit, onSave, onCancel }: any) => {
     const [title, setTitle] = useState(itemToEdit?.title || '');
     const [type, setType] = useState(itemToEdit?.type || 'Link');
@@ -49,6 +55,20 @@ const ItemForm = ({ topic, itemToEdit, onSave, onCancel }: any) => {
     );
 };
 
+const NewTopicForm = ({ onSave, onCancel }: { onSave: Function, onCancel: Function }) => {
+    const [title, setTitle] = useState('');
+    return (
+        <form onSubmit={(e) => { e.preventDefault(); onSave(title); }} className="p-4 my-2 border rounded-lg bg-slate-50">
+            <h4 className="font-bold mb-2">Add New Topic</h4>
+            <input value={title} onChange={e => setTitle(e.target.value)} placeholder="Topic Title" required className="block w-full p-2 border rounded mb-2" />
+            <div className="flex gap-2">
+                <button type="submit" className="flex items-center gap-1 px-3 py-1 bg-emerald-600 text-white rounded hover:bg-emerald-700"><Save size={16} /> Save Topic</button>
+                <button type="button" onClick={() => onCancel()} className="flex items-center gap-1 px-3 py-1 bg-slate-500 text-white rounded hover:bg-slate-600"><X size={16} /> Cancel</button>
+            </div>
+        </form>
+    );
+};
+
 export default function CustomizeSubjectPage() {
     const params = useParams();
     const subjectId = params.subjectId as string;
@@ -56,6 +76,7 @@ export default function CustomizeSubjectPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [editingState, setEditingState] = useState<{ topicId: string, item?: TopicItemData } | null>(null);
+    const [showNewTopicForm, setShowNewTopicForm] = useState(false);
 
     const fetchSubjectData = () => {
         if (!subjectId) return;
@@ -76,9 +97,7 @@ export default function CustomizeSubjectPage() {
 
     useEffect(fetchSubjectData, [subjectId]);
 
-    // ==================================================
-    // === THE FIX IS HERE: Implementing the handlers ===
-    // ==================================================
+    // --- HANDLER FUNCTIONS (Now fully implemented) ---
 
     const handleSaveItem = async (newItemData: any) => {
         const isEditing = !!editingState?.item;
@@ -88,8 +107,8 @@ export default function CustomizeSubjectPage() {
         const body = isEditing
             ? { item: { ...editingState.item, ...newItemData } }
             : {
-                canvasCourseId: parseInt(subjectId),
-                canvasModuleId: parseInt(editingState!.topicId),
+                courseId: subjectId,
+                topicId: editingState!.topicId,
                 item: { id: `custom-${Date.now()}`, ...newItemData }
             };
 
@@ -101,7 +120,7 @@ export default function CustomizeSubjectPage() {
             });
             if (!response.ok) throw new Error('Failed to save item.');
             setEditingState(null);
-            fetchSubjectData(); // Refresh data on success
+            fetchSubjectData();
         } catch (err) {
             console.error("Save item failed:", err);
             alert("Error: Could not save the item.");
@@ -113,7 +132,7 @@ export default function CustomizeSubjectPage() {
             try {
                 const response = await fetch(`/api/admin/materials/${itemId}`, { method: 'DELETE' });
                 if (!response.ok) throw new Error('Failed to delete item.');
-                fetchSubjectData(); // Refresh data on success
+                fetchSubjectData();
             } catch (err) {
                 console.error("Delete item failed:", err);
                 alert("Error: Could not delete the item.");
@@ -121,21 +140,52 @@ export default function CustomizeSubjectPage() {
         }
     };
 
-    // ==================================================
+    const handleAddTopic = async (title: string) => {
+        try {
+            const response = await fetch(`/api/admin/topics`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ courseId: subjectId, title }),
+            });
+            if (!response.ok) throw new Error('Failed to add topic.');
+            setShowNewTopicForm(false);
+            fetchSubjectData();
+        } catch (err) {
+            console.error("Add topic failed:", err);
+            alert('Error: Could not add the topic.');
+        }
+    };
 
-    if (loading) return <div className="text-center p-8">Loading course data...</div>;
+    // --- RENDER LOGIC ---
+
+    if (loading) return <div className="text-center p-8">Loading...</div>;
     if (error) return <div className="text-center p-8 text-red-600">{error}</div>;
     if (!subject) return <div className="text-center p-8">Could not load subject.</div>;
 
     return (
         <div className="container mx-auto p-8">
-            <h1 className="text-3xl font-bold">Customize: {subject.title}</h1>
-            <p className="text-slate-600">Add, edit, or remove custom materials for this course.</p>
+            <div className="flex justify-between items-center mb-2">
+                <h1 className="text-3xl font-bold">Customize: {subject.title}</h1>
+                <button onClick={() => setShowNewTopicForm(true)} className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700">
+                    <PlusCircle size={18} /> Add Custom Topic
+                </button>
+            </div>
+            <p className="text-slate-600 mb-6">Add, edit, or remove materials for this course.</p>
+
+            {showNewTopicForm && <NewTopicForm onSave={handleAddTopic} onCancel={() => setShowNewTopicForm(false)} />}
+
             <div className="mt-6 space-y-4">
                 {subject.topics.map(topic => (
                     <div key={topic.id} className="p-4 border rounded-lg bg-white shadow-sm">
                         <div className="flex justify-between items-center">
-                            <h2 className="text-xl font-bold">{topic.title}</h2>
+                            <div className="flex items-center gap-3">
+                                <h2 className="text-xl font-bold">{topic.title}</h2>
+                                {/* THE FIX IS HERE: Use the lightweight helper function */}
+                                {isValidObjectId(topic.id) ?
+                                    <span className="text-xs px-2 py-0.5 bg-green-100 text-green-700 rounded-full">Custom Topic</span> :
+                                    <span className="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full">Canvas Topic</span>
+                                }
+                            </div>
                             <button onClick={() => setEditingState({ topicId: topic.id })} className="flex items-center gap-1 text-sm px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">
                                 <PlusCircle size={16} /> Add Item
                             </button>

@@ -11,11 +11,21 @@ export async function POST(request: Request) {
         await connectToDatabase();
         const body = await request.json();
 
-        if (!body.canvasCourseId || !body.canvasModuleId || !body.item) {
-            return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+        // ==================================================
+        // === THE DEFINITIVE FIX IS RIGHT HERE ===
+        // ==================================================
+        // We now validate using the new, generic field names: 'courseId' and 'topicId'.
+        if (!body.courseId || !body.topicId || !body.item) {
+            console.error("Validation failed. Received body:", body);
+            return NextResponse.json({ error: 'Missing required fields: courseId, topicId, and item are required.' }, { status: 400 });
         }
+        // ==================================================
 
-        const newMaterial = new CustomMaterial(body);
+        const newMaterial = new CustomMaterial({
+            courseId: body.courseId,
+            topicId: body.topicId,
+            item: body.item,
+        });
         await newMaterial.save();
 
         return NextResponse.json({ success: true, data: newMaterial }, { status: 201 });

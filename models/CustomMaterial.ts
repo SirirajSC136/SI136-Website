@@ -13,8 +13,8 @@ const ItemSchema = new Schema({
 
 // Define the main document structure
 export interface ICustomMaterial extends Document {
-    canvasCourseId: number;
-    canvasModuleId: number;
+    courseId: string; // Can be Canvas ID (e.g., "1106") or Mongo ObjectId
+    topicId: string;  // Can be Canvas Module ID (e.g., "35065") or Mongo ObjectId
     item: {
         id: string;
         title: string;
@@ -25,12 +25,16 @@ export interface ICustomMaterial extends Document {
 }
 
 const CustomMaterialSchema: Schema = new Schema({
-    canvasCourseId: { type: Number, required: true, index: true },
-    canvasModuleId: { type: Number, required: true, index: true },
+    // Update the types to String and rename the fields
+    courseId: { type: String, required: true, index: true },
+    topicId: { type: String, required: true, index: true },
     item: { type: ItemSchema, required: true },
 });
 
+
 // Prevent model recompilation in Next.js hot-reloading environments
-const CustomMaterial: Model<ICustomMaterial> = mongoose.models.CustomMaterial || mongoose.model<ICustomMaterial>('CustomMaterial', CustomMaterialSchema);
+const CustomMaterial: Model<ICustomMaterial> =
+    mongoose.models.CustomMaterial ||
+    mongoose.model<ICustomMaterial>('CustomMaterial', CustomMaterialSchema, 'custom_materials');
 
 export default CustomMaterial;

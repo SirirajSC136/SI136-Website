@@ -10,7 +10,7 @@ async function getSubjects(): Promise<Subject[]> {
         // We replace `next: { revalidate: 600 }` with `cache: 'no-store'`
         // to ensure we always get fresh data from our API route.
         const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/subjects`, {
-            next: { revalidate: 900 },
+            next: { revalidate: 60 },
         });
 
         if (!res.ok) {
