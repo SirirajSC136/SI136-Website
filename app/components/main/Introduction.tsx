@@ -26,7 +26,7 @@ const Introduction = () => {
 
             <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-black/40 to-transparent" />
 
-            <div className="relative z-10 flex flex-col items-center justify-center h-full text-center p-4">
+            <div className="relative z-10 flex flex-col items-center h-full text-center p-4 pt-24 md:pt-0 md:justify-center">
                 <h1
                     className={`flex text-6xl md:text-8xl font-extrabold tracking-wider text-white ${styles.animateFadeInUp}`}
                     style={{ animationDelay: '0.3s' }}
