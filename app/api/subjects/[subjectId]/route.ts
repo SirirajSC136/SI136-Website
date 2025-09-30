@@ -11,9 +11,10 @@ import mongoose from 'mongoose';
 
 export async function GET(
     request: Request,
-    context: { params: { subjectId: string } }
+    // FIX: Destructure `params` directly from the second argument
+    { params }: { params: { subjectId: string } }
 ) {
-    const { subjectId } = context.params;
+    const { subjectId } = await params; // This now works correctly
     console.log(`\n--- [START] API Request for subjectId: ${subjectId} ---`);
 
     try {

@@ -8,26 +8,19 @@ type CustomMaterialsMap = Map<string, TopicItemData[]>;
 
 export async function fetchCustomMaterialsForCourse(courseId: string): Promise<CustomMaterialsMap> {
     const materialsMap: CustomMaterialsMap = new Map();
-
     try {
         await connectToDatabase();
         const customDocs = await CustomMaterial.find({ courseId: courseId });
 
         for (const doc of customDocs) {
             const topicId = doc.topicId.toString();
-
             const plainDoc = doc.toObject();
 
-            // ==================================================
-            // === THE DEFINITIVE FIX IS RIGHT HERE ===
-            // ==================================================
-            // We use a type assertion '(plainDoc._id as any)' to tell TypeScript
-            // to trust us that this value has a .toString() method.
+            // THE FIX: Create a single 'id' property from the MongoDB '_id'.
             const item: TopicItemData = {
-                _id: (plainDoc._id as any).toString(),
+                id: (plainDoc._id as any).toString(), // This is now the main ID
                 ...plainDoc.item
             };
-            // ==================================================
 
             if (!materialsMap.has(topicId)) {
                 materialsMap.set(topicId, []);

@@ -101,15 +101,17 @@ export default function CustomizeSubjectPage() {
 
     const handleSaveItem = async (newItemData: any) => {
         const isEditing = !!editingState?.item;
-        const url = isEditing ? `/api/admin/materials/${editingState.item?._id}` : '/api/admin/materials';
+        // THE FIX: The URL for editing now uses the unified 'id'.
+        const url = isEditing ? `/api/admin/materials/${editingState.item?.id}` : '/api/admin/materials';
         const method = isEditing ? 'PUT' : 'POST';
 
+        // THE FIX: When creating, we no longer add a separate 'id' field.
         const body = isEditing
             ? { item: { ...editingState.item, ...newItemData } }
             : {
                 courseId: subjectId,
                 topicId: editingState!.topicId,
-                item: { id: `custom-${Date.now()}`, ...newItemData }
+                item: newItemData // Just pass the new data
             };
 
         try {
@@ -130,6 +132,7 @@ export default function CustomizeSubjectPage() {
     const handleDeleteItem = async (itemId: string) => {
         if (confirm('Are you sure you want to delete this item?')) {
             try {
+                // THE FIX: This now correctly uses the unified 'id'.
                 const response = await fetch(`/api/admin/materials/${itemId}`, { method: 'DELETE' });
                 if (!response.ok) throw new Error('Failed to delete item.');
                 fetchSubjectData();
@@ -196,24 +199,28 @@ export default function CustomizeSubjectPage() {
                         )}
 
                         <ul className="mt-4 space-y-2">
-                            {topic.items.map(item => (
-                                <li key={item.id || item._id} className="flex items-center justify-between p-2 rounded hover:bg-slate-50">
-                                    <div className="flex items-center gap-2">
-                                        {item.type === 'File' ? <FileIcon size={16} /> : <LinkIcon size={16} />}
-                                        <a href={item.url} target="_blank" className="text-blue-600 hover:underline">{item.title}</a>
-                                        {item.id && item.id.startsWith('custom-') ?
-                                            <span className="text-xs px-2 py-0.5 bg-purple-100 text-purple-700 rounded-full">Custom</span> :
-                                            <span className="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full">Canvas</span>
-                                        }
-                                    </div>
-                                    {item.id && item.id.startsWith('custom-') && item._id && (
-                                        <div className="flex gap-2">
-                                            <button onClick={() => setEditingState({ topicId: topic.id, item })} className="text-slate-500 hover:text-slate-800"><Edit size={16} /></button>
-                                            <button onClick={() => handleDeleteItem(item._id!)} className="text-red-500 hover:text-red-800"><Trash size={16} /></button>
+                            {topic.items.map(item => {
+                                // THE FIX: Determine if it's a custom item by checking if the ID is an ObjectId.
+                                const isCustomItem = isValidObjectId(item.id);
+                                return (
+                                    <li key={item.id} className="flex items-center justify-between p-2 rounded hover:bg-slate-50">
+                                        <div className="flex items-center gap-2">
+                                            {item.type === 'File' ? <FileIcon size={16} /> : <LinkIcon size={16} />}
+                                            <a href={item.url} target="_blank" className="text-blue-600 hover:underline">{item.title}</a>
+                                            {isCustomItem ?
+                                                <span className="text-xs px-2 py-0.5 bg-purple-100 text-purple-700 rounded-full">Custom</span> :
+                                                <span className="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full">Canvas</span>
+                                            }
                                         </div>
-                                    )}
-                                </li>
-                            ))}
+                                        {isCustomItem && (
+                                            <div className="flex gap-2">
+                                                <button onClick={() => setEditingState({ topicId: topic.id, item })} className="text-slate-500 hover:text-slate-800"><Edit size={16} /></button>
+                                                <button onClick={() => handleDeleteItem(item.id)} className="text-red-500 hover:text-red-800"><Trash size={16} /></button>
+                                            </div>
+                                        )}
+                                    </li>
+                                );
+                            })}
                         </ul>
                         {editingState?.topicId === topic.id && editingState.item && (
                             <ItemForm topic={topic} itemToEdit={editingState.item} onSave={handleSaveItem} onCancel={() => setEditingState(null)} />
