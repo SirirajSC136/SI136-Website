@@ -6,8 +6,6 @@ import Image, { StaticImageData } from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Search, Menu, X } from 'lucide-react';
 
-// FIX: Corrected the import path to use the standard alias for robustness.
-import monke from '@/app/assets/images/monke.jpg';
 
 // A more robust NavLink sub-component for the new "pill" animation
 const NavLink = ({ href, children, isScrolled }: { href: string; children: React.ReactNode; isScrolled: boolean }) => {
@@ -58,13 +56,13 @@ const Navbar = () => {
         <>
             <nav className={`sticky mx-auto z-50 transition-all duration-300 ease-in-out${
                 isScrolled
-                    ? 'border-b border-gray-200/80 bg-white/50 shadow-sm backdrop-blur-lg w-3/5 top-1 rounded-2xl border'
+                    ? 'border-b border-gray-200/80 bg-white/50 shadow-sm backdrop-blur-lg w-3/5 md:w-3/4 lg:w-3/5 top-1 rounded-2xl border'
                     : 'bg-transparent w-full top-0'
             }`}>
                 <div className="container mx-auto flex items-center justify-between p-4">
                     {/* Logo */}
                     <Link href="/" className="flex items-center space-x-3 transition-transform hover:scale-105">
-                        <Image src={monke} alt="SI136 Logo" width={40} height={40} className={`rounded-full ${!isScrolled ? 'drop-shadow-lg' : ''}`} />
+                        <Image src={`/images/logo.jpg`} alt="SI136 Logo" width={36} height={36} className={`rounded-full ${!isScrolled ? 'drop-shadow-lg' : ''}`} />
                         <span className={`text-xl font-bold tracking-wide transition-colors ${isScrolled ? 'text-slate-800' : 'text-black drop-shadow-md'
                             }`}>
                             SI136

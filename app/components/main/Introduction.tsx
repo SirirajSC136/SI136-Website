@@ -12,7 +12,7 @@ const Introduction = () => {
     const title = "SIRIRAJ 136";
 
     return (
-        <div className="relative h-[70vh] w-full overflow-hidden bg-gray-900">
+        <div className="relative h-[50vh] sm:h-[70vh] w-full overflow-hidden bg-gray-900">
             <Image
                 src={heroBackground}
                 alt="Cityscape background"
@@ -28,7 +28,7 @@ const Introduction = () => {
 
             <div className="relative z-10 flex flex-col items-center justify-center h-full text-center p-4">
                 <h1
-                    className={`flex text-6xl md:text-8xl font-extrabold tracking-wider text-white ${styles.animateFadeInUp}`}
+                    className={`flex text-5xl sm:text-7xl md:text-8xl font-extrabold tracking-wider text-white ${styles.animateFadeInUp}`}
                     style={{ animationDelay: '0.3s' }}
                 >
                     {title.split('').map((char, index) => (
@@ -54,7 +54,7 @@ const Introduction = () => {
                 className={`absolute bottom-0 left-0 right-0 z-10 ${styles.animateFadeInUp}`}
                 style={{ animationDelay: '0.7s' }}
             >
-                <div className="container mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 p-6 text-center">
+                <div className="container mx-auto sm:grid-cols-4 gap-4 p-6 text-center hidden sm:grid">
                     {/* Icon with glow, lift, and gradient effects */}
                     <Link href="/academics">
                         <div className="group flex flex-col items-center p-3 rounded-lg cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:scale-110">
