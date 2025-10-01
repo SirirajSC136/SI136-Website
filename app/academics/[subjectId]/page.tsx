@@ -1,41 +1,87 @@
-// app/academics/[subjectId]/page.tsx
+"use client"; // This directive makes it a Client Component
 
+import { useState, useEffect } from 'react'; // Import hooks
 import { Subject } from '@/types';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { useParams } from 'next/navigation'; // Import the correct hook
 import TopicItem from '@/app/components/academics/TopicItem';
-import { Home } from 'lucide-react';
+import { Home, Book, Globe, Loader2 } from 'lucide-react';
 
-type Props = {
-    params: { subjectId: string };
-};
-
+// This helper function is correct and fetches from your merged API endpoint
 async function getSubject(id: string): Promise<Subject | undefined> {
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/subjects/${id}`, {
-            // Use no-store to prevent caching bad responses during development
-            next: { revalidate: 900 },
+            next: { revalidate: 60 },
         });
-        // If the response is not OK (e.g., 404 or 500), return undefined immediately
         if (!res.ok) {
+            // Log the error status for better debugging
+            console.error(`API Error: Failed to fetch subject with status ${res.status}`);
             return undefined;
         }
+
         return res.json();
     } catch (error) {
-        console.error("Failed to fetch subject:", error);
+        console.error("Client-side fetch failed:", error);
         return undefined;
     }
 }
 
+// The component is no longer async
+const SubjectDetailPage = () => {
+    // State for managing data, loading, and errors
+    const [subject, setSubject] = useState<Subject | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-const SubjectDetailPage = async ({ params }: Props) => {
-    const subject = await getSubject(params.subjectId);
+    // Get URL parameters using the hook
+    const params = useParams();
+    const subjectId = params.subjectId as string;
 
-    if (!subject) {
-        notFound();
+    // Fetch data inside a useEffect hook
+    useEffect(() => {
+        if (!subjectId) return;
+
+        const fetchData = async () => {
+            setIsLoading(true);
+            setError(null);
+            const fetchedSubject = await getSubject(subjectId);
+            console.log(fetchedSubject)
+            if (fetchedSubject) {
+                setSubject(fetchedSubject);
+            } else {
+                setError("Subject not found or an error occurred.");
+            }
+            setIsLoading(false);
+        };
+
+        fetchData();
+    }, [subjectId]);
+
+    // --- Render loading and error states ---
+    if (isLoading) {
+        return (
+            <div className="flex h-screen flex-col items-center justify-center gap-4">
+                <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
+                <p className="text-slate-600">Loading subject materials...</p>
+            </div>
+        );
     }
 
-    // ... the rest of your component is correct and does not need to change
+    if (error || !subject) {
+        return (
+            <div className="flex h-screen items-center justify-center text-center">
+                <div>
+                    <h2 className="text-2xl font-bold text-red-600">Error</h2>
+                    <p className="text-slate-600 mt-2">{error || "Could not load the subject."}</p>
+                    <Link href="/academics" className="mt-4 inline-block rounded-md bg-emerald-600 px-4 py-2 text-white hover:bg-emerald-700">
+                        Back to Academics
+                    </Link>
+                </div>
+            </div>
+        );
+    }
+
+    // --- Render the page with the fetched data ---
     return (
         <div className="min-h-screen bg-slate-50">
             {/* Breadcrumbs Header */}
@@ -59,9 +105,21 @@ const SubjectDetailPage = async ({ params }: Props) => {
                             className="h-auto w-full rounded-lg object-cover"
                         />
                         <div className="mt-5">
-                            <p className="text-sm font-semibold text-emerald-600">
-                                Year {subject.year} &middot; Semester {subject.semester}
-                            </p>
+                            <div className="flex items-center justify-between">
+                                <p className="text-sm font-semibold text-emerald-600">
+                                    Year {subject.year} &middot; Semester {subject.semester}
+                                </p>
+                                {/* Visual badge to indicate the source of the course */}
+                                {subject.canvasUrl ? (
+                                    <span className="flex items-center gap-1.5 text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded-full">
+                                        <Globe size={12} /> Canvas
+                                    </span>
+                                ) : (
+                                    <span className="flex items-center gap-1.5 text-xs px-2 py-1 bg-purple-100 text-purple-700 rounded-full">
+                                        <Book size={12} /> Custom
+                                    </span>
+                                )}
+                            </div>
                             <h1 className="mt-1 text-3xl font-extrabold text-slate-900">{subject.courseCode}</h1>
                             <h2 className="mt-1 text-lg text-slate-600">{subject.title}</h2>
                             {subject.canvasUrl && (
@@ -79,13 +137,13 @@ const SubjectDetailPage = async ({ params }: Props) => {
                     </div>
                 </aside>
 
-                {/* Right Column: Topics List */}
                 <section className="lg:col-span-2">
                     <div className="rounded-xl border bg-white p-6 shadow-sm">
-                        <h3 className="text-2xl font-bold text-slate-800 border-b pb-4">
+                        <h3 className="text-2xl font-bold text-slate-800 border-b pb-4 mb-6">
                             Course Summary & Materials
                         </h3>
-                        <div className="divide-y divide-gray-200">
+                        <div className="space-y-4">
+                            {/* This map function seamlessly renders all topics, regardless of their source */}
                             {subject.topics.map(topic => <TopicItem key={topic.id} topic={topic} />)}
                         </div>
                     </div>

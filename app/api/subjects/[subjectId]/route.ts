@@ -1,104 +1,80 @@
+// app/api/subjects/[subjectId]/route.ts
+
 import { NextResponse } from 'next/server';
-import { mapCanvasCourseToSubject } from '@/lib/canvasAdapter';
-import * as cheerio from 'cheerio';
-import { CanvasCourse, CanvasModule, CanvasModuleItem } from '@/lib/canvas';
-
-const CANVAS_URL = process.env.CANVAS_URL;
-const ACCESS_TOKEN = process.env.CANVAS_API;
-const HEADERS = { Authorization: `Bearer ${ACCESS_TOKEN}` };
-
-/**
- * Processes a single module item, fetching its true file URL or page content.
- */
-async function processModuleItem(item: any): Promise<CanvasModuleItem> {
-    const moduleItem: CanvasModuleItem = { id: item.id, title: item.title, type: item.type, url: item.html_url };
-
-    if (item.type === 'Page' && item.url) {
-        moduleItem.page_content_files = [];
-        try {
-            const pageData = await (await fetch(item.url, { headers: HEADERS })).json();
-            if (pageData.body) {
-                const $ = cheerio.load(pageData.body);
-                $('a.instructure_file_link').each((i, el) => {
-                    moduleItem.page_content_files!.push({ name: $(el).text().trim(), url: $(el).attr('href') || '' });
-                });
-            }
-        } catch (error) {
-            console.error(`Failed to process Page item ${item.id}:`, error);
-        }
-    }
-
-    if (item.type === 'File' && item.url) {
-        try {
-            const fileData = await (await fetch(item.url, { headers: HEADERS })).json();
-            moduleItem.url = fileData.url;
-        } catch (error) {
-            console.error(`Failed to process File item ${item.id}:`, error);
-        }
-    }
-    return moduleItem;
-}
-
-/**
- * Fetches and processes all module items for a given module.
- */
-async function fetchAndProcessModule(courseId: string, module: any): Promise<CanvasModule> {
-    try {
-        const itemsResponse = await fetch(`${CANVAS_URL}/courses/${courseId}/modules/${module.id}/items`, { headers: HEADERS });
-        if (!itemsResponse.ok) return { ...module, items: [] };
-
-        const items: any[] = await itemsResponse.json();
-        const processedItems = await Promise.all(items.map(processModuleItem));
-        return { id: module.id, name: module.name, items: processedItems };
-    } catch (error) {
-        console.error(`Failed to fetch items for module ${module.id}:`, error);
-        return { ...module, items: [] }; // Return gracefully
-    }
-}
-
-/**
- * Main function to fetch and assemble all data for a single course.
- */
-async function fetchSingleCanvasCourse(courseId: string): Promise<CanvasCourse | null> {
-    if (!CANVAS_URL || !ACCESS_TOKEN) throw new Error("Server configuration error");
-
-    // --- PERFORMANCE UPGRADE: Fetch course details and module list in parallel ---
-    const [courseResult, modulesResult] = await Promise.all([
-        fetch(`${CANVAS_URL}/courses/${courseId}?include[]=term&include[]=syllabus_body`, { headers: HEADERS }),
-        fetch(`${CANVAS_URL}/courses/${courseId}/modules`, { headers: HEADERS })
-    ]);
-
-    if (!courseResult.ok) return null;
-    const course = await courseResult.json();
-
-    if (!modulesResult.ok) {
-        course.modules = [];
-        return course;
-    }
-    const modulesData: any[] = await modulesResult.json();
-
-    // Process all modules concurrently
-    course.modules = await Promise.all(modulesData.map(module => fetchAndProcessModule(courseId, module)));
-
-    return course;
-}
+import { mapCanvasCourseToSubject, mapCustomCourseToSubject } from '@/lib/canvasAdapter';
+import { fetchCourseDetails } from '@/lib/canvas';
+import { fetchCustomMaterialsForCourse } from '@/lib/externalData';
+import connectToDatabase from '@/lib/mongodb';
+import CustomCourse from '@/models/CustomCourse';
+import CustomTopic from '@/models/CustomTopic';
+import mongoose from 'mongoose';
 
 export async function GET(
     request: Request,
-    { params: { subjectId } }: { params: { subjectId: string } }
+    // FIX: Destructure `params` directly from the second argument
+    { params }: { params: { subjectId: string } }
 ) {
-    try {
-        const rawCanvasCourse = await fetchSingleCanvasCourse(subjectId);
+    const { subjectId } = await params; // This now works correctly
+    console.log(`\n--- [START] API Request for subjectId: ${subjectId} ---`);
 
-        if (!rawCanvasCourse) {
-            return NextResponse.json({ error: "Subject not found" }, { status: 404 });
+    try {
+        let subject;
+
+        // 1. Establish DB connection once at the start
+        await connectToDatabase();
+        console.log(`[LOG] Database connection successful for subject ${subjectId}.`);
+
+        // 2. Fetch the BASE course data first (either from Canvas or Custom DB)
+        if (mongoose.Types.ObjectId.isValid(subjectId)) {
+            const customCourse = await CustomCourse.findById(subjectId).exec();
+            if (!customCourse) return NextResponse.json({ error: "Subject not found" }, { status: 404 });
+            subject = mapCustomCourseToSubject(customCourse);
+            console.log(`[LOG] Fetched base course from Custom DB: "${subject.title}"`);
+        } else {
+            const rawCanvasCourse = await fetchCourseDetails(subjectId);
+            if (!rawCanvasCourse) return NextResponse.json({ error: "Subject not found" }, { status: 404 });
+            subject = mapCanvasCourseToSubject(rawCanvasCourse);
+            console.log(`[LOG] Fetched base course from Canvas: "${subject.title}"`);
         }
 
-        const subject = mapCanvasCourseToSubject(rawCanvasCourse);
+        // 3. Now, fetch ALL custom additions for this course in parallel
+        console.time(`[TIMER] Fetching custom additions for ${subjectId}`);
+        const [customTopics, customMaterialsMap] = await Promise.all([
+            CustomTopic.find({ courseId: subjectId }).exec(),
+            fetchCustomMaterialsForCourse(subjectId)
+        ]);
+        console.timeEnd(`[TIMER] Fetching custom additions for ${subjectId}`);
+
+        // 4. Perform the MERGE logic
+        console.log(`[LOG] Found ${customTopics.length} custom topics to merge.`);
+        console.log(`[LOG] Found custom materials for ${customMaterialsMap.size} topics.`);
+
+        // Merge custom topics into the subject's topic list
+        if (customTopics.length > 0) {
+            const mappedCustomTopics = customTopics.map(topic => ({
+                id: (topic._id as any).toString(),
+                title: topic.title,
+                items: [],
+            }));
+            subject.topics.push(...mappedCustomTopics);
+        }
+
+        // Merge custom materials into the final, combined topic list
+        if (customMaterialsMap.size > 0) {
+            for (const topic of subject.topics) {
+                if (customMaterialsMap.has(topic.id)) {
+                    const customItems = customMaterialsMap.get(topic.id)!;
+                    topic.items.push(...customItems);
+                }
+            }
+        }
+
+        console.log(`[LOG] Final topic count for subject "${subject.title}": ${subject.topics.length}`);
+        console.log(`--- [END] API Request for subjectId: ${subjectId} ---`);
         return NextResponse.json(subject);
 
     } catch (error) {
-        console.error(`Failed to fetch Canvas data for subject ${subjectId}:`, error);
+        console.error(`[ERROR] Failed to fetch and merge data for subject ${subjectId}:`, error);
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }

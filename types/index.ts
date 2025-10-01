@@ -39,30 +39,38 @@ export interface AssignmentItem {
 }
 
 
-export interface TopicFile {
+export type TopicItemType = 'File' | 'Page' | 'Link' | 'Header' | 'Other';
+
+export type TopicItemData = {
+    id: string; // The Canvas or custom unique ID (e.g., "custom-123")
+    _id?: string; // <-- ADD THIS LINE. The optional MongoDB document ID
+    title: string;
+    type: TopicItemType;
+    url?: string;
+    htmlContent?: string;
+    canvasUrl?: string;
+};
+
+// Update the Topic type to hold these new, richer items
+export type Topic = {
     id: string;
     title: string;
-    url: string;
-}
+    items: TopicItemData[]; // <-- Changed from 'files: TopicFile[]'
+};
 
-export interface Topic {
-    id: string;
-    title: string;
-    files: TopicFile[];
-}
-
-export interface Subject {
+// The main Subject type
+export type Subject = {
     _id: string;
     courseCode: string;
     title: string;
     year: number;
     semester: number;
     imageUrl: string;
-    canvasUrl?: string;
-    filesUrl?: string; // NEW: Direct link to the Canvas Files page
-    syllabus?: string; // NEW: The course syllabus/description HTML
+    canvasUrl?: string; // <-- MAKE THIS OPTIONAL
+    filesUrl?: string;  // <-- MAKE THIS OPTIONAL
+    syllabus: string;
     topics: Topic[];
-}
+};
 
 export interface CalendarEvent {
     id: string;
