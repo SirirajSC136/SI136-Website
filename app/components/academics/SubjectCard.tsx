@@ -10,7 +10,7 @@ const SubjectCard = ({ subject }: { subject: Subject }) => {
             {/* --- THE FIX IS HERE --- */}
             {/* Replaced next/image with a standard img tag. */}
             <img
-                src={subject.imageUrl}
+                src={`images/subjects/${subject._id}.png`}
                 alt={`Image for ${subject.title}`}
                 className="w-full h-48 object-cover rounded-t-xl"
             />
