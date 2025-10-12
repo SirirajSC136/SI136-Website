@@ -89,16 +89,11 @@ const StudentImpactPage = () => {
                             ร้องเรียนปัญหา (แบบไม่ระบุตัวตน)
                         </h2>
                     </div>
-                    <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+                    <div className="grid grid-cols-1 gap-8">
                         <ActionCard
-                            href="#" // Link to the complaint form
+                            href="https://script.google.com/macros/s/AKfycbyeavzUz9-IIOMIJads5NzpPRr3qwt2x5n6WKPjg06GG3fJlOJgTS8uAoSDu6M_BvnT/exec " // Link to the complaint form
                             icon={<TriangleAlert size={80} strokeWidth={1.5} />}
                             title="ฟอร์มรับเรื่องร้องเรียนปัญหา SI136"
-                        />
-                        <ActionCard
-                            href="#" // Link to the status check page
-                            icon={<ClipboardCheck size={80} strokeWidth={1.5} />}
-                            title="ตรวจสอบสถานะคำร้อง"
                         />
                     </div>
                 </div>
