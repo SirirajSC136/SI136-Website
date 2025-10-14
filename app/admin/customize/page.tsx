@@ -3,9 +3,10 @@
 import { useState, useEffect } from 'react';
 import { Subject } from '@/types';
 import Link from 'next/link';
-import { Edit, PlusCircle, Save, X, Book, Globe } from 'lucide-react';
+// UPDATED: Added Trash2 icon for the delete button
+import { Edit, PlusCircle, Save, X, Book, Globe, Trash2 } from 'lucide-react';
 
-// Form for creating a new custom course
+// --- NewCourseForm component remains the same ---
 const NewCourseForm = ({ onSave, onCancel }: { onSave: Function, onCancel: Function }) => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -36,6 +37,7 @@ const NewCourseForm = ({ onSave, onCancel }: { onSave: Function, onCancel: Funct
     );
 };
 
+
 export default function AdminCustomizeLandingPage() {
     const [subjects, setSubjects] = useState<Subject[]>([]);
     const [loading, setLoading] = useState(true);
@@ -62,10 +64,26 @@ export default function AdminCustomizeLandingPage() {
 
         if (response.ok) {
             setShowNewCourseForm(false);
-            fetchSubjects(); // Refresh the list
+            fetchSubjects();
         } else {
             const { error } = await response.json();
             alert(`Error: ${error}`);
+        }
+    };
+
+    // --- NEW: Function to handle course deletion ---
+    const handleDeleteCourse = async (courseId: string, courseCode: string) => {
+        if (window.confirm(`Are you sure you want to delete the course "${courseCode}"? This action cannot be undone.`)) {
+            const response = await fetch(`/api/admin/courses?id=${courseId}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                fetchSubjects(); // Refresh the list after successful deletion
+            } else {
+                const { error } = await response.json();
+                alert(`Error: ${error}`);
+            }
         }
     };
 
@@ -89,20 +107,31 @@ export default function AdminCustomizeLandingPage() {
                 <div className="rounded-xl border bg-white shadow-sm">
                     <ul className="divide-y divide-slate-200">
                         {subjects.map(subject => (
-                            <li key={subject._id}>
-                                <Link href={`/admin/customize/${subject._id}`} className="group flex items-center justify-between p-4 transition-colors hover:bg-slate-50">
-                                    <div className="flex items-center gap-4">
-                                        {subject.canvasUrl ? <Globe size={20} className="text-slate-400" /> : <Book size={20} className="text-purple-500" />}
-                                        <div>
-                                            <p className="font-bold text-slate-800 group-hover:text-emerald-600">{subject.courseCode} - {subject.title}</p>
-                                            <p className="text-sm text-slate-500">Year {subject.year} &middot; Semester {subject.semester}</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center gap-2 text-slate-500">
-                                        <span className="text-sm font-semibold">Customize</span>
-                                        <Edit size={16} />
+                            // UPDATED: Restructured the list item for better interaction
+                            <li key={subject._id} className="group flex items-center justify-between p-4 transition-colors hover:bg-slate-50">
+                                <Link href={`/admin/customize/${subject._id}`} className="flex-grow flex items-center gap-4">
+                                    {subject.canvasUrl ? <Globe size={20} className="text-slate-400" /> : <Book size={20} className="text-purple-500" />}
+                                    <div>
+                                        <p className="font-bold text-slate-800 group-hover:text-emerald-600">{subject.courseCode} - {subject.title}</p>
+                                        <p className="text-sm text-slate-500">Year {subject.year} &middot; Semester {subject.semester}</p>
                                     </div>
                                 </Link>
+                                <div className="flex items-center gap-2 pl-4">
+                                    <Link href={`/admin/customize/${subject._id}`} className="flex items-center gap-2 text-slate-500 hover:text-slate-800">
+                                        <span className="text-sm font-semibold">Customize</span>
+                                        <Edit size={16} />
+                                    </Link>
+                                    {/* NEW: Delete button only for custom courses */}
+                                    {!subject.canvasUrl && (
+                                        <button
+                                            onClick={() => handleDeleteCourse(subject._id, subject.courseCode)}
+                                            className="p-2 text-red-500 rounded-md hover:bg-red-100 hover:text-red-700"
+                                            title={`Delete course ${subject.courseCode}`}
+                                        >
+                                            <Trash2 size={16} />
+                                        </button>
+                                    )}
+                                </div>
                             </li>
                         ))}
                     </ul>

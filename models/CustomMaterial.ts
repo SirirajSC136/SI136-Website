@@ -1,33 +1,21 @@
 // models/CustomMaterial.ts
-import mongoose, { Schema, Document, Model } from 'mongoose';
 
-// THE FIX: Remove the 'id' field from the sub-schema.
-const ItemSchema = new Schema({
-    title: { type: String, required: true },
-    type: { type: String, required: true, enum: ['File', 'Link', 'Page'] },
-    url: { type: String },
-    htmlContent: { type: String },
-});
+import mongoose, { Document, Schema, Model } from 'mongoose';
 
 export interface ICustomMaterial extends Document {
+    // THE FIX: The type is now a generic string
     courseId: string;
-    topicId: string;
-    item: {
-        title: string;
-        type: 'File' | 'Link' | 'Page';
-        url?: string;
-        htmlContent?: string;
-    };
+    topicId: string; // Also ensure this is a string for consistency
+    item: any;
 }
 
 const CustomMaterialSchema: Schema = new Schema({
-    courseId: { type: String, required: true, index: true },
+    // THE FIX: Change type to String and remove the 'ref'
+    courseId: { type: String, required: true, index: true }, // Added index for faster lookups
     topicId: { type: String, required: true, index: true },
-    item: { type: ItemSchema, required: true },
-});
+    item: { type: Schema.Types.Mixed, required: true },
+}, { timestamps: true });
 
-const CustomMaterial: Model<ICustomMaterial> =
-    mongoose.models.CustomMaterial ||
-    mongoose.model<ICustomMaterial>('CustomMaterial', CustomMaterialSchema, 'custom_materials');
+const CustomMaterial: Model<ICustomMaterial> = mongoose.models.CustomMaterial || mongoose.model<ICustomMaterial>('CustomMaterial', CustomMaterialSchema);
 
 export default CustomMaterial;

@@ -39,7 +39,7 @@ export interface AssignmentItem {
 }
 
 
-export type TopicItemType = 'File' | 'Page' | 'Link' | 'Header' | 'Other';
+export type TopicItemType = any;
 
 export type TopicItemData = {
     id: string; // The Canvas or custom unique ID (e.g., "custom-123")

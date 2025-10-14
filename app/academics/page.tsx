@@ -6,9 +6,6 @@ import { Subject } from '@/types';
 
 async function getSubjects(): Promise<Subject[]> {
     try {
-        // --- THE FIX IS HERE ---
-        // We replace `next: { revalidate: 600 }` with `cache: 'no-store'`
-        // to ensure we always get fresh data from our API route.
         const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/subjects`, {
             next: { revalidate: 60 },
         });
@@ -17,6 +14,7 @@ async function getSubjects(): Promise<Subject[]> {
             console.error("API responded with an error:", res.status);
             return [];
         }
+
         return res.json();
     } catch (error) {
         console.error("Failed to fetch subjects:", error);
@@ -25,9 +23,19 @@ async function getSubjects(): Promise<Subject[]> {
 }
 
 const AcademicPage = async () => {
-    const subjects = await getSubjects();
+    const allSubjects = await getSubjects(); // 1. Fetch all subjects first
 
-    // If subjects is empty after the fetch, you can display a message
+    // --- THE FIX IS HERE ---
+    // 2. Define the hardcoded ID you want to exclude.
+    const excludedIdList = ['1266'];
+
+    // 3. Filter the array to create a new list that does not include the subject with the excluded ID.
+    const subjects = allSubjects.filter(subject => !excludedIdList.includes(subject._id));
+    // --- END OF FIX ---
+
+    console.log(subjects); // This will now log the filtered list of subjects
+
+    // The rest of the component now uses the filtered `subjects` array.
     if (!subjects || subjects.length === 0) {
         return (
             <div className="bg-white">

@@ -4,9 +4,8 @@
 
 import { useState } from 'react';
 import { Topic, TopicItemData } from '@/types';
-// UPDATED: Added BookOpen and ExternalLink for the new Page renderer
-import { File, Link as LinkIcon, ExternalLink, ChevronDown, BookOpen } from 'lucide-react';
-
+import Link from 'next/link';
+import { File, Link as LinkIcon, ExternalLink, ChevronDown, BookOpen, BrainCircuit, Layers3, PlayCircle } from 'lucide-react';
 /**
  * A small, internal component to render a single item with appropriate styling.
  */
@@ -55,6 +54,44 @@ const ItemRenderer = ({ item }: { item: TopicItemData }) => {
                     <span className="flex-grow font-medium">{item.title}</span>
                 </a>
             );
+        case 'Quiz':
+            return (
+                <Link
+                    href={`/quiz/${item.id}`} // This is the future page for taking the quiz
+                    className="group flex items-center justify-between rounded-lg p-3 text-slate-700 transition-colors hover:bg-slate-100"
+                >
+                    <div className="flex items-center gap-3">
+                        <BrainCircuit className="h-5 w-5 flex-shrink-0 text-blue-500" />
+                        <span className="flex-grow font-medium">{item.title}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-sm font-semibold text-blue-600 opacity-0 transition-opacity group-hover:opacity-100">
+                        Start Quiz
+                        <PlayCircle size={16} />
+                    </div>
+                </Link>
+            );
+
+        // --- NEW: Case for rendering a Flashcard Deck ---
+        // This renders a link that will take the user to the flashcard viewer page.
+        case 'Flashcard':
+            return (
+                <Link
+                    href={`/flashcards/${item.id}`} // This is the future page for viewing flashcards
+                    className="group flex items-center justify-between rounded-lg p-3 text-slate-700 transition-colors hover:bg-slate-100"
+                >
+                    <div className="flex items-center gap-3">
+                        <Layers3 className="h-5 w-5 flex-shrink-0 text-emerald-500" />
+                        <span className="flex-grow font-medium">{item.title}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-sm font-semibold text-emerald-600 opacity-0 transition-opacity group-hover:opacity-100">
+                        View Deck
+                        <PlayCircle size={16} />
+                    </div>
+                </Link>
+            );
+
+
+
         default:
             return null;
     }

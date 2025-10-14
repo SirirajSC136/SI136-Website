@@ -1,16 +1,18 @@
 // models/CustomTopic.ts
 
-import mongoose, { Schema, Document, Model } from 'mongoose';
+import mongoose, { Document, Schema, Model } from 'mongoose';
 
 export interface ICustomTopic extends Document {
-    courseId: string; // The ID of the course it belongs to (Canvas or custom)
+    // THE FIX: The type is now a generic string
+    courseId: string;
     title: string;
 }
 
 const CustomTopicSchema: Schema = new Schema({
-    courseId: { type: String, required: true, index: true },
+    // THE FIX: Change type to String and remove the 'ref'
+    courseId: { type: String, required: true, index: true }, // Added index for faster lookups
     title: { type: String, required: true },
-});
+}, { timestamps: true });
 
 const CustomTopic: Model<ICustomTopic> = mongoose.models.CustomTopic || mongoose.model<ICustomTopic>('CustomTopic', CustomTopicSchema);
 
