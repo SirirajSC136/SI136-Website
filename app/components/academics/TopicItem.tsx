@@ -1,37 +1,37 @@
 // app/components/academics/TopicItem.tsx
 
-"use client"; // This is now a client component to handle user interaction
+"use client";
 
 import { useState } from 'react';
 import { Topic, TopicItemData } from '@/types';
-import { File, Link as LinkIcon, ExternalLink, ChevronDown } from 'lucide-react';
+// UPDATED: Added BookOpen and ExternalLink for the new Page renderer
+import { File, Link as LinkIcon, ExternalLink, ChevronDown, BookOpen } from 'lucide-react';
 
 /**
  * A small, internal component to render a single item with appropriate styling.
- * (This sub-component does not need to change)
  */
 const ItemRenderer = ({ item }: { item: TopicItemData }) => {
     switch (item.type) {
         case 'Header':
             return <h4 className="pt-5 pb-2 text-base font-bold text-slate-700">{item.title}</h4>;
+
+        // --- THIS IS THE FIX ---
+        // The 'Page' case is now changed to render a simple link,
+        // preventing any embedded videos from being displayed.
         case 'Page':
             return (
-                <div className="py-2">
-                    <div
-                        className="prose prose-sm max-w-none text-slate-600"
-                        dangerouslySetInnerHTML={{ __html: item.htmlContent || '' }}
-                    />
-                    <a
-                        href={item.canvasUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-3 inline-flex items-center gap-2 text-xs font-medium text-slate-500 transition-colors hover:text-emerald-600"
-                    >
-                        <ExternalLink size={14} />
-                        If content is missing or videos don't load, view on Canvas.
-                    </a>
-                </div>
+                <a
+                    href={item.canvasUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-3 rounded-lg p-3 text-slate-700 transition-colors hover:bg-slate-100"
+                >
+                    <BookOpen className="h-5 w-5 flex-shrink-0 text-slate-400 transition-colors group-hover:text-emerald-600" />
+                    <span className="flex-grow font-medium">{item.title}</span>
+                    <ExternalLink className="h-4 w-4 flex-shrink-0 text-slate-400" />
+                </a>
             );
+
         case 'File':
             return (
                 <a
@@ -62,9 +62,10 @@ const ItemRenderer = ({ item }: { item: TopicItemData }) => {
 
 /**
  * The main component, now an interactive accordion item.
+ * (No changes needed in this part)
  */
 const TopicItem = ({ topic }: { topic: Topic }) => {
-    const [isOpen, setIsOpen] = useState(false); // State to manage open/closed
+    const [isOpen, setIsOpen] = useState(false);
 
     if (!topic.items || topic.items.length === 0) {
         return null;
@@ -72,7 +73,6 @@ const TopicItem = ({ topic }: { topic: Topic }) => {
 
     return (
         <div className="overflow-hidden rounded-xl border border-slate-200 bg-white transition-shadow hover:shadow-md">
-            {/* Clickable Header to toggle the accordion */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="flex w-full items-center justify-between p-4 text-left"
@@ -83,7 +83,6 @@ const TopicItem = ({ topic }: { topic: Topic }) => {
                 />
             </button>
 
-            {/* Collapsible Content Area with smooth animation */}
             <div
                 className={`transition-[max-height] duration-500 ease-in-out overflow-hidden ${isOpen ? 'max-h-[2000px]' : 'max-h-0'}`}
             >

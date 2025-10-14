@@ -37,6 +37,7 @@ const SubjectDetailPage = () => {
     const params = useParams();
     const subjectId = params.subjectId as string;
 
+    console.log(subject?.imageUrl)
     // Fetch data inside a useEffect hook
     useEffect(() => {
         if (!subjectId) return;

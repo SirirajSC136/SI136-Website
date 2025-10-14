@@ -11,7 +11,7 @@ export function mapCustomCourseToSubject(course: ICustomCourse): Subject {
         title: course.title,
         year: course.year,
         semester: course.semester,
-        imageUrl: `https://placehold.co/400x400/6366f1/FFF?text=${encodeURIComponent(course.courseCode)}`, // Different color for custom
+        imageUrl: `/images/subjects/${course.id}.png`, // Different color for custom
         canvasUrl: '', // No Canvas URL for custom courses
         filesUrl: '',
         syllabus: '',
@@ -123,7 +123,7 @@ export function mapCanvasCourseToSubject(course: CanvasCourse): Subject {
         title: course.name,
         year: year,
         semester: semester,
-        imageUrl: `https://placehold.co/400x400/0056d2/FFF?text=${encodeURIComponent(course.course_code)}`,
+        imageUrl: `/images/subjects/${course.id}.png`,
         canvasUrl: `https://sirirajcanvas.instructure.com/courses/${course.id}`,
         filesUrl: `https://sirirajcanvas.instructure.com/courses/${course.id}/files`,
         syllabus: '',

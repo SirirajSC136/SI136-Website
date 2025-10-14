@@ -10,15 +10,21 @@ export async function fetchCustomMaterialsForCourse(courseId: string): Promise<C
     const materialsMap: CustomMaterialsMap = new Map();
     try {
         await connectToDatabase();
-        const customDocs = await CustomMaterial.find({ courseId: courseId });
+
+        // THE FIX: Add a condition to the find query to exclude items of type 'Video'.
+        // We are telling MongoDB to find all materials for the course
+        // WHERE the nested 'item.type' field is "not equal" ($ne) to 'Video'.
+        const customDocs = await CustomMaterial.find({
+            courseId: courseId,
+            'item.type': { $ne: 'Video' } // <-- THIS IS THE ONLY CHANGE NEEDED
+        });
 
         for (const doc of customDocs) {
             const topicId = doc.topicId.toString();
             const plainDoc = doc.toObject();
 
-            // THE FIX: Create a single 'id' property from the MongoDB '_id'.
             const item: TopicItemData = {
-                id: (plainDoc._id as any).toString(), // This is now the main ID
+                id: (plainDoc._id as any).toString(),
                 ...plainDoc.item
             };
 

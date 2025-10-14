@@ -188,9 +188,17 @@ async function fetchAndProcessModule(courseId: string, module: any): Promise<Can
  */
 export async function fetchCourseDetails(courseId: string): Promise<CanvasCourse | null> {
     const headers = getHeaders();
+
+    // --- THIS IS THE FIX ---
+    // We add `include[]=public_description` to the fetch URL.
+    // This tells the Canvas API to include more metadata in the response,
+    // crucially ensuring the `course_code` property is present.
+    const courseUrl = `${CANVAS_URL}/courses/${courseId}?include[]=term&include[]=public_description`;
+    const modulesUrl = `${CANVAS_URL}/courses/${courseId}/modules`;
+
     const [courseResult, modulesData] = await Promise.all([
-        fetch(`${CANVAS_URL}/courses/${courseId}?include[]=term`, { headers }),
-        fetchAllPaginated(`${CANVAS_URL}/courses/${courseId}/modules`)
+        fetch(courseUrl, { headers }),
+        fetchAllPaginated(modulesUrl)
     ]);
 
     if (!courseResult.ok) return null;
@@ -199,6 +207,7 @@ export async function fetchCourseDetails(courseId: string): Promise<CanvasCourse
     course.modules = await Promise.all(modulesData.map(module => fetchAndProcessModule(courseId, module)));
     return course;
 }
+
 
 /**
  * Fetches a list of all courses the user is enrolled in (SHALLOW FETCH).
