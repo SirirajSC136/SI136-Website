@@ -1,87 +1,98 @@
-// /app/UsefulInfo/page.tsx
+'use client';
 
-import Image from 'next/image';
-import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, CalendarMinus, Heart, School, ExternalLink } from 'lucide-react';
+import React from 'react';
 
-// --- Reusable Components (defined in the same file for simplicity) ---
+const PageHero = ({ title, subtitle }: { title: string; subtitle: string }) => {
+    const keyframes = `
+        @keyframes move-light-1 {
+            0% { transform: translate(-20%, -20%); opacity: 1; }
+            50% { transform: translate(20%, 10%); opacity: 1; }
+            100% { transform: translate(-20%, -20%); opacity: 1; }
+        }
+        @keyframes move-light-2 {
+            0% { transform: translate(10%, 20%); opacity: 1; }
+            50% { transform: translate(-10%, -20%); opacity: 1; }
+            100% { transform: translate(10%, 20%); opacity: 1; }
+        }
+    `;
 
-// Component for the main hero banner
-const Hero = ({ title, imageUrl }: { title: string; imageUrl: string }) => (
-    <div className="relative h-[50vh] w-full">
-        <Image
-            src={imageUrl}
-            alt="Hero background"
-            layout="fill"
-            objectFit="cover"
-            quality={100}
-            priority
-        />
-        <div className="absolute inset-0 bg-black/50" />
-        <div className="relative z-10 flex h-full items-center justify-center">
-            <h1 className="text-5xl font-extrabold text-white md:text-7xl">
-                {title}
-            </h1>
-        </div>
+    return (
+        <>
+            <style>{keyframes}</style>
+            <div className="relative overflow-hidden bg-slate-900 py-24 text-center border-b border-slate-800">
+                <div className="absolute top-0 left-0 w-full h-full z-0">
+                    <div 
+                        className="absolute h-[500px] w-[500px] rounded-full bg-sky-500/30"
+                        style={{ animation: 'move-light-1 8s ease-in-out infinite', filter: 'blur(120px)'}}
+                    />
+                    <div 
+                        className="absolute h-[400px] w-[400px] rounded-full bg-sky-400/20"
+                        style={{ animation: 'move-light-2 8s ease-in-out infinite alternate', filter: 'blur(100px)', right: 0, bottom: 0 }}
+                    />
+                </div>
+
+                {/* Content */}
+                <div className="container mx-auto px-4 relative z-10">
+                    <h1
+                        className="text-5xl font-extrabold text-white tracking-tight sm:text-6xl"
+                        style={{ textShadow: '0 3px 15px rgba(0, 0, 0, 1)' }}
+                    >
+                        {title}
+                    </h1>
+                    <p
+                        className="mt-4 text-lg text-slate-300 max-w-3xl mx-auto"
+                        style={{ textShadow: '0 2px 5px rgba(0,0,0,0.5)' }}
+                    >
+                        {subtitle}
+                    </p>
+                </div>
+            </div>
+        </>
+    );
+};
+
+const SectionTitle = ({ children }: { children: React.ReactNode }) => (
+    <div className="relative text-center mb-12">
+        <h2 className="inline-block bg-white px-6 text-3xl font-bold text-slate-800 relative z-10">{children}</h2>
+        <div className="absolute inset-x-0 top-1/2 -z-0 h-px -translate-y-1/2 bg-slate-200"></div>
     </div>
 );
 
-// Component for section titles
-const SectionTitle = ({ children }: { children: React.ReactNode }) => (
-    <h2 className="mb-8 text-center text-3xl font-bold text-gray-800">
-        {children}
-    </h2>
-);
-
-// Component for the outlined buttons (Mahidol Classrooms)
-const ExternalLinkButton = ({ href, children }: { href: string; children: React.ReactNode }) => (
-    <Link
+const ActionCard = ({ href, IconComponent, title }: { href: string; IconComponent: React.ElementType; title: string; }) => (
+    <a
         href={href}
-        target="_blank"
+        target={href.startsWith('http') ? '_blank' : '_self'}
         rel="noopener noreferrer"
-        className="rounded-lg border-2 border-gray-300 bg-white px-6 py-3 text-center font-semibold text-gray-600 transition-all duration-300 hover:border-emerald-500 hover:bg-emerald-500 hover:text-white hover:shadow-lg"
+        className="group relative flex flex-col items-center gap-4 overflow-hidden rounded-xl border border-slate-200 bg-white p-8 text-center shadow-sm transition-all duration-300 ease-in-out hover:shadow-xl hover:border-emerald-300"
     >
-        {children}
-    </Link>
-);
-
-// Component for the image-based cards (Siriraj Departments)
-const ImageLinkCard = ({ href, imageUrl, alt }: { href: string; imageUrl: string; alt: string }) => (
-    <Link
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="group block overflow-hidden rounded-2xl bg-white shadow-md transition-shadow duration-300 hover:shadow-xl"
-    >
-        <div className="relative aspect-square">
-            <Image
-                src={imageUrl}
-                alt={alt}
-                layout="fill"
-                objectFit="contain" // Use 'contain' to show the whole logo
-                className="p-4 transition-transform duration-500 ease-in-out group-hover:scale-110"
-            />
+        <div className="absolute top-0 right-0 h-16 w-16 bg-emerald-50 rounded-bl-full opacity-0 transition-all duration-500 group-hover:opacity-100 group-hover:scale-150"></div>
+        <div className="relative z-10 flex h-16 w-16 items-center justify-center rounded-lg bg-slate-100 text-slate-500 transition-colors duration-300 group-hover:bg-emerald-100 group-hover:text-emerald-600">
+            <IconComponent className="h-8 w-8" />
         </div>
-    </Link>
+        <span className="relative z-10 font-semibold text-slate-800 mt-4"> {/* Added mt-4 for more space */}
+            {title}
+        </span>
+        <div className="relative z-10 mt-auto flex items-center gap-2 text-sm font-bold text-emerald-600 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:gap-3">
+            Visit <ArrowRight size={16} />
+        </div>
+    </a>
 );
 
-// Component for the solid green buttons (Travel section)
-const InfoButton = ({ href, children }: { href: string; children: React.ReactNode }) => (
-    <Link
+const ExternalLinkButton = ({ href, children }: { href: string; children: React.ReactNode }) => (
+    <a
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center justify-center gap-2 rounded-lg bg-emerald-500/80 px-8 py-4 text-center text-xl font-bold text-white shadow-md transition-all duration-300 hover:bg-emerald-500 hover:shadow-lg"
+        className="group relative inline-flex items-center justify-center overflow-hidden rounded-lg border border-slate-300 bg-white px-6 py-2.5 text-center font-semibold text-slate-700 shadow-sm transition-all duration-300 ease-in-out hover:bg-slate-50 hover:border-slate-400 hover:shadow-md"
     >
-        {children}
-    </Link>
+        <span className="transition-transform duration-300 group-hover:-translate-x-1">{children}</span>
+        <ArrowRight className="ml-2 h-4 w-4 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-1" />
+    </a>
 );
-
 
 // --- Main Page Component ---
-
 const UsefulInfoPage = () => {
-    // --- Data (replace with your actual links and image paths) ---
     const classroomLinks = [
         { name: 'SmartEdu', href: 'https://smartedu.mahidol.ac.th/' },
         { name: 'MUx', href: 'https://mux.mahidol.ac.th/' },
@@ -92,64 +103,59 @@ const UsefulInfoPage = () => {
     ];
 
     const departmentLinks = [
-        { alt: 'Siriraj Logo 1', imageUrl: '/path/to/your/logo1.png', href: 'https://sites.google.com/student.mahidol.edu/siirraj135/home' },
-        { alt: 'Siriraj Logo 2', imageUrl: '/path/to/your/logo2.png', href: '#' },
-        { alt: 'Siriraj Education Logo', imageUrl: '/path/to/your/logo3.png', href: '#' },
-        { alt: 'Siriraj Logo 4', imageUrl: '/path/to/your/logo4.png', href: '#' },
+        { IconComponent: CalendarMinus, href: './UsefulInfo/absent', title: 'การลานักศึกษา' },
+        { IconComponent: Heart, href: 'https://www.sieduit.org/education/health-service-for-student', title: 'บริการสุขภาพ' },
+        { IconComponent: School, href: 'https://mustudent.mahidol.ac.th/2022/07/25376', title: 'MU One Stop Service' },
+        { IconComponent: ExternalLink, href: 'https://www.sieduit.org/education/health-service-for-student', title: 'บริการสุขภาพนักศึกษา' },
     ];
 
     return (
-        <div className="bg-gray-50">
-            {/* Hero Section */}
-            <Hero title="Useful Info" imageUrl="/path/to/your/hero-background.jpg" />
+        <div className="bg-white">
+            <PageHero
+                title="Useful Info"
+                subtitle="ข้อมูลที่เป็นประโยชน์และลิงก์สำคัญสำหรับนักศึกษาแพทย์ศิริราช"
+            />
+            <main className="container mx-auto px-4 py-20">
+                <div className="space-y-20">
+                    
+                    <section>
+                        <SectionTitle>บริการนักศึกษา</SectionTitle>
+                        <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
+                            {departmentLinks.map((link) => (
+                                <ActionCard key={link.title} {...link} />
+                            ))}
+                        </div>
+                    </section>
 
-            <div className="container mx-auto px-4 py-16">
-                {/* Section 1: Mahidol Salaya Classrooms */}
-                <section className="mb-16">
-                    <SectionTitle>ห้องเรียนของมหิดลศาลายา</SectionTitle>
-                    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
-                        {classroomLinks.map((link) => (
-                            <ExternalLinkButton key={link.name} href={link.href}>
-                                {link.name}
-                            </ExternalLinkButton>
-                        ))}
-                    </div>
-                </section>
+                    <section>
+                        <SectionTitle>ห้องเรียนของมหิดลศาลายา</SectionTitle>
+                        <div className="mx-auto max-w-5xl rounded-xl border border-slate-200 bg-slate-50/70 p-10">
+                            <div className="flex flex-wrap items-center justify-center gap-5">
+                                {classroomLinks.map((link) => (
+                                    <ExternalLinkButton key={link.name} href={link.href}>
+                                        {link.name}
+                                    </ExternalLinkButton>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
 
-                {/* Section 2: Departments within Siriraj */}
-                <section className="mb-16">
-                    <SectionTitle>หน่วยงานภายในศิริราช</SectionTitle>
-                    <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
-                        {departmentLinks.map((link) => (
-                            <ImageLinkCard key={link.alt} {...link} />
-                        ))}
-                    </div>
-                </section>
-
-                {/* Section 3: Travel (Salaya) */}
-                <section className="mb-16">
-                    <SectionTitle>การเดินทาง (ศาลายา)</SectionTitle>
-                    <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
-                        <InfoButton href="https://op.mahidol.ac.th/ga/shuttle-bus/">ตารางรถ Shuttle Bus</InfoButton>
-                        <InfoButton href="https://mustudent.mahidol.ac.th/2022/08/28281/">การเดินทางในศาลายา</InfoButton>
-                    </div>
-                    <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-                        {/* Replace with your schedule images */}
-                        <Image src="/images/directions/salaya-to-siriraj.jpg" alt="Salaya to Siriraj Schedule" width={800} height={1200} className="rounded-xl shadow-lg" />
-                        <Image src="/images/directions/siriraj-to-salaya.jpg" alt="Siriraj to Salaya Schedule" width={800} height={1200} className="rounded-xl shadow-lg" />
-                    </div>
-                </section>
-
-                {/* Section 4: Travel (Siriraj) */}
-                <section>
-                    <SectionTitle>การเดินทาง (ศิริราช)</SectionTitle>
-                    <div className="flex justify-center">
-                        <InfoButton href="https://www2.si.mahidol.ac.th/en/wp-content/uploads/2016/12/MAP-UPDATED-18-01-2017-1.pdf">ไฟล์แผนที่ศิริราชฉบับเต็ม</InfoButton>
-                    </div>
-                </section>
-            </div>
+                    <section>
+                        <SectionTitle>การเดินทาง</SectionTitle>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                           <div className="overflow-hidden rounded-xl border border-slate-200 shadow-sm">
+                                <img src="./images/directions/salaya-to-siriraj.jpg" alt="Salaya to Siriraj Schedule" className="w-full h-auto transition-transform duration-500 hover:scale-105" />
+                           </div>
+                           <div className="overflow-hidden rounded-xl border border-slate-200 shadow-sm">
+                                <img src="./images/directions/siriraj-to-salaya.jpg" alt="Siriraj to Salaya Schedule" className="w-full h-auto transition-transform duration-500 hover:scale-105" />
+                           </div>
+                        </div>
+                    </section>
+                </div>
+            </main>
         </div>
     );
 };
 
 export default UsefulInfoPage;
+
