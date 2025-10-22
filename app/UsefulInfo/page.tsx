@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowRight, CalendarMinus, Heart, School, ExternalLink } from 'lucide-react';
+import { ArrowRight, CalendarMinus, Heart, School, ExternalLink, Lock } from 'lucide-react';
 import React from 'react';
 
 const PageHero = ({ title, subtitle }: { title: string; subtitle: string }) => {
@@ -104,6 +104,7 @@ const UsefulInfoPage = () => {
 
     const departmentLinks = [
         { IconComponent: CalendarMinus, href: './UsefulInfo/absent', title: 'การลานักศึกษา' },
+        { IconComponent: Lock, href: 'https://si-eservice3.si.mahidol.ac.th/selfservice/', title: 'แก้ไขรหัส CANVAS' },
         { IconComponent: Heart, href: 'https://www.sieduit.org/education/health-service-for-student', title: 'บริการสุขภาพ' },
         { IconComponent: School, href: 'https://mustudent.mahidol.ac.th/2022/07/25376', title: 'MU One Stop Service' },
         { IconComponent: ExternalLink, href: 'https://www.sieduit.org/education/health-service-for-student', title: 'บริการสุขภาพนักศึกษา' },
@@ -120,7 +121,7 @@ const UsefulInfoPage = () => {
                     
                     <section>
                         <SectionTitle>บริการนักศึกษา</SectionTitle>
-                        <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
+                        <div className="grid grid-cols-2 gap-8 sm:grid-cols-5">
                             {departmentLinks.map((link) => (
                                 <ActionCard key={link.title} {...link} />
                             ))}
