@@ -106,8 +106,7 @@ const UsefulInfoPage = () => {
         { IconComponent: CalendarMinus, href: './UsefulInfo/absent', title: 'การลานักศึกษา' },
         { IconComponent: Lock, href: 'https://si-eservice3.si.mahidol.ac.th/selfservice/', title: 'แก้ไขรหัส CANVAS' },
         { IconComponent: Heart, href: 'https://www.sieduit.org/education/health-service-for-student', title: 'บริการสุขภาพ' },
-        { IconComponent: School, href: 'https://mustudent.mahidol.ac.th/2022/07/25376', title: 'MU One Stop Service' },
-        { IconComponent: ExternalLink, href: 'https://www.sieduit.org/education/health-service-for-student', title: 'บริการสุขภาพนักศึกษา' },
+        { IconComponent: School, href: 'https://mustudent.mahidol.ac.th/2022/07/25376', title: 'MU One Stop Service' }
     ];
 
     return (
@@ -121,7 +120,7 @@ const UsefulInfoPage = () => {
                     
                     <section>
                         <SectionTitle>บริการนักศึกษา</SectionTitle>
-                        <div className="grid grid-cols-2 gap-8 sm:grid-cols-5">
+                        <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
                             {departmentLinks.map((link) => (
                                 <ActionCard key={link.title} {...link} />
                             ))}
