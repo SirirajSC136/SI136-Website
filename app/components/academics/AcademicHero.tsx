@@ -4,7 +4,6 @@ import { BookHeart } from "lucide-react";
 import React from 'react';
 
 const AcademicHero = () => {
-    // Keyframes for the animated background
     const keyframes = `
         @keyframes move-light-1 {
             0% { transform: translate(-20%, -20%); opacity: 0.6; }
@@ -22,8 +21,6 @@ const AcademicHero = () => {
         <>
             <style>{keyframes}</style>
             <div className="relative overflow-hidden bg-slate-900 py-24 text-center border-b border-slate-800">
-                
-                {/* Animated Background Elements */}
                 <div className="absolute top-0 left-0 w-full h-full z-0">
                     <div 
                         className="absolute h-[500px] w-[500px] rounded-full bg-sky-500/30"
