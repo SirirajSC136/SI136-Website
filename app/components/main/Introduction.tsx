@@ -65,7 +65,7 @@ const Introduction = () => {
           </Link>
 
           {/* Books */}
-          <Link href="">
+          <Link href="/Books">
             <div className="group flex flex-col items-center p-3 rounded-lg cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:scale-110">
               <div className="relative rounded-full p-4 bg-white/10 backdrop-blur-sm transition-all duration-300 group-hover:bg-amber-500/30 group-hover:shadow-lg group-hover:shadow-amber-500/50">
                 <BookOpen className="w-8 h-8 sm:w-10 sm:h-10 text-emerald-300 transition-colors duration-300 group-hover:text-white" />

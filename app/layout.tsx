@@ -22,7 +22,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    // --- FIX: Apply the font's generated class name directly to the html tag ---
     <html lang="th" className={kanit.className}>
       <body>
         <Navbar />
@@ -32,4 +31,3 @@ export default function RootLayout({
     </html>
   );
 }
-
