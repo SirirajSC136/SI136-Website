@@ -54,7 +54,7 @@ const PageHero = ({ title, subtitle }: { title: string; subtitle: string }) => {
 
 const SectionTitle = ({ children }: { children: React.ReactNode }) => (
     <div className="relative text-center mb-12">
-        <h2 className="inline-block bg-white px-6 text-3xl font-bold text-slate-800 relative z-10">{children}</h2>
+        <h2 className="inline-block px-6 text-2xl sm:text-3xl font-bold text-slate-800 relative z-10">{children}</h2>
         <div className="absolute inset-x-0 top-1/2 -z-0 h-px -translate-y-1/2 bg-slate-200"></div>
     </div>
 );
@@ -110,7 +110,7 @@ const UsefulInfoPage = () => {
     ];
 
     return (
-        <div className="bg-white">
+        <div className="bg-slate-50">
             <PageHero
                 title="Useful Info"
                 subtitle="ข้อมูลที่เป็นประโยชน์และลิงก์สำคัญสำหรับนักศึกษาแพทย์ศิริราช"
@@ -129,8 +129,8 @@ const UsefulInfoPage = () => {
 
                     <section>
                         <SectionTitle>ห้องเรียนของมหิดลศาลายา</SectionTitle>
-                        <div className="mx-auto max-w-5xl rounded-xl border border-slate-200 bg-slate-50/70 p-10">
-                            <div className="flex flex-wrap items-center justify-center gap-5">
+                        <div className="mx-auto max-w-5xl">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:flex items-center justify-center gap-5">
                                 {classroomLinks.map((link) => (
                                     <ExternalLinkButton key={link.name} href={link.href}>
                                         {link.name}
@@ -144,10 +144,10 @@ const UsefulInfoPage = () => {
                         <SectionTitle>การเดินทาง</SectionTitle>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                            <div className="overflow-hidden rounded-xl border border-slate-200 shadow-sm">
-                                <img src="./images/directions/salaya-to-siriraj.jpg" alt="Salaya to Siriraj Schedule" className="w-full h-auto transition-transform duration-500 hover:scale-105" />
+                                <img src="./images/directions/salaya-to-siriraj.jpg" alt="Salaya to Siriraj Schedule" className="w-full h-auto " />
                            </div>
                            <div className="overflow-hidden rounded-xl border border-slate-200 shadow-sm">
-                                <img src="./images/directions/siriraj-to-salaya.jpg" alt="Siriraj to Salaya Schedule" className="w-full h-auto transition-transform duration-500 hover:scale-105" />
+                                <img src="./images/directions/siriraj-to-salaya.jpg" alt="Siriraj to Salaya Schedule" className="w-full h-auto " />
                            </div>
                         </div>
                     </section>
