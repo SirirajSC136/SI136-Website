@@ -62,25 +62,37 @@ const SectionTitle = ({ children }: { children: React.ReactNode }) => (
     </div>
 );
 
-const ActionCard = ({ href, IconComponent, title }: { href: string; IconComponent: React.ElementType; title: string; }) => (
-    <a
-        href={href}
-        target={href.startsWith('http') || href.startsWith('mailto:') || href.startsWith('/file') ? '_blank' : '_self'}
-        rel="noopener noreferrer"
-        className="group relative flex flex-col items-center gap-4 overflow-hidden rounded-xl border border-slate-200 bg-white p-8 text-center shadow-sm transition-all duration-300 ease-in-out hover:shadow-xl hover:border-emerald-300"
-    >
-        <div className="absolute top-0 right-0 h-16 w-16 bg-emerald-50 rounded-bl-full opacity-0 transition-all duration-500 group-hover:opacity-100 group-hover:scale-150"></div>
-        <div className="relative z-10 flex h-16 w-16 items-center justify-center rounded-lg bg-slate-100 text-slate-500 transition-colors duration-300 group-hover:bg-emerald-100 group-hover:text-emerald-600">
-            <IconComponent className="h-8 w-8" />
-        </div>
-        <span className="relative z-10 font-semibold text-slate-800 mt-4"> {/* Added mt-4 for more space */}
-            {title}
-        </span>
-        <div className="relative z-10 mt-auto flex items-center gap-2 text-sm font-bold text-emerald-600 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:gap-3">
-            Visit <ArrowRight size={16} />
-        </div>
-    </a>
-);
+const ActionCard = ({ href, IconComponent, title }: { href: string; IconComponent: React.ElementType; title: string; }) => {
+    
+    const handleClick = (e: React.MouseEvent) => {
+        if (href.startsWith('mailto:')) {
+            e.preventDefault();
+            window.location.href = href; // this will open default email client
+        }
+    };
+
+    return (
+        <a
+            href={href}
+            onClick={handleClick}
+            target={href.startsWith('http') ||  href.startsWith('/file') ? '_blank' : '_self'}
+            rel="noopener noreferrer"
+            className="group relative flex flex-col items-center gap-4 overflow-hidden rounded-xl border border-slate-200 bg-white p-8 text-center shadow-sm transition-all duration-300 ease-in-out hover:shadow-xl hover:border-emerald-300"
+        >
+            <div className="absolute top-0 right-0 h-16 w-16 bg-emerald-50 rounded-bl-full opacity-0 transition-all duration-500 group-hover:opacity-100 group-hover:scale-150"></div>
+            <div className="relative z-10 flex h-16 w-16 items-center justify-center rounded-lg bg-slate-100 text-slate-500 transition-colors duration-300 group-hover:bg-emerald-100 group-hover:text-emerald-600">
+                <IconComponent className="h-8 w-8" />
+            </div>
+            <span className="relative z-10 font-semibold text-slate-800 mt-4">
+                {title}
+            </span>
+            <div className="relative z-10 mt-auto flex items-center gap-2 text-sm font-bold text-emerald-600 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:gap-3">
+                Visit <ArrowRight size={16} />
+            </div>
+        </a>
+    );
+};
+
 
 const ExternalLinkButton = ({ href, children }: { href: string; children: React.ReactNode }) => (
     <a
@@ -96,10 +108,13 @@ const ExternalLinkButton = ({ href, children }: { href: string; children: React.
 
 // --- Main Page Component ---
 const UsefulInfoPage = () => {
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
     const gmailHref = "https://mail.google.com/mail/?view=cm&fs=1" +
                   "&to=chulathep.sil@student.mahidol.edu,Sikhada.wai@student.mahidol.edu,krittipat.let@student.mahidol.edu" +
                   "&su=เขียน Subject ตาม Format COOR ความเร่งด่วน-ชื่อกิจกรรมหรือโครงการ-ฝ่ายประสานงานที่รับผิดชอบ-เรื่องที่ต้องการประสานติดต่อ เช่น COOR ด่วน-HailNight2026-ศิข-ติดต่อสอบถามสถานที่มหิดลสิทธาคาร&body=ระบุรายละเอียดการติดต่อกลับผู้ส่งเบื้องต้นภายในเนื้อความ เช่น จาก แซนดี้ ฝ่ายบริหาร (โทร.02 4197000)  ";
 
+    const emailLink = isMobile ? "mailto:chulathep.sil@student.mahidol.edu,Sikhada.wai@student.mahidol.edu,krittipat.let@student.mahidol.edu": gmailHref;
     const classroomLinks = [
         { name: 'SmartEdu', href: 'https://smartedu.mahidol.ac.th/' },
         { name: 'MUx', href: 'https://mux.mahidol.ac.th/' },
@@ -118,7 +133,7 @@ const UsefulInfoPage = () => {
 
     const CoordinatorLinks = [ 
         { IconComponent: FileText, href: '/file/รายงานการประสานงานตามคำขอ.pdf', title: 'เอกสาร รายงานการประสานงานตามคำขอ' },
-        { IconComponent: Send, href: gmailHref, title: ' ส่งอีเมลถึงฝ่ายประสานงาน' }
+        { IconComponent: Send, href: emailLink, title: ' ส่งอีเมลถึงฝ่ายประสานงาน' }
     ]
 
     return (
