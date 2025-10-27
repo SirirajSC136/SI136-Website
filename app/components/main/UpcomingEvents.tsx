@@ -55,9 +55,9 @@ const EventCard = ({ event }: { event: CalendarEvent }) => (
             <p className="font-medium text-gray-800">{event.title}</p>
             <div className="flex items-center justify-between mt-2">
                 <span className="text-sm text-gray-500">{new Date(event.startTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} - {event.details}</span>
-                <Link href={event.subjectPageUrl} className="flex items-center text-sm text-emerald-600 font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                {/* <Link href={event.subjectPageUrl} className="flex items-center text-sm text-emerald-600 font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
                     View <ArrowRight className="h-4 w-4 ml-1" />
-                </Link>
+                </Link> */}
             </div>
         </div>
     </div>

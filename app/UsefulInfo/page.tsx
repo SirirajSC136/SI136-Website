@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowRight, CalendarMinus, Heart, School, ExternalLink, Lock } from 'lucide-react';
+import { ArrowRight, CalendarMinus, Heart, School, ExternalLink, Lock, FileText, Send} from 'lucide-react';
 import React from 'react';
 
 const PageHero = ({ title, subtitle }: { title: string; subtitle: string }) => {
@@ -16,6 +16,9 @@ const PageHero = ({ title, subtitle }: { title: string; subtitle: string }) => {
             100% { transform: translate(10%, 20%); opacity: 1; }
         }
     `;
+
+    
+
 
     return (
         <>
@@ -62,7 +65,7 @@ const SectionTitle = ({ children }: { children: React.ReactNode }) => (
 const ActionCard = ({ href, IconComponent, title }: { href: string; IconComponent: React.ElementType; title: string; }) => (
     <a
         href={href}
-        target={href.startsWith('http') ? '_blank' : '_self'}
+        target={href.startsWith('http') || href.startsWith('mailto:') || href.startsWith('/file') ? '_blank' : '_self'}
         rel="noopener noreferrer"
         className="group relative flex flex-col items-center gap-4 overflow-hidden rounded-xl border border-slate-200 bg-white p-8 text-center shadow-sm transition-all duration-300 ease-in-out hover:shadow-xl hover:border-emerald-300"
     >
@@ -93,6 +96,10 @@ const ExternalLinkButton = ({ href, children }: { href: string; children: React.
 
 // --- Main Page Component ---
 const UsefulInfoPage = () => {
+    const gmailHref = "https://mail.google.com/mail/?view=cm&fs=1" +
+                  "&to=chulathep.sil@student.mahidol.edu,Sikhada.wai@student.mahidol.edu,krittipat.let@student.mahidol.edu" +
+                  "&su=เขียน Subject ตาม Format COOR ความเร่งด่วน-ชื่อกิจกรรมหรือโครงการ-ฝ่ายประสานงานที่รับผิดชอบ-เรื่องที่ต้องการประสานติดต่อ เช่น COOR ด่วน-HailNight2026-ศิข-ติดต่อสอบถามสถานที่มหิดลสิทธาคาร&body=ระบุรายละเอียดการติดต่อกลับผู้ส่งเบื้องต้นภายในเนื้อความ เช่น จาก แซนดี้ ฝ่ายบริหาร (โทร.02 4197000)  ";
+
     const classroomLinks = [
         { name: 'SmartEdu', href: 'https://smartedu.mahidol.ac.th/' },
         { name: 'MUx', href: 'https://mux.mahidol.ac.th/' },
@@ -108,6 +115,11 @@ const UsefulInfoPage = () => {
         { IconComponent: Heart, href: 'https://www.sieduit.org/education/health-service-for-student', title: 'บริการสุขภาพ' },
         { IconComponent: School, href: 'https://mustudent.mahidol.ac.th/2022/07/25376', title: 'MU One Stop Service' }
     ];
+
+    const CoordinatorLinks = [ 
+        { IconComponent: FileText, href: '/file/รายงานการประสานงานตามคำขอ.pdf', title: 'เอกสาร รายงานการประสานงานตามคำขอ' },
+        { IconComponent: Send, href: gmailHref, title: ' ส่งอีเมลถึงฝ่ายประสานงาน' }
+    ]
 
     return (
         <div className="bg-slate-50">
@@ -137,6 +149,15 @@ const UsefulInfoPage = () => {
                                     </ExternalLinkButton>
                                 ))}
                             </div>
+                        </div>
+                    </section>
+
+                    <section>
+                        <SectionTitle>ติดต่อฝ่ายประสานงาน</SectionTitle>
+                        <div className="grid grid-cols-2 gap-8 ">
+                            {CoordinatorLinks.map((link) => (
+                                <ActionCard key={link.title} {...link} />
+                            ))}
                         </div>
                     </section>
 
