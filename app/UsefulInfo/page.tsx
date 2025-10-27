@@ -108,13 +108,20 @@ const ExternalLinkButton = ({ href, children }: { href: string; children: React.
 
 // --- Main Page Component ---
 const UsefulInfoPage = () => {
+
+    const subject = encodeURIComponent(
+    'เขียน Subject ตาม Format COOR ความเร่งด่วน-ชื่อกิจกรรมหรือโครงการ-ฝ่ายประสานงานที่รับผิดชอบ-เรื่องที่ต้องการประสานติดต่อ เช่น COOR ด่วน-HailNight2026-ศิข-ติดต่อสอบถามสถานที่มหิดลสิทธาคาร'
+  );
+
+  const body = encodeURIComponent(
+    'ระบุรายละเอียดการติดต่อกลับผู้ส่งเบื้องต้นภายในเนื้อความ เช่น จาก แซนดี้ ฝ่ายบริหาร (โทร.02 4197000)'
+  );
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    const mailtoLink = `mailto:chulathep.sil@student.mahidol.edu,Sikhada.wai@student.mahidol.edu,krittipat.let@student.mahidol.edu?subject=${subject}&body=${body}`;
+    const gmailHref = `https://mail.google.com/mail/?view=cm&fs=1&to=chulathep.sil@student.mahidol.edu,Sikhada.wai@student.mahidol.edu,krittipat.let@student.mahidol.edu&su=${subject}&body=${body}`;
 
-    const gmailHref = "https://mail.google.com/mail/?view=cm&fs=1" +
-                  "&to=chulathep.sil@student.mahidol.edu,Sikhada.wai@student.mahidol.edu,krittipat.let@student.mahidol.edu" +
-                  "&su=เขียน Subject ตาม Format COOR ความเร่งด่วน-ชื่อกิจกรรมหรือโครงการ-ฝ่ายประสานงานที่รับผิดชอบ-เรื่องที่ต้องการประสานติดต่อ เช่น COOR ด่วน-HailNight2026-ศิข-ติดต่อสอบถามสถานที่มหิดลสิทธาคาร&body=ระบุรายละเอียดการติดต่อกลับผู้ส่งเบื้องต้นภายในเนื้อความ เช่น จาก แซนดี้ ฝ่ายบริหาร (โทร.02 4197000)  ";
-
-    const emailLink = isMobile ? "mailto:chulathep.sil@student.mahidol.edu,Sikhada.wai@student.mahidol.edu,krittipat.let@student.mahidol.edu": gmailHref;
+    const emailLink = isMobile ? mailtoLink : gmailHref;
+    
     const classroomLinks = [
         { name: 'SmartEdu', href: 'https://smartedu.mahidol.ac.th/' },
         { name: 'MUx', href: 'https://mux.mahidol.ac.th/' },
