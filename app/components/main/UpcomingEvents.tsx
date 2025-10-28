@@ -26,16 +26,25 @@ async function getCanvasTasks(): Promise<Task[]> {
 }
 
 const formatRemainingTime = (dateString: string) => {
-    if (!dateString) return "No deadline";
-    const date = new Date(dateString);
-    const now = new Date();
-    const diff = date.getTime() - now.getTime();
-    if (diff < 0) return "Past";
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    if (days > 0) return `${days}d ${hours}h left`;
-    if (hours > 0) return `${hours}h left`;
-    return "Less than an hour left";
+  if (!dateString) return "No deadline";
+  const target = new Date(
+    new Date(dateString).toLocaleString("en-US", { timeZone: "Asia/Bangkok" })
+  );
+  const now = new Date(
+    new Date().toLocaleString("en-US", { timeZone: "Asia/Bangkok" })
+  );
+
+  const diff = target.getTime() - now.getTime();
+  if (diff < 0) return "Past";
+
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor(
+    (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+  );
+
+  if (days > 0) return `${days}d ${hours}h left`;
+  if (hours > 0) return `${hours}h left`;
+  return "Less than an hour left";
 };
 
 const SectionTitle = ({ icon, title }: { icon: React.ReactNode, title: string }) => (
