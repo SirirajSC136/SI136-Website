@@ -23,7 +23,7 @@ const PageHero = ({ title, subtitle }: { title: string; subtitle: string }) => {
     return (
         <>
             <style>{keyframes}</style>
-            <div className="relative overflow-hidden bg-slate-900 py-24 text-center border-b border-slate-800">
+            <div className="relative overflow-hidden bg-slate-800 py-24 text-center border-b border-slate-800">
                 <div className="absolute top-0 left-0 w-full h-full z-0">
                     <div 
                         className="absolute h-[500px] w-[500px] rounded-full bg-sky-500/30"

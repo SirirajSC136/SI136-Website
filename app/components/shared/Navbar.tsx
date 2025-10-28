@@ -56,7 +56,7 @@ const Navbar = () => {
         <>
             <nav className={`sticky mx-auto z-50 transition-all duration-300 ease-in-out${
                 isScrolled
-                    ? 'border-b border-gray-200/80 bg-white/50 shadow-sm backdrop-blur-lg w-3/5 md:w-3/4 lg:w-3/5 top-1 rounded-2xl border'
+                    ? 'border-b border-gray-200/80 bg-white/50 shadow-sm backdrop-blur-lg w-3/5 md:w-3/4 lg:w-3/5 top-1 rounded-2xl border px-4'
                     : 'bg-transparent w-full top-0'
             }`}>
                 <div className="container mx-auto flex items-center justify-between p-4">
@@ -76,10 +76,6 @@ const Navbar = () => {
                                 {link.name}
                             </NavLink>
                         ))}
-                        <button className={`p-2 rounded-md transition-colors ${isScrolled ? 'text-slate-600 hover:text-slate-900' : 'text-black hover:text-black/80'
-                            }`}>
-                            <Search size={20} />
-                        </button>
                     </div>
 
                     {/* Mobile Menu Button */}
