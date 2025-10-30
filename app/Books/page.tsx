@@ -113,7 +113,7 @@ export default async function BookPage() {
   return (
     <main className="min-h-screen bg-background text-primary">
       {/* Dark banner */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-emerald-900 to-black py-28 text-center">
+      <div className="relative overflow-hidden bg-gradient-to-br from-secondary via-chart-2 to-secondary py-28 text-center">
         <div className="absolute inset-0">
           <div className="absolute h-[500px] w-[500px] rounded-full bg-emerald-500/20 blur-[120px] animate-pulse -top-40 -left-40" />
           <div className="absolute h-[400px] w-[400px] rounded-full bg-cyan-400/20 blur-[100px] animate-pulse delay-1000 bottom-0 right-0" />
@@ -139,7 +139,7 @@ export default async function BookPage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group flex flex-col rounded-xl overflow-hidden 
-                           bg-white border border-gray-200 shadow-sm 
+                           bg-background border border-gray-200 shadow-sm 
                            hover:shadow-md hover:border-emerald-400 
                            transition-all duration-300"
               >
@@ -152,13 +152,13 @@ export default async function BookPage() {
                   />
                 </div>
                 <div className="p-6 flex flex-col flex-grow">
-                  <h3 className="font-bold text-xl text-slate-900 group-hover:text-emerald-600 transition-colors">
+                  <h3 className="font-bold text-xl text-primary group-hover:text-chart-2 transition-colors">
                     {subject.title}
                   </h3>
-                  <p className="text-sm text-slate-600 mt-2 flex-grow">
+                  <p className="text-sm text-secondary mt-2 flex-grow">
                     {subject.description}
                   </p>
-                  <span className="mt-4 inline-flex items-center text-sm font-medium text-emerald-600 group-hover:underline">
+                  <span className="mt-4 inline-flex items-center text-sm font-medium text-chart-2 group-hover:underline">
                     Open Folder →
                   </span>
                 </div>
