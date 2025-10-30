@@ -56,6 +56,7 @@ export type Topic = {
     id: string;
     title: string;
     items: TopicItemData[]; // <-- Changed from 'files: TopicFile[]'
+    category?: string;  // <-- To classify where to put the topic
 };
 
 // The main Subject type

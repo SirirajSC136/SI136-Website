@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation'; // Import the correct hook
 import TopicItem from '@/app/components/academics/TopicItem';
 import { Home, Book, Globe, Loader2 } from 'lucide-react';
+import { classifyTopics } from "@/utils/classifyTopics";
 
 // This helper function is correct and fetches from your merged API endpoint
 async function getSubject(id: string): Promise<Subject | undefined> {
@@ -151,12 +152,42 @@ const SubjectDetailPage = () => {
                 <section className="lg:col-span-2">
                     <div className="rounded-xl border bg-white p-6 shadow-sm">
                         <h3 className="text-2xl font-bold text-slate-800 border-b pb-4 mb-6">
-                            Course Summary & Materials
+                        Course Summary & Materials
                         </h3>
-                        <div className="space-y-4">
-                            {/* This map function seamlessly renders all topics, regardless of their source */}
-                            {subject.topics.map(topic => <TopicItem key={topic.id} topic={topic} />)}
-                        </div>
+
+                        {(() => {
+                        const { main, others } = classifyTopics(subject.topics);
+
+                        return (
+                            <>
+                            {main.length > 0 && (
+                                <div className="mb-8">
+                                <h4 className="text-xl font-semibold text-emerald-700 mb-4">
+                                    Main Subject
+                                </h4>
+                                <div className="space-y-4">
+                                    {main.map((topic) => (
+                                    <TopicItem key={topic.id} topic={topic} />
+                                    ))}
+                                </div>
+                                </div>
+                            )}
+
+                            {others.length > 0 && (
+                                <div>
+                                <h4 className="text-xl font-semibold text-slate-700 mb-4">
+                                    Others
+                                </h4>
+                                <div className="space-y-4">
+                                    {others.map((topic) => (
+                                    <TopicItem key={topic.id} topic={topic} />
+                                    ))}
+                                </div>
+                                </div>
+                            )}
+                            </>
+                        );
+                        })()}
                     </div>
                 </section>
             </main>

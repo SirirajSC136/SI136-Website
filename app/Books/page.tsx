@@ -3,7 +3,6 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import LoginButton from "@/app/components/LoginButton";
-import { BookOpen } from "lucide-react";
 import Image from "next/image";
 
 const subjects = [
@@ -65,116 +64,115 @@ const subjects = [
   },
 ];
 
-const SectionTitle = ({ icon, title }: { icon: React.ReactNode; title: string }) => (
-  <div className="flex items-center gap-3 mb-6">
-    {icon}
-    <h2 className="text-2xl font-bold text-slate-800">{title}</h2>
-  </div>
-);
-
 const SubjectCard = ({ subject }: { subject: typeof subjects[number] }) => (
   <a
     href={subject.link}
     target="_blank"
     rel="noopener noreferrer"
-    className="group rounded-lg overflow-hidden border border-gray-200 hover:shadow-lg transition"
+    className="group flex flex-col rounded-xl overflow-hidden 
+               bg-white border border-gray-200 shadow-sm 
+               hover:shadow-md hover:border-emerald-400 
+               transition-all duration-300"
   >
-    {/* 16:9 responsive aspect ratio wrapper */}
-    <div className="relative aspect-[16/9] w-full">
+    <div className="relative aspect-[16/9] w-full overflow-hidden">
       <Image
         src={subject.image}
         alt={subject.title}
         fill
-        className="object-cover group-hover:scale-105 transition-transform"
-        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        className="object-cover group-hover:scale-105 transition-transform duration-500"
       />
     </div>
-    <div className="p-4 bg-white">
-      {/* Responsive title */}
-      <h3 className="font-bold text-3xl sm:text-xl lg:text-2xl text-slate-800">
+    <div className="p-6 flex flex-col flex-grow">
+      <h3 className="font-bold text-xl text-slate-900 group-hover:text-emerald-600 transition-colors">
         {subject.title}
       </h3>
-      {/* Responsive description */}
-      <p className="text-lg sm:text-base lg:text-lg text-gray-600 mt-1">
-        {subject.description}
-      </p>
+      <p className="text-sm text-slate-600 mt-2 flex-grow">{subject.description}</p>
+      <span className="mt-4 inline-flex items-center text-sm font-medium text-emerald-600 group-hover:underline">
+        Open Folder →
+      </span>
     </div>
   </a>
 );
 
-const PageHero = ({ title, subtitle }: { title: string; subtitle: string }) => {
-  const keyframes = `
-    @keyframes move-light-1 {
-      0% { transform: translate(-20%, -20%); opacity: 1; }
-      50% { transform: translate(20%, 10%); opacity: 1; }
-      100% { transform: translate(-20%, -20%); opacity: 1; }
-    }
-    @keyframes move-light-2 {
-      0% { transform: translate(10%, 20%); opacity: 1; }
-      50% { transform: translate(-10%, -20%); opacity: 1; }
-      100% { transform: translate(10%, 20%); opacity: 1; }
-    }
-  `;
-
-  return (
-    <>
-      <style>{keyframes}</style>
-      <div className="relative overflow-hidden bg-slate-800 py-24 text-center border-b border-slate-800">
-        <div className="absolute top-0 left-0 w-full h-full z-0">
-          <div
-            className="absolute h-[500px] w-[500px] rounded-full bg-sky-500/30"
-            style={{ animation: "move-light-1 8s ease-in-out infinite", filter: "blur(120px)" }}
-          />
-          <div
-            className="absolute h-[400px] w-[400px] rounded-full bg-sky-400/20"
-            style={{
-              animation: "move-light-2 8s ease-in-out infinite alternate",
-              filter: "blur(100px)",
-              right: 0,
-              bottom: 0,
-            }}
-          />
-        </div>
-
-        <div className="container mx-auto px-4 relative z-10">
-          <h1
-            className="text-5xl font-extrabold text-white tracking-tight sm:text-6xl"
-            style={{ textShadow: "0 3px 15px rgba(0, 0, 0, 1)" }}
-          >
-            {title}
-          </h1>
-          <p
-            className="mt-4 text-lg text-slate-300 max-w-3xl mx-auto"
-            style={{ textShadow: "0 2px 5px rgba(0,0,0,0.5)" }}
-          >
-            {subtitle}
-          </p>
-        </div>
-      </div>
-    </>
-  );
-};
+const PageHero = ({ title, subtitle }: { title: string; subtitle: string }) => (
+  <div className="relative overflow-hidden bg-gradient-to-r from-emerald-600 to-emerald-500 py-24 text-center text-white">
+    <div className="container mx-auto px-4 relative z-10">
+      <h1 className="text-5xl font-extrabold tracking-tight drop-shadow">
+        {title}
+      </h1>
+      <p className="mt-4 text-lg text-emerald-50 max-w-2xl mx-auto">
+        {subtitle}
+      </p>
+    </div>
+  </div>
+);
 
 export default async function BookPage() {
   const session = await getServerSession(authOptions);
 
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900">
-      <PageHero title="Book Library" subtitle="Access subject folders and textbooks" />
+    <main className="min-h-screen bg-white text-slate-900">
+      {/* Dark banner */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-emerald-900 to-black py-28 text-center">
+        <div className="absolute inset-0">
+          <div className="absolute h-[500px] w-[500px] rounded-full bg-emerald-500/20 blur-[120px] animate-pulse -top-40 -left-40" />
+          <div className="absolute h-[400px] w-[400px] rounded-full bg-cyan-400/20 blur-[100px] animate-pulse delay-1000 bottom-0 right-0" />
+        </div>
+        <div className="container mx-auto px-4 relative z-10">
+          <h1 className="text-6xl font-extrabold text-white tracking-tight drop-shadow-lg">
+            Book Library
+          </h1>
+          <p className="mt-6 text-lg text-emerald-100 max-w-2xl mx-auto">
+            Access curated subject folders and textbooks
+          </p>
+        </div>
+      </div>
 
+      {/* White content area */}
       <section className="container mx-auto px-4 py-16">
         {session ? (
-          <>
-            <SectionTitle icon={<BookOpen className="text-emerald-500" />} title="Subjects" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {subjects.map((subject) => (
-                <SubjectCard key={subject.id} subject={subject} />
-              ))}
-            </div>
-          </>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {subjects.map((subject) => (
+              <a
+                key={subject.id}
+                href={subject.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex flex-col rounded-xl overflow-hidden 
+                           bg-white border border-gray-200 shadow-sm 
+                           hover:shadow-md hover:border-emerald-400 
+                           transition-all duration-300"
+              >
+                <div className="relative aspect-[16/9] w-full overflow-hidden">
+                  <Image
+                    src={subject.image}
+                    alt={subject.title}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+                <div className="p-6 flex flex-col flex-grow">
+                  <h3 className="font-bold text-xl text-slate-900 group-hover:text-emerald-600 transition-colors">
+                    {subject.title}
+                  </h3>
+                  <p className="text-sm text-slate-600 mt-2 flex-grow">
+                    {subject.description}
+                  </p>
+                  <span className="mt-4 inline-flex items-center text-sm font-medium text-emerald-600 group-hover:underline">
+                    Open Folder →
+                  </span>
+                </div>
+              </a>
+            ))}
+          </div>
         ) : (
-          <div className="text-center py-20">
-            <h2 className="text-2xl font-bold mb-4">Please log in to access the book library</h2>
+          <div className="max-w-md mx-auto bg-white border border-gray-200 rounded-xl shadow-sm p-10 text-center">
+            <h2 className="text-2xl font-bold text-slate-900 mb-4">
+              Please log in to access the book library
+            </h2>
+            <p className="text-slate-600 mb-6">
+              Sign in with your account to unlock subject folders and resources.
+            </p>
             <LoginButton />
           </div>
         )}
