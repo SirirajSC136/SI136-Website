@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowRight, CalendarMinus, Heart, School, ExternalLink, Lock } from 'lucide-react';
+import { ArrowRight, CalendarMinus, Heart, School, ExternalLink, Lock, FileText, Send} from 'lucide-react';
 import React from 'react';
 
 const PageHero = ({ title, subtitle }: { title: string; subtitle: string }) => {
@@ -17,10 +17,13 @@ const PageHero = ({ title, subtitle }: { title: string; subtitle: string }) => {
         }
     `;
 
+    
+
+
     return (
         <>
             <style>{keyframes}</style>
-            <div className="relative overflow-hidden bg-slate-900 py-24 text-center border-b border-slate-800">
+            <div className="relative overflow-hidden bg-slate-800 py-24 text-center border-b border-slate-800">
                 <div className="absolute top-0 left-0 w-full h-full z-0">
                     <div 
                         className="absolute h-[500px] w-[500px] rounded-full bg-sky-500/30"
@@ -59,25 +62,37 @@ const SectionTitle = ({ children }: { children: React.ReactNode }) => (
     </div>
 );
 
-const ActionCard = ({ href, IconComponent, title }: { href: string; IconComponent: React.ElementType; title: string; }) => (
-    <a
-        href={href}
-        target={href.startsWith('http') ? '_blank' : '_self'}
-        rel="noopener noreferrer"
-        className="group relative flex flex-col items-center gap-4 overflow-hidden rounded-xl border border-slate-200 bg-white p-8 text-center shadow-sm transition-all duration-300 ease-in-out hover:shadow-xl hover:border-emerald-300"
-    >
-        <div className="absolute top-0 right-0 h-16 w-16 bg-emerald-50 rounded-bl-full opacity-0 transition-all duration-500 group-hover:opacity-100 group-hover:scale-150"></div>
-        <div className="relative z-10 flex h-16 w-16 items-center justify-center rounded-lg bg-slate-100 text-slate-500 transition-colors duration-300 group-hover:bg-emerald-100 group-hover:text-emerald-600">
-            <IconComponent className="h-8 w-8" />
-        </div>
-        <span className="relative z-10 font-semibold text-slate-800 mt-4"> {/* Added mt-4 for more space */}
-            {title}
-        </span>
-        <div className="relative z-10 mt-auto flex items-center gap-2 text-sm font-bold text-emerald-600 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:gap-3">
-            Visit <ArrowRight size={16} />
-        </div>
-    </a>
-);
+const ActionCard = ({ href, IconComponent, title }: { href: string; IconComponent: React.ElementType; title: string; }) => {
+    
+    const handleClick = (e: React.MouseEvent) => {
+        if (href.startsWith('mailto:')) {
+            e.preventDefault();
+            window.location.href = href; // this will open default email client
+        }
+    };
+
+    return (
+        <a
+            href={href}
+            onClick={handleClick}
+            target={href.startsWith('http') ||  href.startsWith('/file') ? '_blank' : '_self'}
+            rel="noopener noreferrer"
+            className="group relative flex flex-col items-center gap-4 overflow-hidden rounded-xl border border-slate-200 bg-white p-8 text-center shadow-sm transition-all duration-300 ease-in-out hover:shadow-xl hover:border-emerald-300"
+        >
+            <div className="absolute top-0 right-0 h-16 w-16 bg-emerald-50 rounded-bl-full opacity-0 transition-all duration-500 group-hover:opacity-100 group-hover:scale-150"></div>
+            <div className="relative z-10 flex h-16 w-16 items-center justify-center rounded-lg bg-slate-100 text-slate-500 transition-colors duration-300 group-hover:bg-emerald-100 group-hover:text-emerald-600">
+                <IconComponent className="h-8 w-8" />
+            </div>
+            <span className="relative z-10 font-semibold text-slate-800 mt-4">
+                {title}
+            </span>
+            <div className="relative z-10 mt-auto flex items-center gap-2 text-sm font-bold text-emerald-600 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:gap-3">
+                Visit <ArrowRight size={16} />
+            </div>
+        </a>
+    );
+};
+
 
 const ExternalLinkButton = ({ href, children }: { href: string; children: React.ReactNode }) => (
     <a
@@ -93,6 +108,20 @@ const ExternalLinkButton = ({ href, children }: { href: string; children: React.
 
 // --- Main Page Component ---
 const UsefulInfoPage = () => {
+
+    const subject = encodeURIComponent(
+    'เขียน Subject ตาม Format COOR ความเร่งด่วน-ชื่อกิจกรรมหรือโครงการ-ฝ่ายประสานงานที่รับผิดชอบ-เรื่องที่ต้องการประสานติดต่อ เช่น COOR ด่วน-HailNight2026-ศิข-ติดต่อสอบถามสถานที่มหิดลสิทธาคาร'
+  );
+
+  const body = encodeURIComponent(
+    'ระบุรายละเอียดการติดต่อกลับผู้ส่งเบื้องต้นภายในเนื้อความ เช่น จาก แซนดี้ ฝ่ายบริหาร (โทร.02 4197000)'
+  );
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    const mailtoLink = `mailto:chulathep.sil@student.mahidol.edu,Sikhada.wai@student.mahidol.edu,krittipat.let@student.mahidol.edu?subject=${subject}&body=${body}`;
+    const gmailHref = `https://mail.google.com/mail/?view=cm&fs=1&to=chulathep.sil@student.mahidol.edu,Sikhada.wai@student.mahidol.edu,krittipat.let@student.mahidol.edu&su=${subject}&body=${body}`;
+
+    const emailLink = isMobile ? mailtoLink : gmailHref;
+    
     const classroomLinks = [
         { name: 'SmartEdu', href: 'https://smartedu.mahidol.ac.th/' },
         { name: 'MUx', href: 'https://mux.mahidol.ac.th/' },
@@ -108,6 +137,11 @@ const UsefulInfoPage = () => {
         { IconComponent: Heart, href: 'https://www.sieduit.org/education/health-service-for-student', title: 'บริการสุขภาพ' },
         { IconComponent: School, href: 'https://mustudent.mahidol.ac.th/2022/07/25376', title: 'MU One Stop Service' }
     ];
+
+    const CoordinatorLinks = [ 
+        { IconComponent: FileText, href: '/file/รายงานการประสานงานตามคำขอ.pdf', title: 'เอกสาร รายงานการประสานงานตามคำขอ' },
+        { IconComponent: Send, href: emailLink, title: ' ส่งอีเมลถึงฝ่ายประสานงาน' }
+    ]
 
     return (
         <div className="bg-slate-50">
@@ -137,6 +171,15 @@ const UsefulInfoPage = () => {
                                     </ExternalLinkButton>
                                 ))}
                             </div>
+                        </div>
+                    </section>
+
+                    <section>
+                        <SectionTitle>ติดต่อฝ่ายประสานงาน</SectionTitle>
+                        <div className="grid grid-cols-2 gap-8 ">
+                            {CoordinatorLinks.map((link) => (
+                                <ActionCard key={link.title} {...link} />
+                            ))}
                         </div>
                     </section>
 

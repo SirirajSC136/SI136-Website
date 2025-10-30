@@ -26,16 +26,25 @@ async function getCanvasTasks(): Promise<Task[]> {
 }
 
 const formatRemainingTime = (dateString: string) => {
-    if (!dateString) return "No deadline";
-    const date = new Date(dateString);
-    const now = new Date();
-    const diff = date.getTime() - now.getTime();
-    if (diff < 0) return "Past";
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    if (days > 0) return `${days}d ${hours}h left`;
-    if (hours > 0) return `${hours}h left`;
-    return "Less than an hour left";
+  if (!dateString) return "No deadline";
+  const target = new Date(
+    new Date(dateString).toLocaleString("en-US", { timeZone: "Asia/Bangkok" })
+  );
+  const now = new Date(
+    new Date().toLocaleString("en-US", { timeZone: "Asia/Bangkok" })
+  );
+
+  const diff = target.getTime() - now.getTime();
+  if (diff < 0) return "Past";
+
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor(
+    (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+  );
+
+  if (days > 0) return `${days}d ${hours}h left`;
+  if (hours > 0) return `${hours}h left`;
+  return "Less than an hour left";
 };
 
 const SectionTitle = ({ icon, title }: { icon: React.ReactNode, title: string }) => (
@@ -54,10 +63,10 @@ const EventCard = ({ event }: { event: CalendarEvent }) => (
             <p className="text-sm font-semibold text-emerald-700">{event.courseCode}</p>
             <p className="font-medium text-gray-800">{event.title}</p>
             <div className="flex items-center justify-between mt-2">
-                <span className="text-sm text-gray-500">{new Date(event.startTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} - {event.details}</span>
-                <Link href={event.subjectPageUrl} className="flex items-center text-sm text-emerald-600 font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                <span className="text-sm text-gray-500">{new Date(event.startTime).toLocaleTimeString('en-US', { timeZone: "Asia/Bangkok", hour: '2-digit', minute: '2-digit' })} - {event.details}</span>
+                {/* <Link href={event.subjectPageUrl} className="flex items-center text-sm text-emerald-600 font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
                     View <ArrowRight className="h-4 w-4 ml-1" />
-                </Link>
+                </Link> */}
             </div>
         </div>
     </div>
