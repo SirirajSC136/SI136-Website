@@ -50,20 +50,20 @@ const formatRemainingTime = (dateString: string) => {
 const SectionTitle = ({ icon, title }: { icon: React.ReactNode, title: string }) => (
     <div className="flex items-center gap-3 mb-6">
         {icon}
-        <h2 className="text-2xl font-bold text-slate-800">{title}</h2>
+        <h2 className="text-2xl font-bold text-primary">{title}</h2>
     </div>
 );
 
 const EventCard = ({ event }: { event: CalendarEvent }) => (
-    <div className="group flex items-start space-x-4 p-4 bg-white rounded-lg border border-gray-200 transition-shadow hover:shadow-md">
+    <div className="group flex items-start space-x-4 p-4 bg-background rounded-lg border border-border transition-shadow hover:shadow-md">
         <div className="flex-shrink-0 mt-1">
-            <CalendarDays className="h-5 w-5 text-emerald-600" />
+            <CalendarDays className="h-5 w-5 text-chart-2" />
         </div>
         <div className="flex-grow">
-            <p className="text-sm font-semibold text-emerald-700">{event.courseCode}</p>
-            <p className="font-medium text-gray-800">{event.title}</p>
+            <p className="text-sm font-semibold text-chart-2">{event.courseCode}</p>
+            <p className="font-medium text-primary">{event.title}</p>
             <div className="flex items-center justify-between mt-2">
-                <span className="text-sm text-gray-500">{new Date(event.startTime).toLocaleTimeString('en-US', { timeZone: "Asia/Bangkok", hour: '2-digit', minute: '2-digit' })} - {event.details}</span>
+                <span className="text-sm text-secondary">{new Date(event.startTime).toLocaleTimeString('en-US', { timeZone: "Asia/Bangkok", hour: '2-digit', minute: '2-digit' })} - {event.details}</span>
                 {/* <Link href={event.subjectPageUrl} className="flex items-center text-sm text-emerald-600 font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
                     View <ArrowRight className="h-4 w-4 ml-1" />
                 </Link> */}
@@ -80,17 +80,17 @@ const TaskCard = ({ task }: { task: Task }) => {
     };
 
     return (
-        <Link href={`/academics/${task.subjectId}`} className="group block p-4 mb-3 bg-white rounded-lg border border-gray-200 transition-shadow hover:shadow-md">
+        <Link href={`/academics/${task.subjectId}`} className="group block p-4 mb-3 bg-background rounded-lg border border-border transition-shadow hover:shadow-md">
             <div className="flex items-start justify-between">
                 <div className="flex items-start space-x-3">
                     <theme.icon className={`h-5 w-5 mt-0.5 ${theme.textColor}`} />
                     <div>
                         <p className={`font-semibold ${theme.textColor}`}>{task.courseCode}</p>
-                        <p className="text-xs text-gray-500">{task.subjectTitle}</p>
-                        <p className="text-gray-800 font-medium mt-1">{task.title}</p>
+                        <p className="text-xs text-secondary">{task.subjectTitle}</p>
+                        <p className="text-primary font-medium mt-1">{task.title}</p>
                     </div>
                 </div>
-                <span className="text-xs text-gray-500 font-medium flex-shrink-0 ml-2">
+                <span className="text-xs text-primary font-medium flex-shrink-0 ml-2">
                     {formatRemainingTime(task.deadline)}
                 </span>
             </div>
@@ -99,8 +99,8 @@ const TaskCard = ({ task }: { task: Task }) => {
 };
 
 const EmptyState = ({ message }: { message: string }) => (
-    <div className="text-center py-10 px-4 bg-gray-50 rounded-lg border border-dashed">
-        <p className="text-gray-500">{message}</p>
+    <div className="text-center py-10 px-4 bg-background rounded-lg border border-dashed">
+        <p className="text-secondary">{message}</p>
     </div>
 );
 
@@ -117,15 +117,15 @@ const HomePageContent = async () => {
     }, {} as Record<string, CalendarEvent[]>);
 
     return (
-        <div className="bg-slate-50 py-12">
+        <div className="bg-secondary-background py-12">
             <div className="container mx-auto px-4">
-                <h1 className="text-4xl font-extrabold text-slate-900 mb-10">Dashboard</h1>
+                <h1 className="text-4xl font-extrabold text-primary mb-10">Dashboard</h1>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                    <div className="lg:col-span-2 bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                    <div className="lg:col-span-2 bg-background p-6 rounded-xl border border-border shadow-sm ">
                         <SectionTitle icon={<CalendarDays className="text-emerald-500" />} title="Upcoming Events" />
                         {Object.keys(groupedEvents).length > 0 ? Object.entries(groupedEvents).map(([date, activities]) => (
                             <div key={date} className="mb-6">
-                                <h3 className="text-md font-semibold mb-3 text-gray-500">{date}</h3>
+                                <h3 className="text-md font-semibold mb-3 text-secondary">{date}</h3>
                                 <div className="space-y-3">
                                     {activities.map((activity) => <EventCard key={activity.id} event={activity} />)}
                                 </div>
@@ -134,11 +134,11 @@ const HomePageContent = async () => {
                     </div>
 
                     <div className="space-y-8">
-                        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                        <div className="bg-background p-6 rounded-xl border border-border shadow-sm">
                             <SectionTitle icon={<ClipboardList className="text-amber-500" />} title="Assignments" />
                             {assignments.length > 0 ? assignments.map((task) => <TaskCard key={task.id} task={task} />) : <EmptyState message="No pending assignments." />}
                         </div>
-                        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                        <div className="bg-background p-6 rounded-xl border border-border shadow-sm">
                             <SectionTitle icon={<Pencil className="text-rose-500" />} title="Examinations" />
                             {examinations.length > 0 ? examinations.map((task) => <TaskCard key={task.id} task={task} />) : <EmptyState message="No upcoming examinations." />}
                         </div>

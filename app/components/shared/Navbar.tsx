@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image, { StaticImageData } from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Search, Menu, X } from 'lucide-react';
+import { ModeSwitch } from './ModeSwitch';
 
 
 // A more robust NavLink sub-component for the new "pill" animation
@@ -22,7 +23,7 @@ const NavLink = ({ href, children, isScrolled }: { href: string; children: React
             />
             {/* Text Content */}
             <span className={`relative z-10 transition-colors duration-200
-                ${isActive ? 'text-emerald-600 font-semibold' : (isScrolled ? 'text-slate-700' : 'text-black')}
+                ${isActive ? 'text-emerald-600 font-semibold' : ('text-primary')}
                 group-hover:${isScrolled ? 'text-slate-900' : 'text-black'}
             `}>
                 {children}
@@ -56,15 +57,14 @@ const Navbar = () => {
         <>
             <nav className={`sticky mx-auto z-50 transition-all duration-300 ease-in-out${
                 isScrolled
-                    ? 'border-b border-gray-200/80 bg-white/50 shadow-sm backdrop-blur-lg w-3/5 md:w-3/4 lg:w-3/5 top-1 rounded-2xl border px-4'
+                    ? 'border-b border-border/80 bg-background/50 shadow-sm backdrop-blur-lg w-3/5 md:w-4/5 lg:w-[65%] xl:w-3/5 top-1 rounded-2xl border px-4'
                     : 'bg-transparent w-full top-0'
             }`}>
                 <div className="container mx-auto flex items-center justify-between p-4">
                     {/* Logo */}
                     <Link href="/" className="flex items-center space-x-3 transition-transform hover:scale-105">
                         <Image src={`/images/logo.jpg`} alt="SI136 Logo" width={36} height={36} className={`rounded-full ${!isScrolled ? 'drop-shadow-lg' : ''}`} />
-                        <span className={`text-xl font-bold tracking-wide transition-colors ${isScrolled ? 'text-slate-800' : 'text-black drop-shadow-md'
-                            }`}>
+                        <span className={`text-xl font-bold tracking-wide transition-colors text-primary`}>
                             SI136
                         </span>
                     </Link>
@@ -76,11 +76,13 @@ const Navbar = () => {
                                 {link.name}
                             </NavLink>
                         ))}
+                        <ModeSwitch />
                     </div>
 
                     {/* Mobile Menu Button */}
-                    <div className="md:hidden flex items-center">
-                        <button onClick={() => setIsOpen(!isOpen)} className={`transition-colors ${isScrolled ? 'text-slate-800' : 'text-black'}`}>
+                    <div className="md:hidden flex items-center gap-1">
+                        {!isScrolled && <ModeSwitch />}
+                        <button onClick={() => setIsOpen(!isOpen)} className={`transition-colors text-primary`}>
                             {isOpen ? <X size={28} /> : <Menu size={28} />}
                         </button>
                     </div>
@@ -89,7 +91,7 @@ const Navbar = () => {
 
             {/* Mobile Menu Overlay */}
             <div
-                className={`fixed inset-0 z-40 bg-white transition-transform duration-300 ease-in-out md:hidden ${isOpen ? 'translate-x-0' : 'translate-x-full'
+                className={`fixed inset-0 z-40 bg-background transition-transform duration-300 ease-in-out md:hidden ${isOpen ? 'translate-x-0' : 'translate-x-full'
                     }`}
             >
                 <div className="flex flex-col items-center justify-center h-full space-y-8">
@@ -101,7 +103,7 @@ const Navbar = () => {
                                 key={link.name}
                                 href={link.href}
                                 onClick={() => setIsOpen(false)}
-                                className={`text-3xl font-semibold transition-colors ${isActive ? 'text-emerald-600' : 'text-slate-800'
+                                className={`text-3xl font-semibold transition-colors ${isActive ? 'text-emerald-600' : 'text-primary'
                                     }`}
                             >
                                 {link.name}

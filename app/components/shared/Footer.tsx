@@ -1,8 +1,8 @@
 const Footer = () => {
   return (
-    <footer className="bg-slate-100 text-center py-4">
+    <footer className="bg-secondary-background text-center py-4">
       <div className="container mx-auto">
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-primary">
           &copy; {new Date().getFullYear()} SISC136
         </p>
       </div>

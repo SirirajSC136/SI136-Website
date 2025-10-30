@@ -111,7 +111,7 @@ export default async function BookPage() {
   const session = await getServerSession(authOptions);
 
   return (
-    <main className="min-h-screen bg-white text-slate-900">
+    <main className="min-h-screen bg-background text-primary">
       {/* Dark banner */}
       <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-emerald-900 to-black py-28 text-center">
         <div className="absolute inset-0">

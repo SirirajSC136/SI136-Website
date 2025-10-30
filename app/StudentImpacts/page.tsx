@@ -56,16 +56,16 @@ const PageHero = ({ title, subtitle }: { title: string; subtitle: string }) => {
 const ActionCard = ({ icon, title, href, description }: { icon: ReactNode; title: string; href: string; description: string; }) => (
     <a
         href={href}
-        className="group relative flex flex-col items-start overflow-hidden rounded-xl border border-slate-200 bg-white p-8 text-left shadow-sm transition-all duration-300 ease-in-out hover:shadow-xl hover:border-emerald-300"
+        className="group relative flex flex-col items-start overflow-hidden rounded-xl border border-border bg-background p-8 text-left shadow-sm transition-all duration-300 ease-in-out hover:shadow-xl hover:border-emerald-300"
     >
         {/* Decorative element that animates on hover */}
-        <div className="absolute top-0 right-0 h-24 w-24 bg-emerald-50 rounded-bl-full opacity-0 transition-all duration-500 group-hover:opacity-100 group-hover:scale-150"></div>
+        <div className="absolute top-0 right-0 h-24 w-24 bg-emerald-50 dark:bg-emerald-800 rounded-bl-full opacity-0 transition-all duration-500 group-hover:opacity-100 group-hover:scale-150"></div>
 
-        <div className="relative z-10 flex h-14 w-14 items-center justify-center rounded-lg bg-slate-100 text-slate-500 transition-colors duration-300 group-hover:bg-emerald-100 group-hover:text-emerald-600">
+        <div className="relative z-10 flex h-14 w-14 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-700 text-secondary transition-colors duration-300 group-hover:bg-emerald-100 group-hover:text-emerald-600">
             {icon}
         </div>
         <div className="relative z-10 mt-6">
-            <h3 className="text-xl font-bold text-slate-800">
+            <h3 className="text-xl font-bold text-primary">
                 {title}
             </h3>
             <p className="mt-2 text-slate-500">{description}</p>
@@ -79,7 +79,7 @@ const ActionCard = ({ icon, title, href, description }: { icon: ReactNode; title
 // --- The Main Page Component ---
 const StudentImpactPage = () => {
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-secondary-background">
             <PageHero
                 title="Student Impact"
                 subtitle="ช่องทางการติดต่อสอบถาม, แจ้งเรื่อง และร้องเรียนปัญหาโดยตรงถึงคณะกรรมการนักศึกษา"
@@ -89,7 +89,7 @@ const StudentImpactPage = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
                     
                     {/* Main Official Channel Card */}
-                    <div className="lg:col-span-3 flex flex-col justify-between rounded-xl border border-slate-200 bg-slate-50/80 p-8 shadow-md">
+                    <div className="lg:col-span-3 flex flex-col justify-between rounded-xl border border-border bg-background p-8 shadow-md">
                         <div>
                             <div className="flex items-center gap-4">
                                 <img
@@ -100,8 +100,8 @@ const StudentImpactPage = () => {
                                     className="rounded-full"
                                 />
                                 <div>
-                                    <h3 className="text-3xl font-bold text-slate-800">SISC136 Official</h3>
-                                    <p className="mt-1 text-slate-500">ช่องทางสื่อสารหลักของคณะกรรมการนักศึกษาแพทย์</p>
+                                    <h3 className="text-3xl font-bold text-primary">SISC136 Official</h3>
+                                    <p className="mt-1 text-secondary">ช่องทางสื่อสารหลักของคณะกรรมการนักศึกษาแพทย์</p>
                                 </div>
                             </div>
                         </div>
