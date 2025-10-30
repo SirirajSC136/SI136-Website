@@ -113,13 +113,13 @@ export default async function BookPage() {
   return (
     <main className="min-h-screen bg-background text-primary">
       {/* Dark banner */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-secondary via-chart-2 to-secondary py-28 text-center">
-        <div className="absolute inset-0">
-          <div className="absolute h-[500px] w-[500px] rounded-full bg-emerald-500/20 blur-[120px] animate-pulse -top-40 -left-40" />
-          <div className="absolute h-[400px] w-[400px] rounded-full bg-cyan-400/20 blur-[100px] animate-pulse delay-1000 bottom-0 right-0" />
-        </div>
+      <div
+        className="relative overflow-hidden bg-cover bg-center py-28 text-center"
+        style={{ backgroundImage: "url('images/library.jpg')" }}
+      >
+        <div className="absolute inset-0 bg-black/50" /> {/* optional dark overlay for readability */}
         <div className="container mx-auto px-4 relative z-10">
-          <h1 className="text-6xl font-extrabold text-white tracking-tight drop-shadow-lg">
+          <h1 className="text-6xl font-extrabold text-white tracking-tight drop-shadow-lg text-shadow-sm text-shadow-chart-2">
             Book Library
           </h1>
           <p className="mt-6 text-lg text-emerald-100 max-w-2xl mx-auto">
@@ -127,6 +127,7 @@ export default async function BookPage() {
           </p>
         </div>
       </div>
+
 
       {/* White content area */}
       <section className="container mx-auto px-4 py-16">
