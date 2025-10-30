@@ -11,56 +11,56 @@ const subjects = [
     id: "immunology",
     title: "Immunology",
     description: "Defense mechanisms and immune system textbooks",
-    image: "/subjects/immunology.jpg",
+    image: "/images/subjects/immunology.png",
     link: "https://drive.google.com/drive/folders/1OJIOfJzYxw9hegBdCJxvPhnEklEjhoOc?usp=drive_link",
   },
   {
     id: "physiology",
     title: "Physiology",
     description: "Explore body functions and systems",
-    image: "/subjects/physiology.jpg",
+    image: "/images/subjects/physiology.png",
     link: "https://drive.google.com/drive/folders/1UtfB4MwtfwxEruwYQk0Y7ZLE9APe1kS9?usp=drive_link",
   },
   {
     id: "cell-biology",
     title: "Cell Biology",
     description: "Dive into cellular structure and processes",
-    image: "/subjects/cell-biology.jpg",
+    image: "/images/subjects/cell-biology.png",
     link: "https://drive.google.com/drive/folders/1IzCsFKO-HnrJ1Ma7CCt5ubcAuvHFhlLS?usp=drive_link",
   },
   {
     id: "anatomy",
     title: "Anatomy",
     description: "Atlases and anatomy references",
-    image: "/subjects/anatomy.jpg",
+    image: "/images/subjects/anatomy.png",
     link: "https://drive.google.com/drive/folders/1MC5dFGWIiHt1X2R1zCnDuektKMlEZ8r9?usp=drive_link",
   },
   {
     id: "biochemistry",
     title: "Biochemistry",
     description: "Molecular foundations of life",
-    image: "/subjects/biochemistry.jpg",
+    image: "/images/subjects/biochemistry.png",
     link: "https://drive.google.com/drive/folders/1q-AUNwzl599MRH7cb41cu8vYaD9BwdBi?usp=drive_link",
   },
   {
     id: "histology",
     title: "Histology",
     description: "Microscopic anatomy and tissue structure",
-    image: "/subjects/histology.jpg",
+    image: "/images/subjects/histology.png",
     link: "https://drive.google.com/drive/folders/1cVeCmhmiVi1FsSSQvQB2IKP2-igG8nfh?usp=drive_link",
   },
   {
     id: "embryology",
     title: "Embryology",
     description: "Developmental biology and growth",
-    image: "/subjects/embryology.jpg",
+    image: "/images/subjects/embryology.png",
     link: "https://drive.google.com/drive/folders/1_k8uoweICIsZg34FA35DoiV8gIsde3me?usp=drive_link",
   },
   {
     id: "usmle",
     title: "First Aid for USMLE",
     description: "First Aid for the USMLE Step 1 2024, 34th Edition",
-    image: "/subjects/embryology.jpg",
+    image: "/images/subjects/first-aid-for-usmle.png",
     link: "https://drive.google.com/file/d/11S_jsUwoFASuetGCx30uLpw6S6hA6Vax/view?usp=drive_link",
   },
 ];
@@ -79,17 +79,25 @@ const SubjectCard = ({ subject }: { subject: typeof subjects[number] }) => (
     rel="noopener noreferrer"
     className="group rounded-lg overflow-hidden border border-gray-200 hover:shadow-lg transition"
   >
-    <div className="relative h-40 w-full">
+    {/* 16:9 responsive aspect ratio wrapper */}
+    <div className="relative aspect-[16/9] w-full">
       <Image
         src={subject.image}
         alt={subject.title}
         fill
         className="object-cover group-hover:scale-105 transition-transform"
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
       />
     </div>
     <div className="p-4 bg-white">
-      <h3 className="font-bold text-lg text-slate-800">{subject.title}</h3>
-      <p className="text-sm text-gray-600">{subject.description}</p>
+      {/* Responsive title */}
+      <h3 className="font-bold text-3xl sm:text-xl lg:text-2xl text-slate-800">
+        {subject.title}
+      </h3>
+      {/* Responsive description */}
+      <p className="text-lg sm:text-base lg:text-lg text-gray-600 mt-1">
+        {subject.description}
+      </p>
     </div>
   </a>
 );
