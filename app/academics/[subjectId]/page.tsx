@@ -48,7 +48,17 @@ const SubjectDetailPage = () => {
             const fetchedSubject = await getSubject(subjectId);
             console.log(fetchedSubject)
             if (fetchedSubject) {
-                setSubject(fetchedSubject);
+                const patched =
+                    fetchedSubject.courseCode === 'SIID143_68'
+                        ? {
+                            ...fetchedSubject,
+                            courseCode: 'SIID143/68',
+                            // optional: also fix if it appears inside the title
+                            title: fetchedSubject.title?.replace(/\bSIID?143[_\s/]?68\b/, 'SIID143/68'),
+                        }
+                        : fetchedSubject;
+
+                setSubject(patched);
             } else {
                 setError("Subject not found or an error occurred.");
             }

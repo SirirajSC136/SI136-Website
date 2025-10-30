@@ -30,8 +30,18 @@ const AcademicPage = async () => {
     const excludedIdList = ['1266'];
 
     // 3. Filter the array to create a new list that does not include the subject with the excluded ID.
-    const subjects = allSubjects.filter(subject => !excludedIdList.includes(subject._id));
-    // --- END OF FIX ---
+    const firstsubjects = allSubjects.filter(subject => !excludedIdList.includes(subject._id));
+
+    const subjects = firstsubjects.map(s => {
+        if (s.courseCode === 'SIID143_68') {
+            return {
+                ...s,
+                courseCode: 'SIID 143/68',                          // display code
+                title: s.title.replace(/SIID?143[_/ ]?68/, 'SI143/68') // fix if code appears in title
+            };
+        }
+        return s;
+    });
 
     console.log(subjects); // This will now log the filtered list of subjects
 
