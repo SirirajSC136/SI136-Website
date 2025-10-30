@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import monke from '@/app/assets/images/monke.jpg';
 const Committee = () => {
     return (
         <div className="container mx-auto my-12 px-4">
