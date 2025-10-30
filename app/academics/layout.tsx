@@ -16,12 +16,12 @@ export default async function AcademicsLayout({
     // Check if the user is logged in
     if (!session) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50">
-                <div className="text-center p-8 bg-white rounded-lg shadow-md">
-                    <h2 className="text-2xl font-bold text-slate-800 mb-4">
+            <div className="flex flex-col items-center justify-center min-h-screen bg-secondary-background">
+                <div className="text-center p-8 bg-background rounded-lg shadow-md">
+                    <h2 className="text-2xl font-bold text-primary mb-4">
                         Please log in to continue
                     </h2>
-                    <p className="text-slate-600 mb-6">
+                    <p className="text-secondary mb-6">
                         You need to be logged in to access this section.
                     </p>
                     <LoginButton />

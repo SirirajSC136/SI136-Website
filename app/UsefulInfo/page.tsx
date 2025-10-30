@@ -56,9 +56,10 @@ const PageHero = ({ title, subtitle }: { title: string; subtitle: string }) => {
 };
 
 const SectionTitle = ({ children }: { children: React.ReactNode }) => (
-    <div className="relative text-center mb-12">
-        <h2 className="inline-block px-6 text-2xl sm:text-3xl font-bold text-slate-800 relative z-10">{children}</h2>
-        <div className="absolute inset-x-0 top-1/2 -z-0 h-px -translate-y-1/2 bg-slate-200"></div>
+    <div className="relative text-center mb-12 flex items-center justify-center">
+        <hr className=' w-full border border-primary' />
+        <h2 className="inline-block text-nowrap px-6 text-2xl sm:text-3xl font-bold text-primary relative z-10">{children}</h2>
+        <hr className=' w-full border border-primary' />
     </div>
 );
 
@@ -77,13 +78,13 @@ const ActionCard = ({ href, IconComponent, title }: { href: string; IconComponen
             onClick={handleClick}
             target={href.startsWith('http') ||  href.startsWith('/file') ? '_blank' : '_self'}
             rel="noopener noreferrer"
-            className="group relative flex flex-col items-center gap-4 overflow-hidden rounded-xl border border-slate-200 bg-white p-8 text-center shadow-sm transition-all duration-300 ease-in-out hover:shadow-xl hover:border-emerald-300"
+            className="group relative flex flex-col items-center gap-4 overflow-hidden rounded-xl border border-border bg-background p-8 text-center shadow-sm transition-all duration-300 ease-in-out hover:shadow-xl hover:border-emerald-300"
         >
-            <div className="absolute top-0 right-0 h-16 w-16 bg-emerald-50 rounded-bl-full opacity-0 transition-all duration-500 group-hover:opacity-100 group-hover:scale-150"></div>
-            <div className="relative z-10 flex h-16 w-16 items-center justify-center rounded-lg bg-slate-100 text-slate-500 transition-colors duration-300 group-hover:bg-emerald-100 group-hover:text-emerald-600">
-                <IconComponent className="h-8 w-8" />
+            <div className="absolute top-0 right-0 h-16 w-16 bg-emerald-50 dark:bg-input rounded-bl-full opacity-0 transition-all duration-500 group-hover:opacity-100 group-hover:scale-150"></div>
+            <div className="relative z-10 flex h-16 w-16 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-300 text-slate-500 transition-colors duration-300 group-hover:bg-emerald-100 group-hover:text-emerald-600">
+                <IconComponent className="h-8 w-8 dark:text-slate-800" />
             </div>
-            <span className="relative z-10 font-semibold text-slate-800 mt-4">
+            <span className="relative z-10 font-semibold text-primary mt-4">
                 {title}
             </span>
             <div className="relative z-10 mt-auto flex items-center gap-2 text-sm font-bold text-emerald-600 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:gap-3">
@@ -99,7 +100,7 @@ const ExternalLinkButton = ({ href, children }: { href: string; children: React.
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className="group relative inline-flex items-center justify-center overflow-hidden rounded-lg border border-slate-300 bg-white px-6 py-2.5 text-center font-semibold text-slate-700 shadow-sm transition-all duration-300 ease-in-out hover:bg-slate-50 hover:border-slate-400 hover:shadow-md"
+        className="group relative inline-flex items-center justify-center overflow-hidden rounded-lg border border-border bg-background px-6 py-2.5 text-center font-semibold text-primary shadow-sm transition-all duration-300 ease-in-out hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-400 hover:shadow-md"
     >
         <span className="transition-transform duration-300 group-hover:-translate-x-1">{children}</span>
         <ArrowRight className="ml-2 h-4 w-4 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-1" />
@@ -144,7 +145,7 @@ const UsefulInfoPage = () => {
     ]
 
     return (
-        <div className="bg-slate-50">
+        <div className="bg-secondary-background">
             <PageHero
                 title="Useful Info"
                 subtitle="ข้อมูลที่เป็นประโยชน์และลิงก์สำคัญสำหรับนักศึกษาแพทย์ศิริราช"

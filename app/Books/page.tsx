@@ -159,7 +159,7 @@ export default async function BookPage() {
   const session = await getServerSession(authOptions);
 
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900">
+    <main className="min-h-screen bg-background text-primary">
       <PageHero title="Book Library" subtitle="Access subject folders and textbooks" />
 
       <section className="container mx-auto px-4 py-16">

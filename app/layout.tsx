@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { Kanit } from 'next/font/google'
 import Navbar from '@/app/components/shared/Navbar'
 import Footer from './components/shared/Footer'
+import { ThemeProvider } from 'next-themes'
 
 // Set up the Kanit font from Google Fonts
 const kanit = Kanit({
@@ -22,11 +23,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="th" className={kanit.className}>
+    <html lang="th" className={kanit.className}  suppressHydrationWarning>
       <body>
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
+        <ThemeProvider attribute="class" enableSystem defaultTheme='light' >
+          <Navbar />
+          <main>{children}</main>
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );
