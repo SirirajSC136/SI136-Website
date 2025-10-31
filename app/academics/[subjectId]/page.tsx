@@ -74,7 +74,7 @@ const SubjectDetailPage = () => {
         return (
             <div className="flex h-screen flex-col items-center justify-center gap-4">
                 <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
-                <p className="text-slate-600">Loading subject materials...</p>
+                <p className="text-secondary">Loading subject materials...</p>
             </div>
         );
     }
@@ -84,7 +84,7 @@ const SubjectDetailPage = () => {
             <div className="flex h-screen items-center justify-center text-center">
                 <div>
                     <h2 className="text-2xl font-bold text-red-600">Error</h2>
-                    <p className="text-slate-600 mt-2">{error || "Could not load the subject."}</p>
+                    <p className="text-secondary mt-2">{error || "Could not load the subject."}</p>
                     <Link href="/academics" className="mt-4 inline-block rounded-md bg-emerald-600 px-4 py-2 text-white hover:bg-emerald-700">
                         Back to Academics
                     </Link>
@@ -95,22 +95,22 @@ const SubjectDetailPage = () => {
 
     // --- Render the page with the fetched data ---
     return (
-        <div className="min-h-screen bg-slate-50">
+        <div className="min-h-screen bg-secondary-background">
             {/* Breadcrumbs Header */}
-            <header className="border-b bg-white">
-                <div className="container mx-auto flex items-center gap-2 p-4 text-sm text-slate-600">
+            <header className="border-b bg-background">
+                <div className="container mx-auto flex items-center gap-2 p-4 text-sm text-secondary">
                     <Link href="/" className="hover:text-emerald-600"><Home size={16} /></Link>
                     <span>/</span>
                     <Link href="/academics" className="hover:text-emerald-600">Academic</Link>
                     <span>/</span>
-                    <span className="font-semibold text-slate-800">{subject.courseCode}</span>
+                    <span className="font-semibold text-primary">{subject.courseCode}</span>
                 </div>
             </header>
 
             <main className="container mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8 p-4 md:p-8">
                 {/* Left Column: Subject Info */}
                 <aside className="lg:col-span-1 lg:sticky lg:top-24 self-start">
-                    <div className="rounded-xl border bg-white p-6 shadow-sm">
+                    <div className="rounded-xl border bg-background p-6 shadow-sm">
                         <img
                             src={subject.imageUrl}
                             alt={`Image for ${subject.title}`}
@@ -123,7 +123,7 @@ const SubjectDetailPage = () => {
                                 </p>
                                 {/* Visual badge to indicate the source of the course */}
                                 {subject.canvasUrl ? (
-                                    <span className="flex items-center gap-1.5 text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded-full">
+                                    <span className="flex items-center gap-1.5 text-xs px-2 py-1 bg-gray-100 dark:bg-slate-800 text-secondary rounded-full">
                                         <Globe size={12} /> Canvas
                                     </span>
                                 ) : (
@@ -132,8 +132,8 @@ const SubjectDetailPage = () => {
                                     </span>
                                 )}
                             </div>
-                            <h1 className="mt-1 text-3xl font-extrabold text-slate-900">{subject.courseCode}</h1>
-                            <h2 className="mt-1 text-lg text-slate-600">{subject.title}</h2>
+                            <h1 className="mt-1 text-3xl font-extrabold text-primary">{subject.courseCode}</h1>
+                            <h2 className="mt-1 text-lg text-secondary">{subject.title}</h2>
                             {subject.canvasUrl && (
                                 <a
                                     href={subject.canvasUrl}
@@ -150,8 +150,8 @@ const SubjectDetailPage = () => {
                 </aside>
 
                 <section className="lg:col-span-2">
-                    <div className="rounded-xl border bg-white p-6 shadow-sm">
-                        <h3 className="text-2xl font-bold text-slate-800 border-b pb-4 mb-6">
+                    <div className="rounded-xl border bg-background p-6 shadow-sm">
+                        <h3 className="text-2xl font-bold text-primary border-b pb-4 mb-6">
                         Course Summary & Materials
                         </h3>
 
@@ -162,7 +162,7 @@ const SubjectDetailPage = () => {
                             <>
                             {main.length > 0 && (
                                 <div className="mb-8">
-                                <h4 className="text-xl font-semibold text-emerald-700 mb-4">
+                                <h4 className="text-xl font-semibold text-emerald-700 dark:text-emerald-400 mb-4">
                                     Main Subject
                                 </h4>
                                 <div className="space-y-4">
@@ -175,7 +175,7 @@ const SubjectDetailPage = () => {
 
                             {others.length > 0 && (
                                 <div>
-                                <h4 className="text-xl font-semibold text-slate-700 mb-4">
+                                <h4 className="text-xl font-semibold text-secondary mb-4">
                                     Others
                                 </h4>
                                 <div className="space-y-4">
