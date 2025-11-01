@@ -153,6 +153,10 @@ const SubjectDetailPage = () => {
                         <h3 className="text-2xl font-bold text-primary border-b pb-4 mb-6">
                         Course Summary & Materials
                         </h3>
+                        <div className="space-y-4">
+                            {/* This map function seamlessly renders all topics, regardless of their source */}
+                            {subject.topics.map(topic => <TopicItem key={topic.id} topic={topic} />)}
+                        </div>
                     </div>
                 </section>
             </main>
