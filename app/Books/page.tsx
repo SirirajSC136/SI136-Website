@@ -140,7 +140,7 @@ export default async function BookPage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group flex flex-col rounded-xl overflow-hidden 
-                           bg-background border border-gray-200 shadow-sm 
+                           bg-background border border-border shadow-sm 
                            hover:shadow-md hover:border-emerald-400 
                            transition-all duration-300"
               >

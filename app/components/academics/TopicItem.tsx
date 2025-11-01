@@ -12,7 +12,7 @@ import { File, Link as LinkIcon, ExternalLink, ChevronDown, BookOpen, BrainCircu
 const ItemRenderer = ({ item }: { item: TopicItemData }) => {
     switch (item.type) {
         case 'Header':
-            return <h4 className="pt-5 pb-2 text-base font-bold text-slate-700">{item.title}</h4>;
+            return <h4 className="pt-5 pb-2 text-base font-bold text-primary">{item.title}</h4>;
 
         // --- THIS IS THE FIX ---
         // The 'Page' case is now changed to render a simple link,
@@ -23,11 +23,11 @@ const ItemRenderer = ({ item }: { item: TopicItemData }) => {
                     href={item.canvasUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group flex items-center gap-3 rounded-lg p-3 text-slate-700 transition-colors hover:bg-slate-100"
+                    className="group flex items-center gap-3 rounded-lg p-3 text-secondary transition-colors hover:bg-slate-100 dark:hover:bg-stone-800"
                 >
-                    <BookOpen className="h-5 w-5 flex-shrink-0 text-slate-400 transition-colors group-hover:text-emerald-600" />
+                    <BookOpen className="h-5 w-5 flex-shrink-0 text-secondary transition-colors group-hover:text-emerald-600" />
                     <span className="flex-grow font-medium">{item.title}</span>
-                    <ExternalLink className="h-4 w-4 flex-shrink-0 text-slate-400" />
+                    <ExternalLink className="h-4 w-4 flex-shrink-0 text-secondary" />
                 </a>
             );
 
@@ -36,9 +36,9 @@ const ItemRenderer = ({ item }: { item: TopicItemData }) => {
                 <a
                     href={item.url}
                     download={item.title}
-                    className="group flex items-center gap-3 rounded-lg p-3 text-slate-700 transition-colors hover:bg-slate-100"
+                    className="group flex items-center gap-3 rounded-lg p-3 text-secondary transition-colors hover:bg-slate-100 dark:hover:bg-stone-800"
                 >
-                    <File className="h-5 w-5 flex-shrink-0 text-slate-400 transition-colors group-hover:text-emerald-600" />
+                    <File className="h-5 w-5 flex-shrink-0 text-secondary transition-colors group-hover:text-emerald-600" />
                     <span className="flex-grow font-medium">{item.title}</span>
                 </a>
             );
@@ -48,9 +48,9 @@ const ItemRenderer = ({ item }: { item: TopicItemData }) => {
                     href={item.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group flex items-center gap-3 rounded-lg p-3 text-slate-700 transition-colors hover:bg-slate-100"
+                    className="group flex items-center gap-3 rounded-lg p-3 text-secondary transition-colors hover:bg-slate-100 dark:hover:bg-stone-800"
                 >
-                    <LinkIcon className="h-5 w-5 flex-shrink-0 text-slate-400 transition-colors group-hover:text-emerald-600" />
+                    <LinkIcon className="h-5 w-5 flex-shrink-0 text-secondary transition-colors group-hover:text-emerald-600" />
                     <span className="flex-grow font-medium">{item.title}</span>
                 </a>
             );
@@ -58,7 +58,7 @@ const ItemRenderer = ({ item }: { item: TopicItemData }) => {
             return (
                 <Link
                     href={`/quiz/${item.id}`} // This is the future page for taking the quiz
-                    className="group flex items-center justify-between rounded-lg p-3 text-slate-700 transition-colors hover:bg-slate-100"
+                    className="group flex items-center justify-between rounded-lg p-3 text-secondary transition-colors hover:bg-slate-100 dark:hover:bg-stone-800"
                 >
                     <div className="flex items-center gap-3">
                         <BrainCircuit className="h-5 w-5 flex-shrink-0 text-blue-500" />
@@ -77,7 +77,7 @@ const ItemRenderer = ({ item }: { item: TopicItemData }) => {
             return (
                 <Link
                     href={`/flashcards/${item.id}`} // This is the future page for viewing flashcards
-                    className="group flex items-center justify-between rounded-lg p-3 text-slate-700 transition-colors hover:bg-slate-100"
+                    className="group flex items-center justify-between rounded-lg p-3 text-secondary transition-colors hover:bg-slate-100 dark:hover:bg-stone-800"
                 >
                     <div className="flex items-center gap-3">
                         <Layers3 className="h-5 w-5 flex-shrink-0 text-emerald-500" />
@@ -109,21 +109,21 @@ const TopicItem = ({ topic }: { topic: Topic }) => {
     }
 
     return (
-        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white transition-shadow hover:shadow-md">
+        <div className="overflow-hidden rounded-xl border border-border bg-background transition-shadow hover:shadow-md">
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="flex w-full items-center justify-between p-4 text-left"
             >
-                <h3 className="text-lg font-bold text-slate-800">{topic.title}</h3>
+                <h3 className="text-lg font-bold text-primary">{topic.title}</h3>
                 <ChevronDown
-                    className={`h-6 w-6 flex-shrink-0 text-slate-500 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+                    className={`h-6 w-6 flex-shrink-0 text-secondary transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
                 />
             </button>
 
             <div
                 className={`transition-[max-height] duration-500 ease-in-out overflow-hidden ${isOpen ? 'max-h-[2000px]' : 'max-h-0'}`}
             >
-                <div className="border-t border-slate-200 p-4">
+                <div className="border-t border-border p-4">
                     <div className="space-y-1">
                         {topic.items.map(item => (
                             <ItemRenderer key={item.id} item={item} />

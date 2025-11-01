@@ -89,7 +89,8 @@ const StudentImpactPage = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
                     
                     {/* Main Official Channel Card */}
-                    <div className="lg:col-span-3 flex flex-col justify-between rounded-xl border border-border bg-background p-8 shadow-md">
+                    
+                    {/*<div className="lg:col-span-3 flex flex-col justify-between rounded-xl border border-border bg-background p-8 shadow-md">
                         <div>
                             <div className="flex items-center gap-4">
                                 <img
@@ -118,10 +119,11 @@ const StudentImpactPage = () => {
                                 <span>เพิ่มเพื่อน / ติดตาม</span>
                             </a>
                         </div>
-                    </div>
+                    </div> */}
+                        
 
                     {/* Anonymous Feedback Card */}
-                    <div className="lg:col-span-2">
+                    <div className="lg:col-span-5">
                         <ActionCard
                             href="https://script.google.com/macros/s/AKfycbyeavzUz9-IIOMIJads5NzpPRr3qwt2x5n6WKPjg06GG3fJlOJgTS8uAoSDu6M_BvnT/exec"
                             icon={<TriangleAlert size={28} />}
