@@ -79,14 +79,27 @@ const Calendar: React.FC = () => {
 	}
 
 	function splitTitle(title: string) {
-		const idx = title.indexOf("(");
-		if (idx === -1) {
-			return { subject: title.trim(), topic: "" };
+		const codeMatch = title.match(
+			/^(SIID\s?\d+|EGID\s?\d+|SCID\s?\d+|ITCS\s?\d+)/i
+		);
+
+		let subject = "";
+		let topic = "";
+
+		if (codeMatch) {
+			subject = codeMatch[0].replace(/\s+/, " ").trim();
+			topic = title.replace(codeMatch[0], "").trim();
+		} else {
+			const idx = title.indexOf("(");
+			if (idx === -1) {
+				subject = title.trim();
+			} else {
+				subject = title.slice(0, idx).trim();
+				topic = title.slice(idx).trim();
+			}
 		}
-		return {
-			subject: title.slice(0, idx).trim(),
-			topic: title.slice(idx).trim(), // includes the parentheses
-		};
+
+		return { subject, topic };
 	}
 
 	function closeModal() {
@@ -184,10 +197,8 @@ const Calendar: React.FC = () => {
 											<button
 												key={i}
 												onClick={() => setSelectedEvent(ev)}
-												className={`relative z-0 px-2 py-0.5 rounded-full text-accent 
-                        font-medium transition-transform duration-200 hover:scale-105 
-                        hover:-translate-y-0.5 hover:shadow-lg ${
-													ev.title.includes("สอบ Summative")
+												className={`relative z-0 px-2 py-0.5 rounded-full font-medium transition-transform duration-200 hover:scale-105 hover:-translate-y-0.5 hover:shadow-lg ${
+													ev.title.includes("Sum")
 														? styles.summativeEvent
 														: ev.title.includes("สอบปลายภาค") ||
 														  ev.title.includes("สอบกลางภาค")
@@ -195,17 +206,21 @@ const Calendar: React.FC = () => {
 														: "text-white"
 												}`}
 												style={
-													ev.title.includes("สอบ Summative")
+													ev.title.includes("Sum")
 														? {}
 														: ev.title.includes("สอบปลายภาค") ||
 														  ev.title.includes("สอบกลางภาค")
 														? {}
 														: { background: getCourseColor(ev) }
 												}>
-												<span className={styles.eventTitle}>{subject}</span>
+												<span className={styles.eventFullTitle}>{subject}</span>
+												<span className={styles.eventShortCode}>
+													{subject.slice(0, 4)}
+												</span>
+
 												{topic && (
 													<span
-														className={`${styles.eventTitle} ml-1 max-[1148px]:hidden`}>
+														className={`${styles.eventTopic} ml-1 max-[1148px]:hidden`}>
 														{topic}
 													</span>
 												)}
@@ -223,12 +238,8 @@ const Calendar: React.FC = () => {
 					<div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
 						<div
 							className={`relative bg-card/80 backdrop-blur-md border border-white/20 
-              rounded-xl shadow-2xl w-[90%] sm:w-[80%] md:max-w-lg p-6 
-              ${
-								isClosing
-									? "animate-out fade-out zoom-out"
-									: "animate-in fade-in zoom-in"
-							}`}>
+							rounded-xl shadow-2xl w-[90%] sm:w-[80%] md:max-w-lg p-6 
+							${isClosing ? "animate-out fade-out zoom-out" : "animate-in fade-in zoom-in"}`}>
 							<button
 								onClick={closeModal}
 								className="absolute top-3 right-3 text-muted-foreground hover:text-foreground transition">
@@ -258,7 +269,7 @@ const Calendar: React.FC = () => {
 										👩‍🏫 {selectedEvent.professor}
 									</span>
 								)}
-								{selectedEvent.title.includes("สอบ Summative") && (
+								{selectedEvent.title.includes("Sum") && (
 									<span
 										className={`${styles.summativeEvent} px-2 py-0.5 text-xs rounded-full`}>
 										{selectedEvent.title}

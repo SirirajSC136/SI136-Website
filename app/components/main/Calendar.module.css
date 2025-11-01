@@ -90,14 +90,36 @@
 	}
 }
 
-.eventTitle {
-	font-size: 0.75rem;
+.eventFullTitle {
+	display: inline;
+}
+
+.eventShortCode {
+	display: none;
+}
+
+.evenTopic {
+	display: inline;
+}
+
+@media (max-width: 648px) {
+	.eventFullTitle {
+		display: none;
+	}
+	.eventShortCode {
+		display: inline;
+		font-size: 0.9rem;
+	}
+}
+
+.eventTopic {
+	font-size: 0.9rem;
 	line-height: 1rem;
 	font-weight: 500;
 }
 
-@media (min-width: 640px) {
-	.eventTitle {
+@media (min-width: 648px) {
+	.eventTopic {
 		font-size: 1rem;
 		line-height: 1.25rem;
 	}
