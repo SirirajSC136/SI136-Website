@@ -51,7 +51,7 @@ const Materials = () => {
             title: 'Academic Sites',
             icon: <Library size={24} />,
             links: [
-                { name: 'SI135', href: 'https://sites.google.com/student.mahidol.edu/siriraj135/' }, { name: 'SI134', href: 'https://siriraj134.com/' }, { name: 'SI133', href: 'https://sites.google.com/view/siriraj133official/' }, 
+                { name: 'SI135', href: 'https://www.si135.com' }, { name: 'SI134', href: 'https://siriraj134.com/' }, { name: 'SI133', href: 'https://sites.google.com/view/siriraj133official/' }, 
                 { name: 'SI132', href: 'https://sites.google.com/view/siriraj132/' }, { name: 'SI131', href: 'https://sites.google.com/view/siriraj131official/' }, { name: 'SI130', href: 'https://sites.google.com/view/siriraj130/' }, 
             ],
         },
