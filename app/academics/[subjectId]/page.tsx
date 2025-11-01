@@ -158,9 +158,7 @@ const SubjectDetailPage = () => {
                             {subject.topics.map(topic => <TopicItem key={topic.id} topic={topic} />)}
                         </div>
                     </div>
-                    <div className="space-y-4">
-                        {subject.topics.map(topic => <TopicItem key={topic.id} topic={topic} />)}
-                    </div>
+                    
                 </section>
             </main>
         </div>
