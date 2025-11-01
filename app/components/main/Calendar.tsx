@@ -46,13 +46,13 @@ const Calendar: React.FC = () => {
 	}, {});
 
 	const isToday = (date: Date) => {
-		const now = new Date();
-		const sameDay =
-			date.getFullYear() === now.getFullYear() &&
-			date.getMonth() === now.getMonth() &&
-			date.getDate() === now.getDate();
+		const today = new Date();
+		today.setHours(0, 0, 0, 0);
 
-		return sameDay && date.getMonth() === currentMonth.getMonth();
+		const d = new Date(date);
+		d.setHours(0, 0, 0, 0);
+
+		return d.getTime() === today.getTime();
 	};
 
 	const monthLabel = currentMonth.toLocaleDateString("en-US", {
@@ -190,7 +190,7 @@ const Calendar: React.FC = () => {
 								<div
 									className={`text-xs absolute top-1 right-1 font-semibold
                                     ${
-																			isToday(day)
+																			isToday(day) && inMonth
 																				? "px-2 py-0.5 rounded-full bg-gradient-to-r from-primary to-purple-500 text-white shadow"
 																				: "text-muted-foreground"
 																		}`}>
