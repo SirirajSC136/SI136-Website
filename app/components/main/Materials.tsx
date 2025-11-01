@@ -67,8 +67,8 @@ const Materials = () => {
             title: 'SI136',
             icon: <University size={24} />,
             links: [
-                { name: 'IG SI136', href: '#' }, { name: 'LineOA', href: '#/' },
-                { name: 'บริจาคงบทำเว็บ', href: '#' },
+                { name: 'IG SI136', href: 'https://www.instagram.com/siriraj136' }, 
+                /*{ name: 'บริจาคงบทำเว็บ', href: '#' },*/
             ],
         },
     ];
