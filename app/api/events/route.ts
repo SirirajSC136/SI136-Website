@@ -6,11 +6,12 @@ import { fetchCalendarEvents } from "@/lib/getEvents";
 
 export const dynamic = "force-dynamic";
 
-// Ensure required env vars exist
+// --- Ensure required env vars exist ---
 if (!process.env.GOOGLE_API_KEY || !process.env.GOOGLE_CALENDAR_ID) {
   throw new Error("Missing Google API Key or Calendar ID.");
 }
 
+// --- Google Calendar client ---
 const calendar = google.calendar({
   version: "v3",
   auth: process.env.GOOGLE_API_KEY,
@@ -44,7 +45,7 @@ export async function GET() {
     const response = await calendar.events.list({
       calendarId: process.env.GOOGLE_CALENDAR_ID,
       timeMin: new Date().toISOString(),
-      maxResults: 8,
+      maxResults: 50,
       singleEvents: true,
       orderBy: "startTime",
     });
@@ -61,23 +62,34 @@ export async function GET() {
         title,
         tag: "Class",
         startTime: event.start?.dateTime || event.start?.date || "",
+        endTime: event.end?.dateTime || event.end?.date || "",
         details: stripHtml(event.description),
+        location: event.location || "",
         subjectPageUrl: `/academics/${encodeURIComponent(courseCode)}`,
+        htmlLink: event.htmlLink || "",
       };
     });
 
-    const unifiedEvents = [...localEvents, ...googleEvents];
-    
-    return NextResponse.json({ events: unifiedEvents });
+    console.log("Parsed Google Events:", googleEvents);
 
+    const unifiedEvents = [...localEvents, ...googleEvents];
+
+    return new NextResponse(JSON.stringify({ events: unifiedEvents }, null, 2), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+      },
+    });
   } catch (error: any) {
     console.error("Error fetching events:", error);
-    return NextResponse.json(
-      { error: error.message || "Failed to load events" },
-      { status: 500 }
+    return new NextResponse(
+      JSON.stringify({ error: error.message || "Failed to load events" }),
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+      }
     );
   }
-
-    
-
 }

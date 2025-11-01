@@ -111,13 +111,17 @@ const HomePageContent = async () => {
     const assignments = tasks.filter(t => t.type === 'assignment');
     const examinations = tasks.filter(t => t.type === 'examination');
 
-    // CORRECTED: Filter events to show only those from today onwards.
     const now = new Date();
-    now.setHours(0, 0, 0, 0); // Set to the beginning of today to include all of today's events
+    now.setHours(0, 0, 0, 0);
 
+    // End of the 3‑day window
+    const DaysLater = new Date(now);
+    DaysLater.setDate(DaysLater.getDate() + 3);
+
+    // Filter events: today through 2 days ahead
     const upcomingEvents = allEvents.filter(event => {
-        const eventDate = new Date(event.startTime);
-        return eventDate >= now;
+    const eventDate = new Date(event.startTime);
+    return eventDate >= now && eventDate < DaysLater;
     });
 
     // CORRECTED: Group the filtered upcoming events, not all events.

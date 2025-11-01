@@ -1,0 +1,104 @@
+.calendarWrapper {
+	width: 100%;
+	overflow-x: auto; /* enable horizontal scroll */
+	overflow-y: hidden;
+	-webkit-overflow-scrolling: touch;
+}
+
+.calendarGrid {
+	display: grid;
+	grid-template-columns: repeat(7, 140px); /* 7 fixed-width day columns */
+}
+
+.examEvent {
+	background: linear-gradient(135deg, #ef4444, #f87171);
+	color: #fff !important;
+	font-weight: 700;
+	border-radius: 8px;
+	box-shadow: 0 0 16px rgba(239, 68, 68, 0.8);
+	animation: examGlow 2.5s infinite ease-in-out;
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.examEvent:hover {
+	transform: scale(1.05) translateY(-2px);
+	box-shadow: 0 6px 20px rgba(239, 68, 68, 0.9);
+	z-index: 20;
+	position: relative;
+}
+
+@keyframes examGlow {
+	0%,
+	100% {
+		opacity: 1;
+		box-shadow: 0 0 16px rgba(239, 68, 68, 0.8);
+	}
+	50% {
+		opacity: 0.7;
+		box-shadow: 0 0 6px rgba(239, 68, 68, 0.5);
+	}
+}
+
+.summativeEvent {
+	display: inline-block;
+	background: linear-gradient(270deg, #ff0080, #ff8c00, #ffeb3b);
+	background-size: 600% 600%;
+	color: white;
+	font-weight: 800;
+	border-radius: 9999px;
+	padding: 2px 8px;
+	box-shadow: 0 0 20px rgba(255, 0, 128, 0.9), 0 0 30px rgba(255, 140, 0, 0.7);
+	animation: summativePulse 2s infinite ease-in-out,
+		gradientShift 6s ease infinite;
+	overflow: hidden;
+
+	/* 👇 Add a slower transition for hover */
+	transition: transform 0.5s ease, box-shadow 0.5s ease;
+	position: relative;
+	z-index: 10;
+}
+
+.summativeEvent:hover {
+	box-shadow: 0 8px 24px rgba(255, 0, 128, 1),
+		0 10px 28px rgba(255, 140, 0, 0.9);
+	z-index: 20;
+}
+
+@keyframes summativePulse {
+	0%,
+	100% {
+		transform: scale(1);
+		opacity: 1;
+		box-shadow: 0 0 5px rgba(255, 0, 128, 0.9), 0 0 5px rgba(255, 140, 0, 0.7);
+	}
+	50% {
+		transform: scale(1.05);
+		opacity: 0.85;
+		box-shadow: 0 0 5px rgba(255, 235, 59, 0.9), 0 0 5px rgba(255, 140, 0, 0.8);
+	}
+}
+
+@keyframes gradientShift {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+.eventTitle {
+	font-size: 0.75rem;
+	line-height: 1rem;
+	font-weight: 500;
+}
+
+@media (min-width: 640px) {
+	.eventTitle {
+		font-size: 1rem;
+		line-height: 1.25rem;
+	}
+}
