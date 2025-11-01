@@ -7,3 +7,6 @@ declare global {
         conn: Mongoose | null;
     };
 }
+declare module "ical" {
+  export function parseICS(data: string): Record<string, any>;
+}

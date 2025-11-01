@@ -104,12 +104,13 @@ const Navbar = () => {
                                 href={link.href}
                                 onClick={() => setIsOpen(false)}
                                 className={`text-3xl font-semibold transition-colors ${isActive ? 'text-emerald-600' : 'text-primary'
-                                    }`}
-                            >
+                                }`}
+                                >
                                 {link.name}
                             </Link>
                         );
                     })}
+                    <ModeSwitch />
                 </div>
             </div>
         </>

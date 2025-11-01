@@ -9,12 +9,19 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@fullcalendar/core": "^6.1.19",
+    "@fullcalendar/daygrid": "^6.1.19",
+    "@fullcalendar/interaction": "^6.1.19",
+    "@fullcalendar/list": "^6.1.19",
+    "@fullcalendar/react": "^6.1.19",
+    "@fullcalendar/timegrid": "^6.1.19",
     "@radix-ui/react-slot": "^1.2.3",
     "@web3-storage/parse-link-header": "^3.1.0",
     "cheerio": "^1.1.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "googleapis": "^159.0.0",
+    "ical": "^0.8.0",
     "lucide-react": "^0.548.0",
     "mongodb": "^6.19.0",
     "mongoose": "^8.18.1",
@@ -29,6 +36,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/ical": "^0.8.3",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

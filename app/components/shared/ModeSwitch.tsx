@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button"
 export function ModeSwitch() {
     const { theme, setTheme } = useTheme()
   return (
-    <div className="flex flex-col ">
-      <Button variant="ghost" size="icon" className="rounded-full duration-500 relative"
+    <div className="flex flex-col">
+      <Button variant="ghost" size="icon" className="rounded-full duration-500 relative cursor-pointer"
         onClick={() => {
           setTheme(theme === "dark" ? "light" : "dark")
         }}>
