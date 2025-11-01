@@ -45,8 +45,15 @@ const Calendar: React.FC = () => {
 		return acc;
 	}, {});
 
-	const isToday = (date: Date) =>
-		date.toDateString() === new Date().toDateString();
+	const isToday = (date: Date) => {
+		const now = new Date();
+		const sameDay =
+			date.getFullYear() === now.getFullYear() &&
+			date.getMonth() === now.getMonth() &&
+			date.getDate() === now.getDate();
+
+		return sameDay && date.getMonth() === currentMonth.getMonth();
+	};
 
 	const monthLabel = currentMonth.toLocaleDateString("en-US", {
 		month: "long",
