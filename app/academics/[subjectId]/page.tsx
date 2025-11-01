@@ -154,6 +154,9 @@ const SubjectDetailPage = () => {
                         Course Summary & Materials
                         </h3>
                     </div>
+                    <div className="space-y-4">
+                        {subject.topics.map(topic => <TopicItem key={topic.id} topic={topic} />)}
+                    </div>
                 </section>
             </main>
         </div>

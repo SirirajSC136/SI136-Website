@@ -67,6 +67,7 @@ export async function GET() {
     });
 
     const unifiedEvents = [...localEvents, ...googleEvents];
+    
     return NextResponse.json({ events: unifiedEvents });
 
   } catch (error: any) {

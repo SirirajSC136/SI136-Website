@@ -27,7 +27,7 @@ const AcademicPage = async () => {
 
     // --- THE FIX IS HERE ---
     // 2. Define the hardcoded ID you want to exclude.
-    const excludedIdList = ['1266'];
+    const excludedIdList = ['1266','208','549','1105'];
 
     // 3. Filter the array to create a new list that does not include the subject with the excluded ID.
     const firstsubjects = allSubjects.filter(subject => !excludedIdList.includes(subject._id));

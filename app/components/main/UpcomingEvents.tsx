@@ -2,11 +2,13 @@ import { CalendarDays, ClipboardList, Pencil, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { CalendarEvent, Task } from '@/types';
 
+// CORRECTED: This function now correctly parses the JSON and returns the nested 'events' array.
 async function getGoogleCalendarEvents(): Promise<CalendarEvent[]> {
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/events`, { next: { revalidate: 900 } });
         if (!res.ok) return [];
-        return res.json();
+        const data = await res.json();
+        return data.events || []; // Access the 'events' property from the response
     } catch (error) {
         console.error("Failed to fetch Google Calendar events:", error);
         return [];
@@ -105,11 +107,21 @@ const EmptyState = ({ message }: { message: string }) => (
 );
 
 const HomePageContent = async () => {
-    const [events, tasks] = await Promise.all([getGoogleCalendarEvents(), getCanvasTasks()]);
+    const [allEvents, tasks] = await Promise.all([getGoogleCalendarEvents(), getCanvasTasks()]);
     const assignments = tasks.filter(t => t.type === 'assignment');
     const examinations = tasks.filter(t => t.type === 'examination');
 
-    const groupedEvents = events.reduce((acc, event) => {
+    // CORRECTED: Filter events to show only those from today onwards.
+    const now = new Date();
+    now.setHours(0, 0, 0, 0); // Set to the beginning of today to include all of today's events
+
+    const upcomingEvents = allEvents.filter(event => {
+        const eventDate = new Date(event.startTime);
+        return eventDate >= now;
+    });
+
+    // CORRECTED: Group the filtered upcoming events, not all events.
+    const groupedEvents = upcomingEvents.reduce((acc, event) => {
         const dateKey = new Date(event.startTime).toLocaleDateString('th-TH', { weekday: 'long', day: 'numeric', month: 'long' });
         if (!acc[dateKey]) acc[dateKey] = [];
         acc[dateKey].push(event);
