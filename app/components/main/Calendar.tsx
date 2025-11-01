@@ -34,9 +34,28 @@ const Calendar: React.FC = () => {
 	const endDate = new Date(endOfMonth);
 	endDate.setDate(endDate.getDate() + (6 - endDate.getDay()));
 
+	// Build month bounds in UTC to avoid local TZ drift
+	const startOfMonthUTC = new Date(
+		Date.UTC(currentMonth.getFullYear(), currentMonth.getMonth(), 1)
+	);
+	const endOfMonthUTC = new Date(
+		Date.UTC(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0)
+	);
+
+	// Calculate week boundaries (Sunday to Saturday) in UTC
+	const startDateUTC = new Date(startOfMonthUTC);
+	startDateUTC.setUTCDate(startDateUTC.getUTCDate() - startDateUTC.getUTCDay());
+
+	const endDateUTC = new Date(endOfMonthUTC);
+	endDateUTC.setUTCDate(endDateUTC.getUTCDate() + (6 - endDateUTC.getUTCDay()));
+
 	const days: Date[] = [];
-	for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
-		days.push(new Date(d));
+	for (
+		let d = new Date(startDateUTC);
+		d <= endDateUTC;
+		d.setUTCDate(d.getUTCDate() + 1)
+	) {
+		days.push(new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
 	}
 
 	const grouped = events.reduce((acc: Record<string, Event[]>, ev) => {
@@ -44,16 +63,19 @@ const Calendar: React.FC = () => {
 		acc[ev.dayKey].push(ev);
 		return acc;
 	}, {});
+	// Helper: pad to 2 digits
+	const pad2 = (n: number) => String(n).padStart(2, "0");
 
-	const isToday = (date: Date) => {
-		const today = new Date();
-		today.setHours(0, 0, 0, 0);
+	// Helper: build a day key (local calendar date)
+	const toDayKey = (d: Date) =>
+		`${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
 
-		const d = new Date(date);
-		d.setHours(0, 0, 0, 0);
+	// Compute today's key once (normalized to midnight)
+	const todayKey = toDayKey(new Date());
 
-		return d.getTime() === today.getTime();
-	};
+	// Replace isToday with key comparison, plus in-month constraint
+	const isToday = (date: Date, inMonth: boolean): boolean =>
+		inMonth && toDayKey(date) === todayKey;
 
 	const monthLabel = currentMonth.toLocaleDateString("en-US", {
 		month: "long",
@@ -176,7 +198,6 @@ const Calendar: React.FC = () => {
 						].join("-");
 						const inMonth = day.getMonth() === currentMonth.getMonth();
 						const dayEvents = grouped[key] || [];
-
 						return (
 							<div
 								key={idx}
@@ -189,14 +210,13 @@ const Calendar: React.FC = () => {
                             `}>
 								<div
 									className={`text-xs absolute top-1 right-1 font-semibold
-                                    ${
-																			isToday(day) && inMonth
-																				? "px-2 py-0.5 rounded-full bg-gradient-to-r from-primary to-purple-500 text-white shadow"
-																				: "text-muted-foreground"
-																		}`}>
+										${
+											isToday(day, inMonth)
+												? "px-2 py-0.5 rounded-full bg-gradient-to-r from-primary to-purple-500 text-white shadow"
+												: "text-muted-foreground"
+										}`}>
 									{day.getDate()}
 								</div>
-
 								<div className="mt-5 flex flex-col gap-1 relative z-2">
 									{dayEvents.map((ev, i) => {
 										const { subject, topic } = splitTitle(ev.title);
