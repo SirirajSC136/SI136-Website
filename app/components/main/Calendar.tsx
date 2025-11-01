@@ -59,6 +59,7 @@ const Calendar: React.FC = () => {
 		"SIID 145": "var(--siid-145)",
 		"SIID 146": "var(--siid-146)",
 		"SIID 147": "var(--siid-147)",
+		"SIID 148": "var(--siid-148)",
 		ITCS: "var(--itcs)",
 		EGID: "var(--egid)",
 		SCID: "var(--scid)",

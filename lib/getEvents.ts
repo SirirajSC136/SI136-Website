@@ -14,6 +14,7 @@ const blockedPatterns = [
 	/วัน/,
 	/Mahidol/,
 	/Orientation/,
+	/correlations/,
 ];
 
 const isAllowed = (ev: any) => !blockedPatterns.some((p) => p.test(ev.title));

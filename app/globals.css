@@ -81,14 +81,15 @@
 	--sidebar-border: oklch(0.922 0 0);
 	--sidebar-ring: oklch(0.708 0 0);
 
-	--siid-143: linear-gradient(to right, #fdba74, #fed7aa); /* pastel orange */
-	--siid-144: linear-gradient(to right, #93c5fd, #bfdbfe); /* pastel blue */
-	--siid-145: linear-gradient(to right, #86efac, #bbf7d0); /* pastel green */
-	--siid-146: linear-gradient(to right, #d8b4fe, #e9d5ff); /* pastel purple */
-	--siid-147: linear-gradient(to right, #f9a8d4, #fbcfe8); /* pastel pink */
-	--itcs: linear-gradient(to right, #fcd34d, #fde68a); /* pastel yellow */
-	--egid: linear-gradient(to right, #6ee7b7, #a7f3d0); /* pastel teal */
-	--scid: linear-gradient(to right, #a5b4fc, #c7d2fe); /* pastel indigo */
+	--siid-143: linear-gradient(to right, #fdba74, #fed7aa);
+	--siid-144: linear-gradient(to right, #93c5fd, #bfdbfe);
+	--siid-145: linear-gradient(to right, #86efac, #bbf7d0);
+	--siid-146: linear-gradient(to right, #d8b4fe, #e9d5ff);
+	--siid-147: linear-gradient(to right, #f9a8d4, #fbcfe8);
+	--siid-148: linear-gradient(to right, #7dd3fc, #bae6fd);
+	--itcs: linear-gradient(to right, #fcd34d, #fde68a);
+	--egid: linear-gradient(to right, #6ee7b7, #a7f3d0);
+	--scid: linear-gradient(to right, #a5b4fc, #c7d2fe);
 
 	--final: linear-gradient(135deg, #ef4444, #f87171);
 }
@@ -132,6 +133,7 @@
 	--siid-145: linear-gradient(to right, #16a34a, #22c55e);
 	--siid-146: linear-gradient(to right, #9333ea, #a855f7);
 	--siid-147: linear-gradient(to right, #db2777, #ec4899);
+	--siid-148: linear-gradient(to right, #0284c7, #0ea5e9);
 	--itcs: linear-gradient(to right, #ca8a04, #eab308);
 	--egid: linear-gradient(to right, #059669, #10b981);
 	--scid: linear-gradient(to right, #4f46e5, #6366f1);
