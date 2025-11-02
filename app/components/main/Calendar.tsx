@@ -74,8 +74,7 @@ const Calendar: React.FC = () => {
 	const todayKey = toDayKey(new Date());
 
 	// Replace isToday with key comparison, plus in-month constraint
-	const isToday = (date: Date, inMonth: boolean): boolean =>
-		inMonth && toDayKey(date) === todayKey;
+	const isToday = (date: Date): boolean => toDayKey(date) === todayKey;
 
 	const monthLabel = currentMonth.toLocaleDateString("en-US", {
 		month: "long",
@@ -210,13 +209,14 @@ const Calendar: React.FC = () => {
                             `}>
 								<div
 									className={`text-xs absolute top-1 right-1 font-semibold
-										${
-											isToday(day, inMonth)
-												? "px-2 py-0.5 rounded-full bg-gradient-to-r from-primary to-purple-500 text-white shadow"
-												: "text-muted-foreground"
-										}`}>
+									${
+										isToday(day) && inMonth
+											? "px-2 py-0.5 rounded-full bg-gradient-to-r from-primary to-purple-500 text-white shadow"
+											: "text-muted-foreground"
+									}`}>
 									{day.getDate()}
 								</div>
+
 								<div className="mt-5 flex flex-col gap-1 relative z-2">
 									{dayEvents.map((ev, i) => {
 										const { subject, topic } = splitTitle(ev.title);
