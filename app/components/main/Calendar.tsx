@@ -211,7 +211,7 @@ const Calendar: React.FC = () => {
 									className={`text-xs absolute top-1 right-1 font-semibold
 									${
 										isToday(day) && inMonth
-											? "px-2 py-0.5 rounded-full bg-gradient-to-r from-primary to-purple-500 text-white shadow"
+											? "px-2 py-0.5 rounded-full bg-gradient-to-r from-primary to-purple-500 text-primary-foreground shadow"
 											: "text-muted-foreground"
 									}`}>
 									{day.getDate()}

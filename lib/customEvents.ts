@@ -1,3 +1,1 @@
-export const customEvents = [
-
-];
+export const customEvents = [];
