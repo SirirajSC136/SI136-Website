@@ -3,6 +3,8 @@
 import AcademicHero from "@/app/components/academics/AcademicHero";
 import SubjectCard from "@/app/components/academics/SubjectCard";
 import { Subject } from "@/types";
+import PageHero from "../components/main/PageHero";
+import { BookHeart } from "lucide-react";
 
 async function getSubjects(): Promise<Subject[]> {
 	try {
@@ -101,7 +103,13 @@ const AcademicPage = async () => {
 
 	return (
 		<div className="bg-background">
-			<AcademicHero />
+			<PageHero
+				title="Academics Resources"
+				subtitle="แหล่งความรู้สำหรับนักศึกษาแพทย์ศิริราช"
+				link="https://forms.gle/tC41NLtj9S6jTB7j8"
+				linkDisplay="Donate Resource"
+				icon="BookHeart"
+			/>
 			<main className="container mx-auto px-4 py-16">
 				{Object.entries(groupedSubjects)
 					.sort((a, b) => b[0].localeCompare(a[0]))
