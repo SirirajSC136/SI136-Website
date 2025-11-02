@@ -24,15 +24,27 @@ const ActionCard = ({
 	<a
 		href={href}
 		className="group relative flex flex-col items-start overflow-hidden rounded-xl border border-border bg-background p-8 text-left shadow-sm transition-all duration-300 ease-in-out hover:shadow-xl hover:border-emerald-300">
-		{/* Decorative element that animates on hover */}
 		<div className="absolute top-0 right-0 h-24 w-24 bg-emerald-50 dark:bg-emerald-800 rounded-bl-full opacity-0 transition-all duration-500 group-hover:opacity-100 group-hover:scale-150"></div>
 
-		<div className="relative z-10 flex h-14 w-14 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-700 text-secondary transition-colors duration-300 group-hover:bg-emerald-100 group-hover:text-emerald-600">
+		<div
+			className="relative z-10 flex h-14 w-14 items-center 
+		justify-center rounded-lg bg-slate-100 dark:bg-slate-700 
+		text-secondary transition-colors duration-300 group-hover:bg-emerald-100 
+		group-hover:text-emerald-600 dark:group-hover:bg-emerald-100">
 			{icon}
 		</div>
 		<div className="relative z-10 mt-6">
-			<h3 className="text-xl font-bold text-primary">{title}</h3>
-			<p className="mt-2 text-slate-500">{description}</p>
+			<h3
+				className="text-xl font-bold text-primary 
+			group-hover:text-emerald-600 dark:group-hover:text-emerald-100
+			transition-colors duration-300">
+				{title}
+			</h3>
+			<p
+				className="mt-2 text-secondary group-hover:text-emerald-600 
+			dark:group-hover:text-emerald-100 transition-colors duration-300">
+				{description}
+			</p>
 		</div>
 		<div className="relative z-10 mt-auto pt-6 flex items-center gap-2 text-md font-bold text-emerald-600 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:gap-3">
 			Proceed <ArrowRight size={20} />

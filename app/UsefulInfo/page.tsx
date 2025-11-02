@@ -48,14 +48,18 @@ const ActionCard = ({
 			}
 			rel="noopener noreferrer"
 			className="group relative flex flex-col items-center gap-4 overflow-hidden rounded-xl border border-border bg-background p-8 text-center shadow-sm transition-all duration-300 ease-in-out hover:shadow-xl hover:border-emerald-300">
-			<div className="absolute top-0 right-0 h-16 w-16 bg-emerald-50 dark:bg-input rounded-bl-full opacity-0 transition-all duration-500 group-hover:opacity-100 group-hover:scale-150"></div>
-			<div className="relative z-10 flex h-16 w-16 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-300 text-slate-500 transition-colors duration-300 group-hover:bg-emerald-100 group-hover:text-emerald-600">
+			<div className="absolute top-0 right-0 h-16 w-16 bg-emerald-100 dark:bg-emerald-800 rounded-bl-full opacity-0 transition-all duration-500 group-hover:opacity-100 group-hover:scale-150"></div>
+			<div
+				className="relative z-10 flex h-14 w-14 items-center 
+				justify-center rounded-lg bg-slate-100 dark:bg-slate-500 
+				text-secondary transition-colors duration-300 group-hover:bg-emerald-100 
+				group-hover:text-emerald-600 dark:group-hover:bg-emerald-100">
 				<IconComponent className="h-8 w-8 dark:text-slate-800" />
 			</div>
-			<span className="relative z-10 font-semibold text-primary mt-4">
+			<span className="mt-auto font-bold text-primary font-semibold group-hover:text-emerald-600 dark:group-hover:text-emerald-100 transition-colors duration-300">
 				{title}
 			</span>
-			<div className="relative z-10 mt-auto flex items-center gap-2 text-sm font-bold text-emerald-600 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:gap-3">
+			<div className="relative z-10 mt-auto flex items-center gap-2 text-md font-bold text-emerald-600 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:gap-3">
 				Visit <ArrowRight size={16} />
 			</div>
 		</a>
@@ -73,8 +77,12 @@ const ExternalLinkButton = ({
 		href={href}
 		target="_blank"
 		rel="noopener noreferrer"
-		className="group relative inline-flex items-center justify-center overflow-hidden rounded-lg border border-border bg-background px-6 py-2.5 text-center font-semibold text-primary shadow-sm transition-all duration-300 ease-in-out hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-400 hover:shadow-md">
-		<span className="transition-transform duration-300 group-hover:-translate-x-1">
+		className="group relative inline-flex items-center justify-center overflow-hidden 
+		rounded-lg border border-border bg-background px-6 py-2.5 text-center font-semibold 
+		text-primary shadow-sm transition-all duration-300 ease-in-out 
+		dark:hover:bg-emerald-900 hover:border-emerald-300 dark:hover:text-emerald-100
+		hover:bg-emerald-50 hover:shadow-md hover:text-emerald-500">
+		<span className="text-lg transition-transform duration-300 group-hover:-translate-x-1">
 			{children}
 		</span>
 		<ArrowRight className="ml-2 h-4 w-4 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-1" />
