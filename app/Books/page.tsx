@@ -181,7 +181,7 @@ export default async function BookPage() {
 							Please log in to access the book library
 						</h2>
 						<p className="text-secondary mb-6">
-							Sign in with your account to unlock subject folders and resources.
+							Sign in with the account (@student.mahidol.edu) to accesss the textbooks.
 						</p>
 						<LoginButton />
 					</div>
