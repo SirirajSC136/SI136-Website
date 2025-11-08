@@ -9,7 +9,7 @@ import { BookHeart } from "lucide-react";
 async function getSubjects(): Promise<Subject[]> {
 	try {
 		const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/subjects`, {
-			next: { revalidate: 60 },
+			next: { revalidate: 900 },
 		});
 
 		if (!res.ok) {

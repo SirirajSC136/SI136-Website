@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Subject } from "@/types";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
 import TopicItem from "@/app/components/academics/TopicItem";
 import { Home, Book, Globe, Loader2 } from "lucide-react";
@@ -37,12 +38,12 @@ const SubjectDetailPage = () => {
 	const [subject, setSubject] = useState<Subject | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
-
+	const router = useRouter();
 	// Get URL parameters using the hook
 	const params = useParams();
 	const subjectId = params.subjectId as string;
 
-	console.log(subject?.imageUrl);
+	
 	// Fetch data inside a useEffect hook
 	useEffect(() => {
 		if (!subjectId) return;
@@ -51,7 +52,7 @@ const SubjectDetailPage = () => {
 			setIsLoading(true);
 			setError(null);
 			const fetchedSubject = await getSubject(subjectId);
-			console.log(fetchedSubject);
+			
 			if (fetchedSubject) {
 				const patched =
 					fetchedSubject.courseCode === "SIID143_68"
@@ -109,20 +110,36 @@ const SubjectDetailPage = () => {
 		<div className="min-h-screen bg-secondary-background">
 			{/* Breadcrumbs Header */}
 			<header className="border-b bg-background">
-				<div className="container mx-auto flex items-center gap-2 p-4 text-sm text-secondary">
-					<Link href="/" className="hover:text-emerald-600">
-						<Home size={16} />
-					</Link>
-					<span>/</span>
-					<Link href="/academics" className="hover:text-emerald-600">
-						Academic
-					</Link>
-					<span>/</span>
-					<span className="font-semibold text-primary">
-						{subject.courseCode}
-					</span>
-				</div>
-			</header>
+            <div className="container mx-auto flex items-center gap-2 p-4 text-sm text-secondary">
+                {/* Use a standard <a> tag with an onClick handler */}
+                <a 
+                    href="/" 
+                    onClick={(e) => {
+                        e.preventDefault(); // Prevent default browser navigation
+                        router.push('/'); // Use Next.js router
+                    }} 
+                    className="hover:text-emerald-600 cursor-pointer"
+                >
+                    <Home size={16} />
+                </a>
+                <span>/</span>
+                {/* THIS IS THE KEY CHANGE */}
+                <a 
+                    href="/academics" 
+                    onClick={(e) => {
+                        e.preventDefault(); // Prevent default browser navigation
+                        router.push('/academics'); // Use Next.js router
+                    }} 
+                    className="hover:text-emerald-600 cursor-pointer"
+                >
+                    Academic
+                </a>
+                <span>/</span>
+                <span className="font-semibold text-primary">
+                    {subject.courseCode}
+                </span>
+            </div>
+        </header>
 
 			<main className="container mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8 p-4 md:p-8">
 				{/* Left Column: Subject Info */}
