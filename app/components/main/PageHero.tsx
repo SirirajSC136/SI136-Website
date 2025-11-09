@@ -30,7 +30,7 @@ const PageHero: React.FC<PageHeroProps> = ({
 	return (
 		<div className="relative overflow-hidden bg-slate-800 py-24 text-center border-b border-slate-800">
 			<div className="container mx-auto px-4 relative z-10">
-				<h1 className="text-5xl font-extrabold text-white">{title}</h1>
+				<div className="text-5xl font-extrabold text-white">{title}</div>
 				<p className="mt-4 text-lg text-white">{subtitle}</p>
 				{link && (
 					<a

@@ -145,7 +145,7 @@ const Calendar: React.FC = () => {
 			<div className="flex items-center justify-between mb-3">
 				{/* Centered month label */}
 				<div className="flex-1 text-center">
-					<h1 className="text-2xl font-bold">{monthLabel}</h1>
+					<div className="text-2xl font-bold">{monthLabel}</div>
 				</div>
 
 				{/* Buttons aligned together on the right */}

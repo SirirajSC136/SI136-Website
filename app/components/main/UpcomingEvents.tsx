@@ -173,7 +173,7 @@ const HomePageContent = async () => {
     return (
         <div className="bg-secondary-background py-12">
             <div className="container mx-auto px-4">
-                <h1 className="text-4xl font-extrabold text-primary mb-10">Dashboard</h1>
+                <div className="text-4xl font-extrabold text-primary mb-10">Dashboard</div>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                     <div className="lg:col-span-2 bg-background p-6 rounded-xl border border-border shadow-sm ">
                         <SectionTitle icon={<CalendarDays className="text-emerald-500" />} title="Upcoming Events" />

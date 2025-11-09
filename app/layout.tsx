@@ -14,8 +14,8 @@ const kanit = Kanit({
 });
 
 export const metadata: Metadata = {
-  title: "SI136 Website",
-  description: "Academic website for Siriraj 136",
+  title: "Siriraj 136 Website",
+  description: "Academic website for Siriraj 136 student community",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
