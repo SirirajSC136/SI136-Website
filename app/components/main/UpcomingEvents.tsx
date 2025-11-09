@@ -1,6 +1,7 @@
 import { CalendarDays, ClipboardList, Pencil } from 'lucide-react';
 import Link from 'next/link';
 import { CalendarEvent } from '@/types';
+import { GetNowTime } from '@/util/time';
 
 // --- NEW TYPES for data from your Google Sheets ---
 type SheetAssignment = {
@@ -15,6 +16,11 @@ type SheetExam = {
     'Upcoming exam': string;
     'Date': string;
     'Time': string;
+};
+
+type DeadlineResult = {
+  text: string;
+  isUrgent: boolean;
 };
 
 // --- UNCHANGED: This function remains the same ---
@@ -52,19 +58,18 @@ async function getUpcomingData(): Promise<{ assignments: SheetAssignment[], exam
 }
 
 // --- UNCHANGED: Countdown for Assignments ---
-const formatSheetDeadline = (dateString: string) => {
-    if (!dateString) return "No deadline";
+const formatSheetDeadline = (dateString: string): DeadlineResult => {
+    if (!dateString) return { text: "No deadline", isUrgent: false };
     const parts = dateString.split('/');
-    if (parts.length !== 3) return "Invalid date";
+    if (parts.length !== 3) return { text: "Invalid date", isUrgent: false };
     const target = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
-    const now = new Date();
-    const diff = target.getTime() - now.getTime();
-    if (diff < 0) return "Past";
+    const diff = target.getTime() - GetNowTime();
+    if (diff < 0) return { text: "Past", isUrgent: false };
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    if (days > 0) return `${days}d ${hours}h left`;
-    if (hours > 0) return `${hours}h left`;
-    return "Less than an hour left";
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const text = days > 0 ? `${days}d ${hours}h left` : hours > 0 ? `${hours}h ${minutes}m left` : `${minutes}m left`;
+    return { text, isUrgent: diff < 24 * 60 * 60 * 1000 };
 };
 
 // --- NEW: Countdown function specifically for Examinations ---
@@ -85,13 +90,13 @@ const formatExamCountdown = (dateString: string, timeString: string) => {
     const minutes = parseInt(timeParts[1]);
 
     const target = new Date(year, month, day, hours, minutes);
-    const now = new Date();
-    const diff = target.getTime() - now.getTime();
+    const diff = target.getTime() - GetNowTime();
 
     if (diff < 0) return "Past";
 
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     const hoursLeft = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutesLeft = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
 
     if (days > 0) return `${days}d ${hoursLeft}h left`;
     if (hoursLeft > 0) return `${hoursLeft}h left`;
@@ -120,7 +125,9 @@ const EventCard = ({ event }: { event: CalendarEvent }) => (
     </div>
 );
 
-const AssignmentCard = ({ assignment }: { assignment: SheetAssignment }) => (
+const AssignmentCard = ({ assignment }: { assignment: SheetAssignment }) => {
+    const { text, isUrgent } = formatSheetDeadline(assignment.Deadline);
+    return (
     <Link href={assignment['รายละเอียดเพิ่มเติม']} target="_blank" rel="noopener noreferrer" className="group block p-4 mb-3 bg-background rounded-lg border border-border transition-shadow hover:shadow-md">
         <div className="flex items-start justify-between">
             <div className="flex items-start space-x-3">
@@ -130,10 +137,12 @@ const AssignmentCard = ({ assignment }: { assignment: SheetAssignment }) => (
                     <p className="text-primary font-medium mt-1">{assignment['Work Name']}</p>
                 </div>
             </div>
-            <span className="text-xs text-primary font-medium flex-shrink-0 ml-2">{formatSheetDeadline(assignment.Deadline)}</span>
+            <span className={`text-xs font-medium flex-shrink-0 ml-2 ${isUrgent ? 'text-destructive' : 'text-primary'}`}>
+                {text}
+            </span>
         </div>
-    </Link>
-);
+    </Link>)
+};
 
 // --- NEW: Component for displaying an examination ---
 const ExaminationCard = ({ exam }: { exam: SheetExam }) => (
@@ -167,6 +176,16 @@ const HomePageContent = async () => {
     ]);
 
     const assignments = allSheetAssignments.filter(item => item.Status !== 'Overdue');
+
+    const sortedAssignments = assignments
+  .map(a => {
+    const parts = a.Deadline?.split('/');
+    if (parts.length !== 3) return { ...a, timeLeft: Infinity }; // invalid date goes last
+    const target = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+    const diff = target.getTime() - GetNowTime();
+    return { ...a, timeLeft: diff };
+  })
+  .sort((a, b) => a.timeLeft - b.timeLeft);
 
     // Calendar event filtering logic remains the same
     const now = new Date();
@@ -204,8 +223,8 @@ const HomePageContent = async () => {
                     <div className="space-y-8">
                         <div className="bg-background p-6 rounded-xl border border-border shadow-sm">
                             <SectionTitle icon={<ClipboardList className="text-amber-500" />} title="Assignments" />
-                            {assignments.length > 0 
-                                ? assignments.map((task, index) => <AssignmentCard key={index} assignment={task} />) 
+                            {sortedAssignments.length > 0 
+                                ? sortedAssignments.map((task, index) => <AssignmentCard key={index} assignment={task} />) 
                                 : <EmptyState message="No pending assignments." />}
                         </div>
                         <div className="bg-background p-6 rounded-xl border border-border shadow-sm">
