@@ -1,32 +1,35 @@
-// app/components/academics/TopicItem.tsx
-
 "use client";
 
 import { useState } from 'react';
 import { Topic, TopicItemData } from '@/types';
 import Link from 'next/link';
 import { File, Link as LinkIcon, ExternalLink, ChevronDown, BookOpen, BrainCircuit, Layers3, PlayCircle } from 'lucide-react';
-/**
- * A small, internal component to render a single item with appropriate styling.
- */
+
 const ItemRenderer = ({ item }: { item: TopicItemData }) => {
+    const isNotPureNumberId = /[^0-9]/.test(item.id);
+
+    const containerClasses = isNotPureNumberId
+        ? 'outline outline-2 outline-offset-2 outline-pink-500 shadow-lg shadow-pink-500/50'
+        : '';
+
+    const textClasses = isNotPureNumberId
+        ? 'font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-violet-500 animate-pulse'
+        : 'font-medium';
+
     switch (item.type) {
         case 'Header':
             return <h4 className="pt-5 pb-2 text-base font-bold text-primary">{item.title}</h4>;
 
-        // --- THIS IS THE FIX ---
-        // The 'Page' case is now changed to render a simple link,
-        // preventing any embedded videos from being displayed.
         case 'Page':
             return (
                 <a
                     href={item.canvasUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group flex items-center gap-3 rounded-lg p-3 text-secondary transition-colors hover:bg-slate-100 dark:hover:bg-stone-800"
+                    className={`group flex items-center gap-3 rounded-lg p-3 text-secondary transition-colors hover:bg-slate-100 dark:hover:bg-stone-800 ${containerClasses}`}
                 >
                     <BookOpen className="h-5 w-5 flex-shrink-0 text-secondary transition-colors group-hover:text-emerald-600" />
-                    <span className="flex-grow font-medium">{item.title}</span>
+                    <span className={`flex-grow ${textClasses}`}>{item.title}</span>
                     <ExternalLink className="h-4 w-4 flex-shrink-0 text-secondary" />
                 </a>
             );
@@ -36,10 +39,10 @@ const ItemRenderer = ({ item }: { item: TopicItemData }) => {
                 <a
                     href={item.url}
                     download={item.title}
-                    className="group flex items-center gap-3 rounded-lg p-3 text-secondary transition-colors hover:bg-slate-100 dark:hover:bg-stone-800"
+                    className={`group flex items-center gap-3 rounded-lg p-3 text-secondary transition-colors hover:bg-slate-100 dark:hover:bg-stone-800 ${containerClasses}`}
                 >
                     <File className="h-5 w-5 flex-shrink-0 text-secondary transition-colors group-hover:text-emerald-600" />
-                    <span className="flex-grow font-medium">{item.title}</span>
+                    <span className={`flex-grow ${textClasses}`}>{item.title}</span>
                 </a>
             );
         case 'Link':
@@ -48,21 +51,21 @@ const ItemRenderer = ({ item }: { item: TopicItemData }) => {
                     href={item.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group flex items-center gap-3 rounded-lg p-3 text-secondary transition-colors hover:bg-slate-100 dark:hover:bg-stone-800"
+                    className={`group flex items-center gap-3 rounded-lg p-3 text-secondary transition-colors hover:bg-slate-100 dark:hover:bg-stone-800 ${containerClasses}`}
                 >
                     <LinkIcon className="h-5 w-5 flex-shrink-0 text-secondary transition-colors group-hover:text-emerald-600" />
-                    <span className="flex-grow font-medium">{item.title}</span>
+                    <span className={`flex-grow ${textClasses}`}>{item.title}</span>
                 </a>
             );
         case 'Quiz':
             return (
                 <Link
-                    href={`/quiz/${item.id}`} // This is the future page for taking the quiz
-                    className="group flex items-center justify-between rounded-lg p-3 text-secondary transition-colors hover:bg-slate-100 dark:hover:bg-stone-800"
+                    href={`/quiz/${item.id}`}
+                    className={`group flex items-center justify-between rounded-lg p-3 text-secondary transition-colors hover:bg-slate-100 dark:hover:bg-stone-800 ${containerClasses}`}
                 >
                     <div className="flex items-center gap-3">
                         <BrainCircuit className="h-5 w-5 flex-shrink-0 text-blue-500" />
-                        <span className="flex-grow font-medium">{item.title}</span>
+                        <span className={`flex-grow ${textClasses}`}>{item.title}</span>
                     </div>
                     <div className="flex items-center gap-1.5 text-sm font-semibold text-blue-600 opacity-0 transition-opacity group-hover:opacity-100">
                         Start Quiz
@@ -71,17 +74,15 @@ const ItemRenderer = ({ item }: { item: TopicItemData }) => {
                 </Link>
             );
 
-        // --- NEW: Case for rendering a Flashcard Deck ---
-        // This renders a link that will take the user to the flashcard viewer page.
         case 'Flashcard':
             return (
                 <Link
-                    href={`/flashcards/${item.id}`} // This is the future page for viewing flashcards
-                    className="group flex items-center justify-between rounded-lg p-3 text-secondary transition-colors hover:bg-slate-100 dark:hover:bg-stone-800"
+                    href={`/flashcards/${item.id}`}
+                    className={`group flex items-center justify-between rounded-lg p-3 text-secondary transition-colors hover:bg-slate-100 dark:hover:bg-stone-800 ${containerClasses}`}
                 >
                     <div className="flex items-center gap-3">
                         <Layers3 className="h-5 w-5 flex-shrink-0 text-emerald-500" />
-                        <span className="flex-grow font-medium">{item.title}</span>
+                        <span className={`flex-grow ${textClasses}`}>{item.title}</span>
                     </div>
                     <div className="flex items-center gap-1.5 text-sm font-semibold text-emerald-600 opacity-0 transition-opacity group-hover:opacity-100">
                         View Deck
@@ -90,17 +91,11 @@ const ItemRenderer = ({ item }: { item: TopicItemData }) => {
                 </Link>
             );
 
-
-
         default:
             return null;
     }
 };
 
-/**
- * The main component, now an interactive accordion item.
- * (No changes needed in this part)
- */
 const TopicItem = ({ topic }: { topic: Topic }) => {
     const [isOpen, setIsOpen] = useState(false);
 
