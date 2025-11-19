@@ -12,21 +12,23 @@ export default function NotFound() {
         </Link>
       </div>
       <div className=" absolute md:left-1/8 xl:left-1/6 top-1/2 -translate-y-1/2 hidden md:block md:w-[200px] md:h-[200px] lg:w-[250px] lg:h-[250px] ">
-        {" "}
         <Image
           src="/illustration/cat_hihi.png"
           alt="Cat Illustration"
           layout="fill"
           objectFit="cover"
+          priority
+          loading="eager"
         />
       </div>
       <div className=" absolute md:right-1/8 xl:right-1/6 top-1/2 -translate-y-1/2 hidden md:block md:w-[190px] md:h-[190px] lg:w-[235px] lg:h-[235px] ">
-        {" "}
         <Image
           src="/illustration/owl_hihi.png"
           alt="Cat Illustration"
           layout="fill"
           objectFit="cover"
+          priority
+          loading="eager"
         />
       </div>
     </div>
