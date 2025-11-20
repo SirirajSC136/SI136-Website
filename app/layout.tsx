@@ -16,6 +16,7 @@ const kanit = Kanit({
 export const metadata: Metadata = {
   title: "Siriraj 136 Website",
   description: "Academic website for Siriraj 136 student community",
+  icons: [{ rel: 'icon', url: '/favicon.ico' }],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
