@@ -15,7 +15,9 @@ const Calendar: React.FC = () => {
 	const [isClosing, setIsClosing] = useState(false);
 	const [currentMonth, setCurrentMonth] = useState(new Date());
 	const rawEvents: RawEvent[] = mapToRawEvents(rawData.events);
-	const events: Event[] = parseEvents(rawEvents);
+	const events: Event[] = parseEvents(rawEvents).filter(
+		(ev) => ev.title !== "สอบปลายภาค"
+	);
 
 	const startOfMonth = new Date(
 		currentMonth.getFullYear(),
