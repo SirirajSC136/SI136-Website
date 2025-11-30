@@ -23,7 +23,8 @@ const formatSheetDeadline = (dateString: string): DeadlineResult => {
     const parts = dateString.split('/');
     if (parts.length !== 3) return { text: "Invalid date", isUrgent: false };
     const target = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
-    const diff = target.getTime() - GetNowTime();
+    const diff = target.getTime() - GetNowTime() + 86399000;
+    console.log(diff)
     if (diff < 0) return { text: "Past", isUrgent: false };
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
