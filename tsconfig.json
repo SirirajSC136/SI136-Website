@@ -15,7 +15,7 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "incremental": true,
     "plugins": [
       {
@@ -33,10 +33,10 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "app/admin/TestPage/api/route.js"
+    "app/admin/TestPage/api/route.js",
+    ".next/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"
-  ],
+  ]
 }
-
