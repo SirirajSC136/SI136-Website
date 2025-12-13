@@ -41,7 +41,7 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
       description: "The official merchandise of Siriraj 136 is now available.",
     },
     {
-      src: "/announcement/merch/merch-2.JPG",
+      src: "/announcement/merch/merch-2.jpg",
       link: "https://merchandise.siriraj136.com/",
       title: "Siriraj 136 Merchandise",
       description: "The official merchandise of Siriraj 136 is now available.",
@@ -53,7 +53,7 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
       description: "The official merchandise of Siriraj 136 is now available.",
     },
     {
-      src: "/announcement/merch/merch-4.JPG",
+      src: "/announcement/merch/merch-4.jpg",
       link: "https://merchandise.siriraj136.com/",
       title: "Siriraj 136 Merchandise",
       description: "The official merchandise of Siriraj 136 is now available.",
