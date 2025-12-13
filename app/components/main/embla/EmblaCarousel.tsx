@@ -61,7 +61,7 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
   ];
 
   return (
-    <div className="relative max-w-5xl px-8 mx-auto rounded-lg shadow-xl bg-secondary-background">
+    <div className="relative max-w-5xl px-8 mx-auto rounded-lg bg-secondary-background">
       {/* Viewport */}
       <div className="overflow-hidden rounded-lg" ref={emblaRef}>
         <div className="flex touch-pan-y -ml-4">
