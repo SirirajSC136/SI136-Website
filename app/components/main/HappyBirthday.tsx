@@ -106,9 +106,6 @@ const HappyBirthday = () => {
           <h1>
             Happy Birthday, <br /> Jimmy! 🎉
           </h1>
-          <p style={{ marginTop: "1rem", fontSize: "1.2rem", opacity: 0.9 }}>
-            Wishing you joy, laughter, and unforgettable memories today!
-          </p>
         </div>
 
         <div className="profile-pic">
