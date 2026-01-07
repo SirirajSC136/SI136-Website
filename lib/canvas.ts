@@ -47,7 +47,8 @@ async function fetchAllPaginated(url: string): Promise<any[]> {
     const headers = getHeaders();
 
     while (nextUrl) {
-        const response = await fetch(nextUrl, { headers });
+        // Added Next.js revalidation for caching (5 minutes)
+        const response = await fetch(nextUrl, { headers, next: { revalidate: 300 } });
         if (!response.ok) {
             throw new Error(`Failed to fetch paginated data from ${nextUrl}: ${response.statusText}`);
         }

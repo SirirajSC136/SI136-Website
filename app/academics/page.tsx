@@ -62,6 +62,18 @@ function normalizeCourseCode(subject: Subject): Subject {
 	return subject;
 }
 
+// --- Year/Semester hardcoding based on ID ---
+const SEMESTER_1_IDS = ["1123", "432", "1104", "1106", "68db54ba5fe7ce53fdaa16de", "68e2bc91493704ef7977981c"];
+
+function normalizeYearSemester(subject: Subject): Subject {
+	const isSemester1 = SEMESTER_1_IDS.includes(subject._id);
+	return {
+		...subject,
+		year: 1,
+		semester: isSemester1 ? 1 : 2,
+	};
+}
+
 const AcademicPage = async () => {
 	const allSubjects = await getSubjects();
 
@@ -71,8 +83,15 @@ const AcademicPage = async () => {
 		(subject) => !excludedIdList.includes(subject._id)
 	);
 
-	// Normalize course codes
-	const subjects = filtered.map(normalizeCourseCode);
+	// Normalize course codes and year/semester
+	const subjects = filtered.map(normalizeCourseCode).map(normalizeYearSemester);
+
+	// Log all subjects for hardcoding decisions
+	console.log("=== ALL SUBJECTS ===");
+	subjects.forEach(s => {
+		console.log(`ID: ${s._id} | Code: ${s.courseCode} | Title: ${s.title} | Year: ${s.year} | Semester: ${s.semester}`);
+	});
+	console.log("====================");
 
 	if (!subjects || subjects.length === 0) {
 		return (
@@ -112,7 +131,7 @@ const AcademicPage = async () => {
 			/>
 			<main className="container mx-auto px-4 py-16">
 				{Object.entries(groupedSubjects)
-					.sort((a, b) => b[0].localeCompare(a[0]))
+					.sort((a, b) => b[0].localeCompare(a[0])) // Year descending (Year 2 before Year 1)
 					.map(([year, semesters]) => (
 						<section key={year} className="mb-16">
 							<div className="relative text-center mb-10">
@@ -120,7 +139,7 @@ const AcademicPage = async () => {
 								<div className="absolute inset-x-0 top-1/2 -z-10 h-px -translate-y-1/2 bg-secondary-background"></div>
 							</div>
 							{Object.entries(semesters)
-								.sort((a, b) => a[0].localeCompare(b[0]))
+								.sort((a, b) => b[0].localeCompare(a[0])) // Semester descending (Sem 2 before Sem 1)
 								.map(([semester, subjectList]) => (
 									<div key={semester} className="mt-4">
 										<h3 className="mb-8 text-center text-2xl font-semibold text-secondary">

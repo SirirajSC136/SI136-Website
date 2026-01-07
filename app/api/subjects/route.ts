@@ -14,10 +14,10 @@ export async function GET() {
         await connectToDatabase();
         console.log("DB connected for /api/subjects");
 
-        // 2. Fetch from both sources in parallel
+        // 2. Fetch from both sources in parallel with caching for external calls
         const [canvasCourses, customCourses] = await Promise.all([
-            fetchEnrolledCourses(),
-            CustomCourse.find({}).sort({ year: -1, semester: -1 }).exec() // Use .exec() to ensure it's a true promise
+            fetchEnrolledCourses(), // Already uses fetch, can add revalidate later
+            CustomCourse.find({}).sort({ year: -1, semester: -1 }).exec()
         ]);
         console.log(`Fetched ${canvasCourses.length} Canvas courses and ${customCourses.length} custom courses.`);
 

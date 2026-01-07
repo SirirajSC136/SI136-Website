@@ -20,8 +20,8 @@ type SheetExam = {
 };
 
 type DeadlineResult = {
-  text: string;
-  isUrgent: boolean;
+    text: string;
+    isUrgent: boolean;
 };
 
 // --- UNCHANGED: This function remains the same ---
@@ -40,13 +40,13 @@ async function getGoogleCalendarEvents(): Promise<CalendarEvent[]> {
 // --- UPDATED: Fetches both assignments and examinations from the single API endpoint ---
 async function getUpcomingData(): Promise<{ assignments: SheetAssignment[], examinations: SheetExam[] }> {
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/canvas/secondupcoming`, { 
-            next: { revalidate: 3600 } 
+        const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/canvas/secondupcoming`, {
+            next: { revalidate: 900 } // 15 minutes, matching API cache
         });
         if (!res.ok) return { assignments: [], examinations: [] };
-        
+
         const data = await res.json();
-        
+
         // Return both datasets from the structured response
         return {
             assignments: data.assignments?.data || [],
@@ -138,21 +138,21 @@ const EmptyState = ({ message }: { message: string }) => (
 // --- MAIN COMPONENT: Logic updated to handle both assignments and examinations ---
 const HomePageContent = async () => {
     const [allEvents, { assignments: allSheetAssignments, examinations }] = await Promise.all([
-        getGoogleCalendarEvents(), 
+        getGoogleCalendarEvents(),
         getUpcomingData()
     ]);
 
     const assignments = allSheetAssignments.filter(item => item.Status !== 'Overdue');
 
     const sortedAssignments = assignments
-  .map(a => {
-    const parts = a.Deadline?.split('/');
-    if (parts.length !== 3) return { ...a, timeLeft: Infinity }; // invalid date goes last
-    const target = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
-    const diff = target.getTime() - GetNowTime();
-    return { ...a, timeLeft: diff };
-  })
-  .sort((a, b) => a.timeLeft - b.timeLeft);
+        .map(a => {
+            const parts = a.Deadline?.split('/');
+            if (parts.length !== 3) return { ...a, timeLeft: Infinity }; // invalid date goes last
+            const target = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+            const diff = target.getTime() - GetNowTime();
+            return { ...a, timeLeft: diff };
+        })
+        .sort((a, b) => a.timeLeft - b.timeLeft);
 
     // Calendar event filtering logic remains the same
     const now = new Date();
@@ -190,15 +190,15 @@ const HomePageContent = async () => {
                     <div className="space-y-8">
                         <div className="bg-background p-6 rounded-xl border border-border shadow-sm">
                             <SectionTitle icon={<ClipboardList className="text-amber-500" />} title="Assignments" />
-                            {sortedAssignments.length > 0 
-                                ? sortedAssignments.map((task, index) => <AssignmentCard key={index} assignment={task} />) 
+                            {sortedAssignments.length > 0
+                                ? sortedAssignments.map((task, index) => <AssignmentCard key={index} assignment={task} />)
                                 : <EmptyState message="No pending assignments." />}
                         </div>
                         <div className="bg-background p-6 rounded-xl border border-border shadow-sm">
                             <SectionTitle icon={<Pencil className="text-rose-500" />} title="Examinations" />
                             {/* Render the new ExaminationCard for each exam */}
-                            {examinations.length > 0 
-                                ? examinations.map((exam, index) => <ExaminationCard key={index} exam={exam} />) 
+                            {examinations.length > 0
+                                ? examinations.map((exam, index) => <ExaminationCard key={index} exam={exam} />)
                                 : <EmptyState message="No upcoming examinations." />}
                         </div>
                     </div>
