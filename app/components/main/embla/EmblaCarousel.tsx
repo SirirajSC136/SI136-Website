@@ -36,7 +36,7 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
   const slideItems = [
     {
       src:"/announcement/hailnight/comingsoon.png",
-      link: "/",
+      link: "https://hailnight.com/",
       title: "Hail Night 2026",
       description: ""
     },
