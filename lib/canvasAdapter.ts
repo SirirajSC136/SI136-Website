@@ -28,11 +28,23 @@ function parseTerm(termName: string | undefined): { year: number, semester: numb
     if (!termName) {
         return { year: new Date().getFullYear(), semester: 1 };
     }
-    const yearMatch = termName.match(/\d{4}/);
-    const semesterMatch = termName.match(/(\d)/);
+
+    // Try to parse format like "2/2568" or "1/2567"
+    const slashMatch = termName.match(/^(\d)\/(\d{4})$/);
+    if (slashMatch) {
+        return {
+            semester: parseInt(slashMatch[1], 10),
+            year: parseInt(slashMatch[2], 10),
+        };
+    }
+
+    // Try to parse format like "Semester 2 2024" or "2024 Semester 1"
+    const semesterMatch = termName.match(/[Ss]emester\s*(\d)/i);
+    const yearMatch = termName.match(/\b(20\d{2})\b/);
+
     return {
-        year: yearMatch ? parseInt(yearMatch[0], 10) : new Date().getFullYear(),
-        semester: semesterMatch ? parseInt(semesterMatch[0], 10) : 1,
+        year: yearMatch ? parseInt(yearMatch[1], 10) : new Date().getFullYear(),
+        semester: semesterMatch ? parseInt(semesterMatch[1], 10) : 1,
     };
 }
 

@@ -1,43 +1,31 @@
 // app/api/canvas/secondupcoming/route.ts
 
 import { NextResponse } from 'next/server';
+import Papa from 'papaparse';
 
 /**
- * A generic and reusable helper function to parse any CSV text into an array of objects.
+ * A robust helper function to parse CSV text using papaparse.
+ * Correctly handles commas within quoted fields.
  * @param {string} csvText The raw CSV text data.
  * @returns {Record<string, string>[]} An array of objects, where keys are headers.
  */
 function parseCSV(csvText: string): Record<string, string>[] {
-  // Handle empty or invalid CSV text gracefully
   if (!csvText || typeof csvText !== 'string') {
     return [];
   }
-  
-  const lines = csvText.trim().split('\n');
-  if (lines.length < 1) {
-    return [];
+
+  const result = Papa.parse<Record<string, string>>(csvText, {
+    header: true,
+    skipEmptyLines: true,
+    transformHeader: (header: string) => header.trim(),
+    transform: (value: string) => value.trim(),
+  });
+
+  if (result.errors.length > 0) {
+    console.warn('CSV parsing had errors:', result.errors);
   }
 
-  // Use the first line as headers. Trim each header to remove extra whitespace.
-  const headers = lines[0].split(',').map(header => header.trim());
-  const data: Record<string, string>[] = [];
-
-  // Loop through the data rows
-  for (let i = 1; i < lines.length; i++) {
-    // Skip empty lines
-    if (!lines[i]) continue;
-
-    const values = lines[i].split(',').map(value => value.trim());
-    const entry: Record<string, string> = {};
-    
-    for (let j = 0; j < headers.length; j++) {
-      // Assign value to the corresponding header key. Handle cases where a row has fewer columns than headers.
-      entry[headers[j]] = values[j] || '';
-    }
-    data.push(entry);
-  }
-  
-  return data;
+  return result.data;
 }
 
 // This is the Route Handler for the GET method
@@ -45,17 +33,18 @@ export async function GET(req: Request) {
   const ASSIGNMENTS_SHEET_ID = '1omRhuSvS5qyXoXKRraKTJe0scagdxaWcENRGixja5cw';
   const EXAMS_SHEET_ID = '11RdWKC338mjIA7f9zxQQG1IWaW2XJZFtEZk3DbjJFso';
   const GID = '0';
-  
+
   const assignmentsUrl = `https://docs.google.com/spreadsheets/d/${ASSIGNMENTS_SHEET_ID}/export?format=csv&gid=${GID}`;
   const examsUrl = `https://docs.google.com/spreadsheets/d/${EXAMS_SHEET_ID}/export?format=csv&gid=${GID}`;
 
   try {
     console.log(`Fetching data from two sources in parallel...`);
-    
+
     // Use Promise.all to fetch both sheets concurrently for better performance
+    // Added Next.js revalidation for caching (revalidate every 15 minutes)
     const [assignmentsResponse, examsResponse] = await Promise.all([
-      fetch(assignmentsUrl),
-      fetch(examsUrl)
+      fetch(assignmentsUrl, { next: { revalidate: 900 } }),
+      fetch(examsUrl, { next: { revalidate: 900 } })
     ]);
 
     // Check if either of the fetches failed
@@ -71,39 +60,67 @@ export async function GET(req: Request) {
       assignmentsResponse.text(),
       examsResponse.text()
     ]);
-    
+
     // Parse both CSV texts into JSON data
     const assignmentsData = parseCSV(assignmentsCsvText);
     const examsData = parseCSV(examsCsvText);
 
+    // Filter out items that are past by more than 3 days
+    const now = new Date();
+    const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
+
+    const filteredAssignments = assignmentsData.filter(item => {
+      const deadline = item['Deadline'];
+      if (!deadline) return true; // Keep if no deadline
+
+      // Parse DD/MM/YYYY format
+      const parts = deadline.split('/');
+      if (parts.length !== 3) return true; // Keep if invalid format
+
+      const itemDate = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+      return itemDate >= threeDaysAgo;
+    });
+
+    const filteredExams = examsData.filter(item => {
+      const dateStr = item['Date'];
+      if (!dateStr) return true; // Keep if no date
+
+      // Parse DD/MM/YYYY format
+      const parts = dateStr.split('/');
+      if (parts.length !== 3) return true; // Keep if invalid format
+
+      const itemDate = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+      return itemDate >= threeDaysAgo;
+    });
+
     // Log the fetched data to the backend console for verification
     console.log('--- ✅ Fetched Assignments Data ---');
-    console.log(assignmentsData);
+    console.log(`Original: ${assignmentsData.length}, After filter: ${filteredAssignments.length}`);
     console.log('--- ✅ Fetched Examinations Data ---');
-    console.log(examsData);
+    console.log(`Original: ${examsData.length}, After filter: ${filteredExams.length}`);
     console.log('------------------------------------');
 
     // Return a structured response containing both datasets
     return NextResponse.json({
       message: 'Successfully fetched assignments and examinations data.',
       assignments: {
-        count: assignmentsData.length,
-        data: assignmentsData,
+        count: filteredAssignments.length,
+        data: filteredAssignments,
       },
       examinations: {
-        count: examsData.length,
-        data: examsData,
+        count: filteredExams.length,
+        data: filteredExams,
       }
     });
 
   } catch (error) {
     console.error('❌ Error fetching Google Sheet data:', error);
-    
+
     const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
     return NextResponse.json(
-      { 
+      {
         error: 'Failed to fetch data from one or more Google Sheets',
-        details: errorMessage 
+        details: errorMessage
       },
       { status: 500 }
     );
