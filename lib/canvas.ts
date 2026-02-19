@@ -212,12 +212,13 @@ export async function fetchCourseDetails(courseId: string): Promise<CanvasCourse
 
 /**
  * Fetches a list of all courses the user is enrolled in (SHALLOW FETCH).
+ * Uses fetchAllPaginated to correctly follow Canvas pagination links,
+ * ensuring courses beyond the first page (Canvas default: 10/page) are included.
  */
 export async function fetchEnrolledCourses(): Promise<CanvasCourse[]> {
-    const headers = getHeaders();
-    const coursesResponse = await fetch(`${CANVAS_URL}/courses?include[]=term`, { headers });
-    if (!coursesResponse.ok) throw new Error('Failed to fetch courses from Canvas');
-    const coursesData: any[] = await coursesResponse.json();
+    const url = `${CANVAS_URL}/courses?per_page=100&include[]=term&enrollment_state[]=active&enrollment_state[]=invited&enrollment_state[]=completed&enrollment_state[]=inactive`;
+    const coursesData: any[] = await fetchAllPaginated(url);
+
     return coursesData.map(course => ({
         id: course.id,
         name: course.name,

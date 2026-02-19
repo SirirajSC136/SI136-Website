@@ -12,14 +12,12 @@ export async function GET() {
     try {
         // 1. Establish database connection at the start
         await connectToDatabase();
-        console.log("DB connected for /api/subjects");
 
         // 2. Fetch from both sources in parallel with caching for external calls
         const [canvasCourses, customCourses] = await Promise.all([
             fetchEnrolledCourses(), // Already uses fetch, can add revalidate later
             CustomCourse.find({}).sort({ year: -1, semester: -1 }).exec()
         ]);
-        console.log(`Fetched ${canvasCourses.length} Canvas courses and ${customCourses.length} custom courses.`);
 
         // 3. Adapt both lists to the unified 'Subject' type
         const canvasSubjects = canvasCourses.map(mapCanvasCourseToSubject);

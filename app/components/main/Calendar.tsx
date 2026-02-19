@@ -1,40 +1,24 @@
 "use client";
 
-import React, { useState } from "react";
-import {
-	parseEvents,
-	Event,
-	RawEvent,
-	mapToRawEvents,
-} from "../../../lib/parseEvents";
-import rawData from "../../../data/events.json";
+import React, { useState, useEffect } from "react";
+import { CalendarEvent } from "@/types";
 import styles from "./Calendar.module.css";
 
 const Calendar: React.FC = () => {
-	const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+	const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
 	const [isClosing, setIsClosing] = useState(false);
 	const [currentMonth, setCurrentMonth] = useState(new Date());
-	const rawEvents: RawEvent[] = mapToRawEvents(rawData.events);
-	const events: Event[] = parseEvents(rawEvents).filter(
-		(ev) => ev.title !== "สอบปลายภาค"
-	);
+	const [events, setEvents] = useState<CalendarEvent[]>([]);
 
-	const startOfMonth = new Date(
-		currentMonth.getFullYear(),
-		currentMonth.getMonth(),
-		1
-	);
-	const endOfMonth = new Date(
-		currentMonth.getFullYear(),
-		currentMonth.getMonth() + 1,
-		0
-	);
-
-	const startDate = new Date(startOfMonth);
-	startDate.setDate(startDate.getDate() - startDate.getDay());
-
-	const endDate = new Date(endOfMonth);
-	endDate.setDate(endDate.getDate() + (6 - endDate.getDay()));
+	useEffect(() => {
+		fetch("/api/events")
+			.then((r) => r.json())
+			.then((data) => {
+				const all: CalendarEvent[] = data.events || [];
+				setEvents(all.filter((ev) => ev.title !== "สอบปลายภาค"));
+			})
+			.catch(() => { });
+	}, []);
 
 	// Build month bounds in UTC to avoid local TZ drift
 	const startOfMonthUTC = new Date(
@@ -60,20 +44,42 @@ const Calendar: React.FC = () => {
 		days.push(new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
 	}
 
-	const grouped = events.reduce((acc: Record<string, Event[]>, ev) => {
-		acc[ev.dayKey] = acc[ev.dayKey] || [];
-		acc[ev.dayKey].push(ev);
-		return acc;
-	}, {});
 	// Helper: pad to 2 digits
 	const pad2 = (n: number) => String(n).padStart(2, "0");
 
-	// Helper: build a day key (local calendar date)
+	// Helper: build a day key from a startTime string using Bangkok timezone
+	const toDayKeyFromString = (startTime: string): string => {
+		if (!startTime) return "";
+		// For ISO strings and +07:00 strings, parse as Date and use Bangkok local time
+		const d = new Date(startTime);
+		if (isNaN(d.getTime())) return "";
+		// Use Intl to get the Bangkok date components
+		const parts = new Intl.DateTimeFormat("en-CA", {
+			timeZone: "Asia/Bangkok",
+			year: "numeric",
+			month: "2-digit",
+			day: "2-digit",
+		}).formatToParts(d);
+		const map: Record<string, string> = {};
+		parts.forEach((p) => { map[p.type] = p.value; });
+		return `${map.year}-${map.month}-${map.day}`;
+	};
+
+	// Build day key for a calendar Date cell (local)
 	const toDayKey = (d: Date) =>
 		`${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
 
 	// Compute today's key once (normalized to midnight)
 	const todayKey = toDayKey(new Date());
+
+	// Group events by Bangkok-local day key
+	const grouped = events.reduce((acc: Record<string, CalendarEvent[]>, ev) => {
+		const key = toDayKeyFromString(ev.startTime);
+		if (!key) return acc;
+		acc[key] = acc[key] || [];
+		acc[key].push(ev);
+		return acc;
+	}, {});
 
 	// Replace isToday with key comparison, plus in-month constraint
 	const isToday = (date: Date): boolean => toDayKey(date) === todayKey;
@@ -97,7 +103,7 @@ const Calendar: React.FC = () => {
 		default: "linear-gradient(to right, var(--accent), var(--accent))",
 	};
 
-	function getCourseColor(ev: Event) {
+	function getCourseColor(ev: CalendarEvent) {
 		const code = ev.courseCode || ev.title;
 		if (!code) return courseColors.default;
 
@@ -203,19 +209,17 @@ const Calendar: React.FC = () => {
 							<div
 								key={idx}
 								className={`h-32 border-b border-r p-1 relative overflow-visible transition-all duration-200 
-                                ${
-																	inMonth
-																		? "bg-background hover:bg-accent/10"
-																		: "bg-muted text-muted-foreground"
-																}
+                                ${inMonth
+										? "bg-background hover:bg-accent/10"
+										: "bg-muted text-muted-foreground"
+									}
                             `}>
 								<div
 									className={`text-xs absolute top-1 right-1 font-semibold
-									${
-										isToday(day) && inMonth
+									${isToday(day) && inMonth
 											? "px-2 py-0.5 rounded-full bg-gradient-to-r from-primary to-purple-500 text-primary-foreground shadow"
 											: "text-muted-foreground"
-									}`}>
+										}`}>
 									{day.getDate()}
 								</div>
 
@@ -227,21 +231,20 @@ const Calendar: React.FC = () => {
 											<button
 												key={i}
 												onClick={() => setSelectedEvent(ev)}
-												className={`relative z-0 px-2 py-0.5 rounded-full font-medium transition-transform duration-200 hover:scale-105 hover:-translate-y-0.5 hover:shadow-lg ${
-													ev.title.includes("Sum")
-														? styles.summativeEvent
-														: ev.title.includes("สอบปลายภาค") ||
-														  ev.title.includes("สอบกลางภาค")
+												className={`relative z-0 px-2 py-0.5 rounded-full font-medium transition-transform duration-200 hover:scale-105 hover:-translate-y-0.5 hover:shadow-lg ${ev.title.includes("Sum")
+													? styles.summativeEvent
+													: ev.title.includes("สอบปลายภาค") ||
+														ev.title.includes("สอบกลางภาค")
 														? styles.examEvent
 														: "text-white"
-												}`}
+													}`}
 												style={
 													ev.title.includes("Sum")
 														? {}
 														: ev.title.includes("สอบปลายภาค") ||
-														  ev.title.includes("สอบกลางภาค")
-														? {}
-														: { background: getCourseColor(ev) }
+															ev.title.includes("สอบกลางภาค")
+															? {}
+															: { background: getCourseColor(ev) }
 												}>
 												<span className={styles.eventFullTitle}>{subject}</span>
 												<span className={styles.eventShortCode}>
@@ -277,26 +280,15 @@ const Calendar: React.FC = () => {
 							</button>
 
 							<h2 className="text-2xl font-bold mb-4 bg-gradient-to-r from-primary to-chart-2 bg-clip-text text-transparent">
-								{selectedEvent.fullTitle}
+								{selectedEvent.title}
 							</h2>
 
 							<div className="flex flex-wrap gap-2 mb-4">
 								{selectedEvent.courseCode && (
 									<span
-										className={`px-2 py-0.5 text-xs rounded-full font-medium bg-gradient-to-r ${getCourseColor(
-											selectedEvent
-										)}`}>
+										className={`px-2 py-0.5 text-xs rounded-full font-medium text-white`}
+										style={{ background: getCourseColor(selectedEvent) }}>
 										{selectedEvent.courseCode}
-									</span>
-								)}
-								{selectedEvent.topic && (
-									<span className="px-2 py-0.5 text-xs rounded-full bg-secondary/20 text-secondary-foreground font-medium">
-										Topic {selectedEvent.topic}
-									</span>
-								)}
-								{selectedEvent.professor && (
-									<span className="px-2 py-0.5 text-xs rounded-full bg-accent/20 text-accent-foreground font-medium">
-										👩‍🏫 {selectedEvent.professor}
 									</span>
 								)}
 								{selectedEvent.title.includes("Sum") && (
@@ -309,15 +301,19 @@ const Calendar: React.FC = () => {
 
 							<p className="text-sm mb-2">
 								⏰{" "}
-								{selectedEvent.start.toLocaleTimeString([], {
+								{new Date(selectedEvent.startTime).toLocaleTimeString("th-TH", {
+									timeZone: "Asia/Bangkok",
 									hour: "2-digit",
 									minute: "2-digit",
 								})}{" "}
 								–{" "}
-								{selectedEvent.end.toLocaleTimeString([], {
-									hour: "2-digit",
-									minute: "2-digit",
-								})}
+								{selectedEvent.endTime
+									? new Date(selectedEvent.endTime).toLocaleTimeString("th-TH", {
+										timeZone: "Asia/Bangkok",
+										hour: "2-digit",
+										minute: "2-digit",
+									})
+									: ""}
 							</p>
 							{selectedEvent.location && (
 								<p className="text-sm mb-2">📍 {selectedEvent.location}</p>

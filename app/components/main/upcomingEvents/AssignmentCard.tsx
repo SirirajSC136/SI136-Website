@@ -19,18 +19,17 @@ interface Assignment {
 }
 
 const formatSheetDeadline = (dateString: string): DeadlineResult => {
-    if (!dateString) return { text: "No deadline", isUrgent: false };
-    const parts = dateString.split('/');
-    if (parts.length !== 3) return { text: "Invalid date", isUrgent: false };
-    const target = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
-    const diff = target.getTime() - GetNowTime() + 86399000;
-    console.log(diff)
-    if (diff < 0) return { text: "Past", isUrgent: false };
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const text = days > 0 ? `${days}d ${hours}h left` : hours > 0 ? `${hours}h ${minutes}m left` : `${minutes}m left`;
-    return { text, isUrgent: diff < 24 * 60 * 60 * 1000 };
+  if (!dateString) return { text: "No deadline", isUrgent: false };
+  const parts = dateString.split('/');
+  if (parts.length !== 3) return { text: "Invalid date", isUrgent: false };
+  const target = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+  const diff = target.getTime() - GetNowTime() + 86399000;
+  if (diff < 0) return { text: "Past", isUrgent: false };
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const text = days > 0 ? `${days}d ${hours}h left` : hours > 0 ? `${hours}h ${minutes}m left` : `${minutes}m left`;
+  return { text, isUrgent: diff < 24 * 60 * 60 * 1000 };
 };
 
 export function AssignmentCard({ assignment }: { assignment: Assignment }) {
@@ -65,9 +64,8 @@ export function AssignmentCard({ assignment }: { assignment: Assignment }) {
           </div>
         </div>
         <span
-          className={`text-xs font-medium flex-shrink-0 ml-2 ${
-            isUrgent ? "text-red-600 " : "text-primary"
-          }`}
+          className={`text-xs font-medium flex-shrink-0 ml-2 ${isUrgent ? "text-red-600 " : "text-primary"
+            }`}
         >
           {timeLeft}
         </span>

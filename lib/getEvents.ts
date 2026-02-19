@@ -33,28 +33,38 @@ function parseExtraFields(desc?: string) {
 	};
 }
 
-/** Parse ICS text into events */
+/** Extract course code prefix from title (e.g. "SIID 145", "EGID 103") */
+function extractCourseCode(title: string): string {
+	const t = title.trim();
+	const match = t.match(/^(SIID\s?\d+|EGID\s?\d+|SCID\s?\d+|ITCS\s?\d+)/i);
+	if (match) return match[0].replace(/\s+/, " ").trim();
+	return t.split(" - ")[0].trim() || "General";
+}
+
+/** Parse ICS text into events shaped as CalendarEvent */
 export function parseIcsToEvents(icsText: string) {
-	const events = Object.values(ical.parseICS(icsText))
+	return Object.values(ical.parseICS(icsText))
 		.filter((item: any) => item?.type === "VEVENT")
-		.map((item: any) => {
-			const { topics, professor, details } = parseExtraFields(item.description);
+		.map((item: any, idx: number) => {
+			const { professor, details } = parseExtraFields(item.description);
+			const title = cleanTitle(item.summary);
+			const courseCode = extractCourseCode(title);
+			const startDate: Date = item.start;
+			const endDate: Date = item.end;
 
 			return {
-				title: cleanTitle(item.summary),
+				id: `ics-${idx}-${startDate?.getTime?.() ?? idx}`,
+				title,
 				fullTitle: item.summary || "Untitled",
-				start: item.start,
-				end: item.end,
-				allDay: false,
-				location: item.location || undefined,
-				details,
+				courseCode,
+				tag: "Class",
+				startTime: startDate instanceof Date ? startDate.toISOString() : String(startDate),
+				endTime: endDate instanceof Date ? endDate.toISOString() : String(endDate),
+				location: item.location || "",
+				details: professor ? `👩‍🏫 ${professor}` : details,
+				subjectPageUrl: `/academics/${encodeURIComponent(courseCode)}`,
 			};
 		});
-
-	console.log(`Parsed ${events.length} events`);
-	if (events[0]) console.log("Sample event:", events[0]);
-
-	return events;
 }
 
 /** Fetch + normalize + merge events */

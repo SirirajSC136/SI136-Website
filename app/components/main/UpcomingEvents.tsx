@@ -98,18 +98,31 @@ const SectionTitle = ({ icon, title }: { icon: React.ReactNode, title: string })
     </div>
 );
 
-const EventCard = ({ event }: { event: CalendarEvent }) => (
-    <div className="group flex items-start space-x-4 p-4 bg-background rounded-lg border border-border transition-shadow hover:shadow-md">
-        <div className="flex-shrink-0 mt-1"><CalendarDays className="h-5 w-5 text-chart-2" /></div>
-        <div className="flex-grow">
-            <p className="text-sm font-semibold text-chart-2">{event.courseCode}</p>
-            <p className="font-medium text-primary">{event.title}</p>
-            <div className="flex items-center justify-between mt-2">
-                <span className="text-sm text-secondary">{new Date(event.startTime).toLocaleTimeString('en-US', { timeZone: "Asia/Bangkok", hour: '2-digit', minute: '2-digit' })} - {event.details}</span>
+const EventCard = ({ event }: { event: CalendarEvent }) => {
+    const startStr = event.startTime
+        ? new Date(event.startTime).toLocaleTimeString('en-US', { timeZone: "Asia/Bangkok", hour: '2-digit', minute: '2-digit' })
+        : "";
+    const endStr = event.endTime
+        ? new Date(event.endTime).toLocaleTimeString('en-US', { timeZone: "Asia/Bangkok", hour: '2-digit', minute: '2-digit' })
+        : "";
+    const timeRange = endStr ? `${startStr} – ${endStr}` : startStr;
+
+    return (
+        <div className="group flex items-start space-x-4 p-4 bg-background rounded-lg border border-border transition-shadow hover:shadow-md">
+            <div className="flex-shrink-0 mt-1"><CalendarDays className="h-5 w-5 text-chart-2" /></div>
+            <div className="flex-grow">
+                <p className="text-sm font-semibold text-chart-2">{event.courseCode}</p>
+                <p className="font-medium text-primary">{event.title}</p>
+                <div className="flex items-center justify-between mt-2">
+                    <span className="text-sm text-secondary">{timeRange}{event.location ? ` · ${event.location}` : ""}</span>
+                </div>
+                {event.details && (
+                    <p className="text-xs text-muted-foreground mt-1 truncate">{event.details}</p>
+                )}
             </div>
         </div>
-    </div>
-);
+    );
+};
 
 // --- NEW: Component for displaying an examination ---
 const ExaminationCard = ({ exam }: { exam: SheetExam }) => (

@@ -78,6 +78,8 @@ export interface CalendarEvent {
     courseCode: string;
     title: string;
     startTime: string;
+    endTime?: string;
+    location?: string;
     tag: string;
     details: string;
     subjectPageUrl: string;

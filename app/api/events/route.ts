@@ -70,8 +70,6 @@ export async function GET() {
       };
     });
 
-    console.log("Parsed Google Events:", googleEvents);
-
     const unifiedEvents = [...localEvents, ...googleEvents];
 
     return new NextResponse(JSON.stringify({ events: unifiedEvents }, null, 2), {

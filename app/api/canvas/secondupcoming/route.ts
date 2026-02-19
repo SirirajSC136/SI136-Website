@@ -38,8 +38,6 @@ export async function GET(req: Request) {
   const examsUrl = `https://docs.google.com/spreadsheets/d/${EXAMS_SHEET_ID}/export?format=csv&gid=${GID}`;
 
   try {
-    console.log(`Fetching data from two sources in parallel...`);
-
     // Use Promise.all to fetch both sheets concurrently for better performance
     // Added Next.js revalidation for caching (revalidate every 15 minutes)
     const [assignmentsResponse, examsResponse] = await Promise.all([
@@ -92,13 +90,6 @@ export async function GET(req: Request) {
       const itemDate = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
       return itemDate >= threeDaysAgo;
     });
-
-    // Log the fetched data to the backend console for verification
-    console.log('--- ✅ Fetched Assignments Data ---');
-    console.log(`Original: ${assignmentsData.length}, After filter: ${filteredAssignments.length}`);
-    console.log('--- ✅ Fetched Examinations Data ---');
-    console.log(`Original: ${examsData.length}, After filter: ${filteredExams.length}`);
-    console.log('------------------------------------');
 
     // Return a structured response containing both datasets
     return NextResponse.json({

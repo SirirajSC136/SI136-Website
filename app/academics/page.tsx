@@ -4,7 +4,7 @@ import AcademicHero from "@/app/components/academics/AcademicHero";
 import SubjectCard from "@/app/components/academics/SubjectCard";
 import { Subject } from "@/types";
 import PageHero from "../components/main/PageHero";
-import { BookHeart } from "lucide-react";
+
 
 async function getSubjects(): Promise<Subject[]> {
 	try {
@@ -78,7 +78,7 @@ const AcademicPage = async () => {
 	const allSubjects = await getSubjects();
 
 	// Exclude unwanted IDs
-	const excludedIdList = ["1266", "208", "549", "1105"];
+	const excludedIdList = ["1266", "208", "549", "1105", "1318"];
 	const filtered = allSubjects.filter(
 		(subject) => !excludedIdList.includes(subject._id)
 	);
@@ -86,12 +86,6 @@ const AcademicPage = async () => {
 	// Normalize course codes and year/semester
 	const subjects = filtered.map(normalizeCourseCode).map(normalizeYearSemester);
 
-	// Log all subjects for hardcoding decisions
-	console.log("=== ALL SUBJECTS ===");
-	subjects.forEach(s => {
-		console.log(`ID: ${s._id} | Code: ${s.courseCode} | Title: ${s.title} | Year: ${s.year} | Semester: ${s.semester}`);
-	});
-	console.log("====================");
 
 	if (!subjects || subjects.length === 0) {
 		return (

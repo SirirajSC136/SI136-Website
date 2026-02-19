@@ -13,7 +13,6 @@ export async function PUT(
     { params }: { params: { itemId: string } } // <-- FIX: Correct signature
 ) {
     const { itemId } = params; // <-- FIX: Get ID from params
-    console.log(`PUT request received for itemId: ${itemId}`);
 
     try {
         if (!mongoose.Types.ObjectId.isValid(itemId)) {
@@ -46,7 +45,6 @@ export async function DELETE(
     { params }: { params: { itemId: string } } // <-- FIX: Correct signature
 ) {
     const { itemId } = params; // <-- FIX: Get ID from params
-    console.log(`--- DELETE request received for itemId: ${itemId} ---`);
 
     try {
         if (!mongoose.Types.ObjectId.isValid(itemId)) {
@@ -55,9 +53,6 @@ export async function DELETE(
         }
 
         await connectToDatabase();
-        console.log("Database connection successful.");
-
-        console.log(`Attempting to delete document with _id: ${itemId}`);
         const deletedMaterial = await CustomMaterial.findByIdAndDelete(itemId);
 
         if (!deletedMaterial) {
@@ -66,7 +61,6 @@ export async function DELETE(
             return NextResponse.json({ error: 'Material not found in database' }, { status: 404 });
         }
 
-        console.log(`Successfully deleted document with _id: ${itemId}`);
         return NextResponse.json({ success: true, message: 'Material deleted' });
 
     } catch (error) {
