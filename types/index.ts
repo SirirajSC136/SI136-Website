@@ -83,6 +83,10 @@ export interface CalendarEvent {
     tag: string;
     details: string;
     subjectPageUrl: string;
+    category: 'class' | 'summative' | 'exam' | 'other';
+    isAllDay: boolean;
+    source: 'google';
+    htmlLink?: string;
 }
 
 export interface Task {

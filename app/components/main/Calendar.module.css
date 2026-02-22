@@ -1,13 +1,75 @@
 .calendarWrapper {
 	width: 100%;
-	overflow-x: auto; /* enable horizontal scroll */
-	overflow-y: hidden;
+	overflow-x: auto;
+	overflow-y: visible;
 	-webkit-overflow-scrolling: touch;
 }
 
 .calendarGrid {
 	display: grid;
-	grid-template-columns: repeat(7, 140px); /* 7 fixed-width day columns */
+	grid-template-columns: repeat(7, minmax(140px, 1fr));
+	min-width: 980px;
+}
+
+.calendarCell {
+	height: 140px;
+	padding: 0.25rem;
+	position: relative;
+	overflow: hidden;
+}
+
+.dayEvents {
+	margin-top: 1.3rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+}
+
+.eventChip {
+	display: block;
+	width: 100%;
+	border-radius: 9999px;
+	padding: 2px 8px;
+	font-size: 0.8rem;
+	line-height: 1.1rem;
+	font-weight: 600;
+	text-align: left;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.eventChip:hover {
+	transform: translateY(-1px);
+}
+
+.moreButton {
+	display: block;
+	width: 100%;
+	border-radius: 9999px;
+	padding: 2px 8px;
+	font-size: 0.75rem;
+	line-height: 1rem;
+	font-weight: 600;
+	text-align: left;
+	color: var(--color-primary);
+	background: color-mix(in oklab, var(--color-muted) 65%, transparent);
+}
+
+.moreButton:hover {
+	background: color-mix(in oklab, var(--color-muted) 85%, transparent);
+}
+
+.dayListItem {
+	width: 100%;
+	display: block;
+	padding: 0.5rem 0.75rem;
+	border-radius: 0.5rem;
+	text-align: left;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .examEvent {
@@ -98,29 +160,6 @@
 	display: none;
 }
 
-.evenTopic {
-	display: inline;
-}
-
-@media (max-width: 648px) {
-	.eventFullTitle {
-		display: none;
-	}
-	.eventShortCode {
-		display: inline;
-		font-size: 0.9rem;
-	}
-}
-
 .eventTopic {
-	font-size: 0.9rem;
-	line-height: 1rem;
 	font-weight: 500;
-}
-
-@media (min-width: 648px) {
-	.eventTopic {
-		font-size: 1rem;
-		line-height: 1.25rem;
-	}
 }

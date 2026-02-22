@@ -1,93 +1,75 @@
-// ./app/api/events/route.ts
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { google } from "googleapis";
 import { CalendarEvent } from "@/types";
-import { fetchCalendarEvents } from "@/lib/getEvents";
+import {
+	getBangkokUtcRange,
+	isValidDateKey,
+	normalizeGoogleCalendarEvent,
+	sortEventsByStartTime,
+} from "@/lib/events/normalize";
 
 export const dynamic = "force-dynamic";
 
-// --- Ensure required env vars exist ---
-if (!process.env.GOOGLE_API_KEY || !process.env.GOOGLE_CALENDAR_ID) {
-  throw new Error("Missing Google API Key or Calendar ID.");
-}
+export async function GET(request: NextRequest) {
+	try {
+		const apiKey = process.env.GOOGLE_API_KEY;
+		const calendarId = process.env.GOOGLE_CALENDAR_ID;
 
-// --- Google Calendar client ---
-const calendar = google.calendar({
-  version: "v3",
-  auth: process.env.GOOGLE_API_KEY,
-});
+		if (!apiKey || !calendarId) {
+			return NextResponse.json(
+				{ error: "Missing GOOGLE_API_KEY or GOOGLE_CALENDAR_ID." },
+				{ status: 500 }
+			);
+		}
 
-// --- Helpers ---
-function parseEventSummary(summary: string): { courseCode: string; title: string } {
-  const topicMarker = "(Topic";
-  const topicIndex = summary.indexOf(topicMarker);
+		const startDateKey = request.nextUrl.searchParams.get("start");
+		const endDateKey = request.nextUrl.searchParams.get("end");
 
-  if (topicIndex !== -1) {
-    const courseCode = summary.substring(0, topicIndex).trim();
-    return { courseCode, title: summary };
-  }
+		if (!startDateKey || !endDateKey) {
+			return NextResponse.json(
+				{
+					error:
+						"Query params 'start' and 'end' are required in YYYY-MM-DD format.",
+				},
+				{ status: 400 }
+			);
+		}
 
-  const parts = summary.split(" - ");
-  return { courseCode: parts[0] || "General", title: summary };
-}
+		if (!isValidDateKey(startDateKey) || !isValidDateKey(endDateKey)) {
+			return NextResponse.json(
+				{
+					error:
+						"Invalid date format. Use YYYY-MM-DD for both 'start' and 'end'.",
+				},
+				{ status: 400 }
+			);
+		}
 
-const stripHtml = (html: string | null | undefined): string => {
-  return html ? html.replace(/<[^>]*>/g, "") : "";
-};
+		const { timeMin, timeMax } = getBangkokUtcRange(startDateKey, endDateKey);
 
-// --- GET handler ---
-export async function GET() {
-  try {
-    // Local events from your abstraction
-    const localEvents = await fetchCalendarEvents();
+		const calendar = google.calendar({
+			version: "v3",
+			auth: apiKey,
+		});
 
-    // Google Calendar events
-    const response = await calendar.events.list({
-      calendarId: process.env.GOOGLE_CALENDAR_ID,
-      timeMin: new Date().toISOString(),
-      maxResults: 50,
-      singleEvents: true,
-      orderBy: "startTime",
-    });
+		const response = await calendar.events.list({
+			calendarId,
+			timeMin,
+			timeMax,
+			maxResults: 2500,
+			singleEvents: true,
+			orderBy: "startTime",
+		});
 
-    const events = response.data.items || [];
+		const events: CalendarEvent[] = (response.data.items || [])
+			.map(normalizeGoogleCalendarEvent)
+			.filter((event): event is CalendarEvent => event !== null);
 
-    const googleEvents: CalendarEvent[] = events.map((event) => {
-      const summary = event.summary || "No Title";
-      const { courseCode, title } = parseEventSummary(summary);
-
-      return {
-        id: event.id || "",
-        courseCode,
-        title,
-        tag: "Class",
-        startTime: event.start?.dateTime || event.start?.date || "",
-        endTime: event.end?.dateTime || event.end?.date || "",
-        details: stripHtml(event.description),
-        location: event.location || "",
-        subjectPageUrl: `/academics/${encodeURIComponent(courseCode)}`,
-        htmlLink: event.htmlLink || "",
-      };
-    });
-
-    const unifiedEvents = [...localEvents, ...googleEvents];
-
-    return new NextResponse(JSON.stringify({ events: unifiedEvents }, null, 2), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-      },
-    });
-  } catch (error: any) {
-    console.error("Error fetching events:", error);
-    return new NextResponse(
-      JSON.stringify({ error: error.message || "Failed to load events" }),
-      {
-        status: 500,
-        headers: {
-          "Content-Type": "application/json; charset=utf-8",
-        },
-      }
-    );
-  }
+		return NextResponse.json({ events: sortEventsByStartTime(events) }, { status: 200 });
+	} catch (error: unknown) {
+		console.error("Error fetching events:", error);
+		const message =
+			error instanceof Error ? error.message : "Failed to load events";
+		return NextResponse.json({ error: message }, { status: 500 });
+	}
 }
