@@ -1,0 +1,29 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.admin == true;
+    }
+
+    // Public-ish files for signed-in students
+    match /public/{allPaths=**} {
+      allow read: if isSignedIn();
+      allow write, delete: if isAdmin();
+    }
+
+    // Admin uploads and private assets
+    match /admin/{allPaths=**} {
+      allow read, write, delete: if isAdmin();
+    }
+
+    // Catch-all deny
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

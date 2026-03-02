@@ -1,13 +1,12 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route"; // Adjust the import path if necessary
 import LoginButton from "@/app/components/LoginButton"; // Adjust the import path if necessary
+import { getSessionUserFromCookies } from "@/lib/server/auth/session";
 
 export default async function AcademicsLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    const session = await getServerSession(authOptions);
+    const session = await getSessionUserFromCookies();
 
     // If the user is not logged in, show a login prompt.
     if (!session) {

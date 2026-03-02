@@ -7,8 +7,8 @@ import { useParams } from 'next/navigation';
 import { PlusCircle, Trash, Edit, File as FileIcon, Link as LinkIcon, BrainCircuit, Layers3 } from 'lucide-react';
 import ItemEditorModal from './components/ItemEditorModal';
 
-// Helper function to check for valid MongoDB ObjectId
-const isValidObjectId = (id: string): boolean => {
+// Helper to detect server-generated custom IDs (24-char hex).
+const isCustomId = (id: string): boolean => {
     return /^[0-9a-fA-F]{24}$/.test(id);
 };
 
@@ -180,7 +180,7 @@ export default function CustomizeSubjectPage() {
 
             <div className="mt-6 space-y-4">
                 {subject.topics.map(topic => {
-                    const isCustomTopic = isValidObjectId(topic.id);
+                    const isCustomTopic = isCustomId(topic.id);
                     return (
                         <div key={topic.id} className="p-4 border rounded-lg bg-white shadow-sm">
                             <div className="flex justify-between items-center pb-3 border-b mb-3">
@@ -210,7 +210,7 @@ export default function CustomizeSubjectPage() {
                             {topic.items.length > 0 ? (
                                 <ul className="space-y-2">
                                     {topic.items.map(item => {
-                                        const isCustomItem = isValidObjectId(item.id);
+                                        const isCustomItem = isCustomId(item.id);
                                         let icon;
                                         switch (item.type) {
                                             case 'Quiz': icon = <BrainCircuit size={16} className="text-blue-500" />; break;

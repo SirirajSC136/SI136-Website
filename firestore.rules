@@ -1,0 +1,40 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.admin == true;
+    }
+
+    // Custom/overlay course tree
+    match /courses/{courseId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+
+      match /topics/{topicId} {
+        allow read: if isSignedIn();
+        allow write: if isAdmin();
+
+        match /items/{itemId} {
+          allow read: if isSignedIn();
+          allow write: if isAdmin();
+        }
+      }
+    }
+
+    // Interactive resources
+    match /interactive_contents/{interactiveId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // Explicit deny-all fallback
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,36 +1,28 @@
-// app/api/admin/materials/route.ts
+import { NextResponse } from "next/server";
+import { adminContentService } from "@/lib/server/services/adminContentService";
+import { requireAdminFromRequest } from "@/lib/server/auth/session";
+import { createMaterialSchema } from "@/lib/server/validation/admin";
+import { HttpError, toErrorResponse } from "@/lib/server/http/errors";
 
-import { NextResponse } from 'next/server';
-import connectToDatabase from '@/lib/mongodb';
-import CustomMaterial from '@/models/CustomMaterial';
+export const runtime = "nodejs";
 
 export async function POST(request: Request) {
-    // TODO: Add proper authentication and authorization checks here.
+	try {
+		await requireAdminFromRequest(request);
+		const body = await request.json();
+		const parsed = createMaterialSchema.safeParse(body);
+		if (!parsed.success) {
+			throw new HttpError(
+				400,
+				"Invalid material payload",
+				"validation_error",
+				parsed.error.flatten()
+			);
+		}
 
-    try {
-        await connectToDatabase();
-        const body = await request.json();
-
-        // ==================================================
-        // === THE DEFINITIVE FIX IS RIGHT HERE ===
-        // ==================================================
-        // We now validate using the new, generic field names: 'courseId' and 'topicId'.
-        if (!body.courseId || !body.topicId || !body.item) {
-            console.error("Validation failed. Received body:", body);
-            return NextResponse.json({ error: 'Missing required fields: courseId, topicId, and item are required.' }, { status: 400 });
-        }
-        // ==================================================
-
-        const newMaterial = new CustomMaterial({
-            courseId: body.courseId,
-            topicId: body.topicId,
-            item: body.item,
-        });
-        await newMaterial.save();
-
-        return NextResponse.json({ success: true, data: newMaterial }, { status: 201 });
-    } catch (error) {
-        console.error("POST /api/admin/materials failed:", error);
-        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
-    }
+		const created = await adminContentService.createMaterial(parsed.data);
+		return NextResponse.json({ success: true, data: created }, { status: 201 });
+	} catch (error) {
+		return toErrorResponse(error);
+	}
 }

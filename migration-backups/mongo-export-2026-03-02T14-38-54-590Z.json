@@ -1,0 +1,2205 @@
+{
+  "courses": [
+    {
+      "_id": "68db54ba5fe7ce53fdaa16de",
+      "courseCode": "ITCS",
+      "title": "ITCS152",
+      "year": 2025,
+      "semester": 1,
+      "topics": [],
+      "__v": 0
+    },
+    {
+      "_id": "68e2bc91493704ef7977981c",
+      "courseCode": "EGID103",
+      "title": "EGID103",
+      "year": 2025,
+      "semester": 1,
+      "topics": [],
+      "__v": 0
+    },
+    {
+      "_id": "698a9a6c4e59ccddf7cd6d59",
+      "courseCode": "SIID147/68",
+      "title": "ศรสว 147/68 รากฐานของร่างกายมนุษย์: พลังงานและเมแทบอลิซึม",
+      "year": 2025,
+      "semester": 2,
+      "topics": [],
+      "__v": 0
+    }
+  ],
+  "topics": [
+    {
+      "_id": "68e3704852e81c94871c4970",
+      "courseId": "68e2bc91493704ef7977981c",
+      "title": "Topic 1: Introduction",
+      "__v": 0
+    },
+    {
+      "_id": "68e3705952e81c94871c4975",
+      "courseId": "68e2bc91493704ef7977981c",
+      "title": "Topic 2: Liposomes and Polymesone",
+      "__v": 0
+    },
+    {
+      "_id": "68e370d9ffc11f25d387cede",
+      "courseId": "68e2bc91493704ef7977981c",
+      "title": "Topic 3: Molecular diagnostic for infectious diseases & cancer",
+      "__v": 0
+    },
+    {
+      "_id": "68e370f2ffc11f25d387cee3",
+      "courseId": "68e2bc91493704ef7977981c",
+      "title": "Topic 4: Biosensors",
+      "__v": 0
+    },
+    {
+      "_id": "68e37111ffc11f25d387cee8",
+      "courseId": "68e2bc91493704ef7977981c",
+      "title": "Topic 5: Basics of Ultrasound & Technology ",
+      "__v": 0
+    },
+    {
+      "_id": "68e37123ffc11f25d387ceed",
+      "courseId": "68e2bc91493704ef7977981c",
+      "title": "Topic 6: Drug delivery",
+      "__v": 0
+    },
+    {
+      "_id": "68e37136ffc11f25d387cef2",
+      "courseId": "68e2bc91493704ef7977981c",
+      "title": "Topic 7: BME in the real world",
+      "__v": 0
+    },
+    {
+      "_id": "68e375fe987b0ea2a5942168",
+      "courseId": "68db54ba5fe7ce53fdaa16de",
+      "title": "Topic 1: Overview of Current and Future Health Information Technology",
+      "__v": 0
+    },
+    {
+      "_id": "68e3761d987b0ea2a594216d",
+      "courseId": "68db54ba5fe7ce53fdaa16de",
+      "title": "Topic 2: Introduction to Cyber Security",
+      "__v": 0
+    },
+    {
+      "_id": "68e37636987b0ea2a5942172",
+      "courseId": "68db54ba5fe7ce53fdaa16de",
+      "title": "Topic 3: Medical informatics literacy",
+      "__v": 0
+    },
+    {
+      "_id": "68e37648987b0ea2a5942177",
+      "courseId": "68db54ba5fe7ce53fdaa16de",
+      "title": "Topic 4: Health information system",
+      "__v": 0
+    },
+    {
+      "_id": "68e37655987b0ea2a594217c",
+      "courseId": "68db54ba5fe7ce53fdaa16de",
+      "title": "Topic 5: Artificial intelligence Healthcare",
+      "__v": 0
+    },
+    {
+      "_id": "68e37663987b0ea2a5942186",
+      "courseId": "68db54ba5fe7ce53fdaa16de",
+      "title": "Topic 6: Machine learning",
+      "__v": 0
+    },
+    {
+      "_id": "68e3767e987b0ea2a594218b",
+      "courseId": "68db54ba5fe7ce53fdaa16de",
+      "title": "Topic 7: Big Data",
+      "__v": 0
+    },
+    {
+      "_id": "68e376ce987b0ea2a5942198",
+      "courseId": "68db54ba5fe7ce53fdaa16de",
+      "title": "Topic 8: Virtual Reality",
+      "__v": 0
+    },
+    {
+      "_id": "68fb5b325a8b2c8e2d644871",
+      "courseId": "68e2bc91493704ef7977981c",
+      "title": "Topic 8: Medical robotics",
+      "createdAt": "2025-10-24T10:55:46.314Z",
+      "updatedAt": "2025-10-24T10:55:46.314Z",
+      "__v": 0
+    },
+    {
+      "_id": "68fb5bfb5a8b2c8e2d644882",
+      "courseId": "68db54ba5fe7ce53fdaa16de",
+      "title": "Topic 9: Blockchain",
+      "createdAt": "2025-10-24T10:59:07.092Z",
+      "updatedAt": "2025-10-24T10:59:07.092Z",
+      "__v": 0
+    },
+    {
+      "_id": "68fee0181211f3013ce595ab",
+      "courseId": "68e2bc91493704ef7977981c",
+      "title": "Topic 9: Introduction to AI and Machine learning in medicine",
+      "createdAt": "2025-10-27T02:59:36.123Z",
+      "updatedAt": "2025-10-27T02:59:36.123Z",
+      "__v": 0
+    },
+    {
+      "_id": "69034c4c58be2ca6e57fc38b",
+      "courseId": "1106",
+      "title": "Flashcard",
+      "createdAt": "2025-10-30T11:30:20.959Z",
+      "updatedAt": "2025-10-30T11:30:20.959Z",
+      "__v": 0
+    },
+    {
+      "_id": "69081f8f5ac3d3720c9bca87",
+      "courseId": "68e2bc91493704ef7977981c",
+      "title": "Topic 11: Rehabilitation technology",
+      "createdAt": "2025-11-03T03:20:47.904Z",
+      "updatedAt": "2025-11-03T03:20:47.904Z",
+      "__v": 0
+    },
+    {
+      "_id": "691b396d5b7b2f0376f389be",
+      "courseId": "68e2bc91493704ef7977981c",
+      "title": "Topic 12: Introduction to modern surgery & soft robotics in medicine",
+      "createdAt": "2025-11-17T15:04:13.649Z",
+      "updatedAt": "2025-11-17T15:04:13.649Z",
+      "__v": 0
+    },
+    {
+      "_id": "691daf96703ffbd5a5192280",
+      "courseId": "1106",
+      "title": "ข้อสอบ Summative",
+      "createdAt": "2025-11-19T11:52:54.125Z",
+      "updatedAt": "2025-11-19T11:52:54.125Z",
+      "__v": 0
+    },
+    {
+      "_id": "69236b09cafe0da65225c06c",
+      "courseId": "1106",
+      "title": "Mock summative",
+      "createdAt": "2025-11-23T20:14:01.383Z",
+      "updatedAt": "2025-11-23T20:14:01.383Z",
+      "__v": 0
+    },
+    {
+      "_id": "692851caf1b47805887a03bb",
+      "courseId": "432",
+      "title": "GUIDEBOOK",
+      "createdAt": "2025-11-27T13:27:38.709Z",
+      "updatedAt": "2025-11-27T13:27:38.709Z",
+      "__v": 0
+    },
+    {
+      "_id": "6928574377cd5ed68d1a8dec",
+      "courseId": "432",
+      "title": "Summary",
+      "createdAt": "2025-11-27T13:50:59.367Z",
+      "updatedAt": "2025-11-27T13:50:59.367Z",
+      "__v": 0
+    },
+    {
+      "_id": "698aa93cf29aa2f0335a4d10",
+      "courseId": "698a9a6c4e59ccddf7cd6d59",
+      "title": "Topic 1: Orientation and overview",
+      "createdAt": "2026-02-10T03:42:52.768Z",
+      "updatedAt": "2026-02-10T03:42:52.768Z",
+      "__v": 0
+    },
+    {
+      "_id": "698aa950f29aa2f0335a4d19",
+      "courseId": "698a9a6c4e59ccddf7cd6d59",
+      "title": "Topic 2: Chemistry of Metabolic Fuels",
+      "createdAt": "2026-02-10T03:43:12.702Z",
+      "updatedAt": "2026-02-10T03:43:12.702Z",
+      "__v": 0
+    },
+    {
+      "_id": "698aa969f29aa2f0335a4d1e",
+      "courseId": "698a9a6c4e59ccddf7cd6d59",
+      "title": "Topic 3: Cellular Bioenergetics",
+      "createdAt": "2026-02-10T03:43:37.357Z",
+      "updatedAt": "2026-02-10T03:43:37.357Z",
+      "__v": 0
+    },
+    {
+      "_id": "698aa97af29aa2f0335a4d24",
+      "courseId": "698a9a6c4e59ccddf7cd6d59",
+      "title": "Topic 4: Carbohydrate Metabolism",
+      "createdAt": "2026-02-10T03:43:54.572Z",
+      "updatedAt": "2026-02-10T03:43:54.572Z",
+      "__v": 0
+    },
+    {
+      "_id": "698aa988f29aa2f0335a4d29",
+      "courseId": "698a9a6c4e59ccddf7cd6d59",
+      "title": "Topic 5: Lipid Metabolism",
+      "createdAt": "2026-02-10T03:44:08.744Z",
+      "updatedAt": "2026-02-10T03:44:08.744Z",
+      "__v": 0
+    },
+    {
+      "_id": "698aa9a3f29aa2f0335a4d2e",
+      "courseId": "698a9a6c4e59ccddf7cd6d59",
+      "title": "Topic 6: Integration of Carbohydrate and Lipid Metabolism",
+      "createdAt": "2026-02-10T03:44:35.236Z",
+      "updatedAt": "2026-02-10T03:44:35.236Z",
+      "__v": 0
+    },
+    {
+      "_id": "698aa9b4f29aa2f0335a4d33",
+      "courseId": "698a9a6c4e59ccddf7cd6d59",
+      "title": "Topic 7: Lipoprotein Metabolism",
+      "createdAt": "2026-02-10T03:44:52.763Z",
+      "updatedAt": "2026-02-10T03:44:52.763Z",
+      "__v": 0
+    },
+    {
+      "_id": "6996ff4c169c47e086e8ad5b",
+      "courseId": "1305",
+      "title": "Revision Planner",
+      "createdAt": "2026-02-19T12:17:16.965Z",
+      "updatedAt": "2026-02-19T12:17:16.965Z",
+      "__v": 0
+    }
+  ],
+  "materials": [
+    {
+      "_id": "68f3b3c3a5668064c79ce0bf",
+      "courseId": "68e2bc91493704ef7977981c",
+      "topicId": "68e3704852e81c94871c4970",
+      "item": {
+        "type": "Link",
+        "title": "Handout",
+        "url": "https://drive.google.com/file/d/10QHapoEY7-EYN8nTriFG038p7G_fPVfi/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-18T15:35:31.699Z",
+      "updatedAt": "2025-10-18T15:35:31.699Z",
+      "__v": 0
+    },
+    {
+      "_id": "68f3b3d82d709f06a87bd5d9",
+      "courseId": "68e2bc91493704ef7977981c",
+      "topicId": "68e3705952e81c94871c4975",
+      "item": {
+        "type": "Link",
+        "title": "Handout",
+        "url": "https://drive.google.com/file/d/1eH_Dbbcyf4fSRoQsmqXjq8uLIsKLf4CB/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-18T15:35:52.382Z",
+      "updatedAt": "2025-10-18T15:35:52.382Z",
+      "__v": 0
+    },
+    {
+      "_id": "68f3b3ed9cdc4bbbb253fcc5",
+      "courseId": "68e2bc91493704ef7977981c",
+      "topicId": "68e370d9ffc11f25d387cede",
+      "item": {
+        "type": "Link",
+        "title": "Handout",
+        "url": "https://drive.google.com/file/d/1e6Xv-r4xZHETUhGn2KZk3xcwtGiUpf7Z/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-18T15:36:13.243Z",
+      "updatedAt": "2025-10-18T15:36:13.243Z",
+      "__v": 0
+    },
+    {
+      "_id": "68f3b3ff9cdc4bbbb253fcca",
+      "courseId": "68e2bc91493704ef7977981c",
+      "topicId": "68e370f2ffc11f25d387cee3",
+      "item": {
+        "type": "Link",
+        "title": "Handout",
+        "url": "https://drive.google.com/file/d/1lj-5_hvHsIaeVZU2n2hCEOkh1YL3PaDp/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-18T15:36:31.395Z",
+      "updatedAt": "2025-10-18T15:36:31.395Z",
+      "__v": 0
+    },
+    {
+      "_id": "68f3b4129cdc4bbbb253fccf",
+      "courseId": "68e2bc91493704ef7977981c",
+      "topicId": "68e37111ffc11f25d387cee8",
+      "item": {
+        "type": "Link",
+        "title": "Handout",
+        "url": "https://drive.google.com/file/d/1RSLiiUN0e2fM9gJpDj_YfRJDWXqu_roP/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-18T15:36:50.266Z",
+      "updatedAt": "2025-10-18T15:36:50.266Z",
+      "__v": 0
+    },
+    {
+      "_id": "68f3b4219cdc4bbbb253fcd4",
+      "courseId": "68e2bc91493704ef7977981c",
+      "topicId": "68e37123ffc11f25d387ceed",
+      "item": {
+        "type": "Link",
+        "title": "Handout",
+        "url": "https://drive.google.com/file/d/1aLyUImVvMdZte5AaPPa6pdftVfTVK1aD/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-18T15:37:05.856Z",
+      "updatedAt": "2025-10-18T15:37:05.856Z",
+      "__v": 0
+    },
+    {
+      "_id": "68f3b4309cdc4bbbb253fcd9",
+      "courseId": "68e2bc91493704ef7977981c",
+      "topicId": "68e37136ffc11f25d387cef2",
+      "item": {
+        "type": "Link",
+        "title": "Handout",
+        "url": "https://drive.google.com/file/d/1glx3ek_DVgfH-xH_qtQGteqmvA2xcTt8/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-18T15:37:20.402Z",
+      "updatedAt": "2025-10-18T15:37:20.402Z",
+      "__v": 0
+    },
+    {
+      "_id": "68f3b44b9cdc4bbbb253fce2",
+      "courseId": "68db54ba5fe7ce53fdaa16de",
+      "topicId": "68e375fe987b0ea2a5942168",
+      "item": {
+        "type": "Link",
+        "title": "Handout",
+        "url": "https://drive.google.com/file/d/19NLLUpRTSfwozAYBk5PgwR9XEXpe4I5g/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-18T15:37:47.780Z",
+      "updatedAt": "2025-10-18T15:37:47.780Z",
+      "__v": 0
+    },
+    {
+      "_id": "68f3b45e9cdc4bbbb253fcf0",
+      "courseId": "68db54ba5fe7ce53fdaa16de",
+      "topicId": "68e3761d987b0ea2a594216d",
+      "item": {
+        "type": "Link",
+        "title": "Handout",
+        "url": "https://drive.google.com/file/d/1VVhxU-OKyjXqrUrc-Aiy-Bhyiomtq6by/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-18T15:38:06.018Z",
+      "updatedAt": "2025-10-18T15:38:06.018Z",
+      "__v": 0
+    },
+    {
+      "_id": "68f3b46c9cdc4bbbb253fcf5",
+      "courseId": "68db54ba5fe7ce53fdaa16de",
+      "topicId": "68e37636987b0ea2a5942172",
+      "item": {
+        "type": "Link",
+        "title": "Handout",
+        "url": "https://drive.google.com/file/d/1Roz4Jl53HMgpOGFuQgIaSkv3VJnf12tn/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-18T15:38:20.466Z",
+      "updatedAt": "2025-10-18T15:38:20.466Z",
+      "__v": 0
+    },
+    {
+      "_id": "68f3b47b9cdc4bbbb253fcfa",
+      "courseId": "68db54ba5fe7ce53fdaa16de",
+      "topicId": "68e37648987b0ea2a5942177",
+      "item": {
+        "type": "Link",
+        "title": "Handout",
+        "url": "https://drive.google.com/file/d/1_HpaCz0NRhaxD3ahqVOL1WxD9-SnKM2z/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-18T15:38:35.758Z",
+      "updatedAt": "2025-10-18T15:38:35.758Z",
+      "__v": 0
+    },
+    {
+      "_id": "68f3b48c9cdc4bbbb253fcff",
+      "courseId": "68db54ba5fe7ce53fdaa16de",
+      "topicId": "68e37655987b0ea2a594217c",
+      "item": {
+        "type": "Link",
+        "title": "Handout",
+        "url": "https://drive.google.com/file/d/1q58inNY56uj4tZuPn9a-MSTqoP6FaQBj/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-18T15:38:52.033Z",
+      "updatedAt": "2025-10-18T15:38:52.033Z",
+      "__v": 0
+    },
+    {
+      "_id": "68f3b49a9cdc4bbbb253fd05",
+      "courseId": "68db54ba5fe7ce53fdaa16de",
+      "topicId": "68e37663987b0ea2a5942186",
+      "item": {
+        "type": "Link",
+        "title": "Handout",
+        "url": "https://drive.google.com/file/d/1Xeto6dNcmLar_ZJO3PfpB2sHl_ZPd1Bc/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-18T15:39:06.965Z",
+      "updatedAt": "2025-10-18T15:39:06.965Z",
+      "__v": 0
+    },
+    {
+      "_id": "68f3b4ac9cdc4bbbb253fd0a",
+      "courseId": "68db54ba5fe7ce53fdaa16de",
+      "topicId": "68e3767e987b0ea2a594218b",
+      "item": {
+        "type": "Link",
+        "title": "Handout",
+        "url": "https://drive.google.com/file/d/13iYXmHpL_erf-UkMYyh5IaK0iHCH_fZ2/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-18T15:39:24.771Z",
+      "updatedAt": "2025-10-18T15:39:24.771Z",
+      "__v": 0
+    },
+    {
+      "_id": "68f3b4b79cdc4bbbb253fd0f",
+      "courseId": "68db54ba5fe7ce53fdaa16de",
+      "topicId": "68e3767e987b0ea2a594218b",
+      "item": {
+        "type": "Link",
+        "title": "Lecture",
+        "url": "https://drive.google.com/file/d/1K8jGPSCaPDUdiMT21SfmDPBIeSQnpPga/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-18T15:39:35.545Z",
+      "updatedAt": "2025-10-18T15:39:35.545Z",
+      "__v": 0
+    },
+    {
+      "_id": "68f3b4cf9cdc4bbbb253fd14",
+      "courseId": "68db54ba5fe7ce53fdaa16de",
+      "topicId": "68e376ce987b0ea2a5942198",
+      "item": {
+        "type": "Link",
+        "title": "Handout",
+        "url": "https://drive.google.com/file/d/1jTge_yjOUqsscarOBjK0WpeNLUKwGLZ8/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-18T15:39:59.778Z",
+      "updatedAt": "2025-10-18T15:39:59.778Z",
+      "__v": 0
+    },
+    {
+      "_id": "68f3b4e79cdc4bbbb253fd19",
+      "courseId": "68db54ba5fe7ce53fdaa16de",
+      "topicId": "68e376ce987b0ea2a5942198",
+      "item": {
+        "type": "Link",
+        "title": "Lecture",
+        "url": "https://drive.google.com/file/d/1ylYFfIRP22YBlfoOoFZ9OvcNtSTmQAGZ/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-18T15:40:23.640Z",
+      "updatedAt": "2025-10-18T15:40:23.640Z",
+      "__v": 0
+    },
+    {
+      "_id": "68fb5b4d5a8b2c8e2d644878",
+      "courseId": "68e2bc91493704ef7977981c",
+      "topicId": "68fb5b325a8b2c8e2d644871",
+      "item": {
+        "type": "Link",
+        "title": "Handout",
+        "url": "https://drive.google.com/file/d/17bi5xygwYKemuB5NBUz61LnlRyMcZ94a/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-24T10:56:13.290Z",
+      "updatedAt": "2025-10-24T10:56:13.290Z",
+      "__v": 0
+    },
+    {
+      "_id": "68fb5ca85a8b2c8e2d644887",
+      "courseId": "68db54ba5fe7ce53fdaa16de",
+      "topicId": "68fb5bfb5a8b2c8e2d644882",
+      "item": {
+        "type": "Link",
+        "title": "Handout",
+        "url": "https://drive.google.com/file/d/15_7Aq3fF41U1Yz5-ggP48dGQx6CNC5z4/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-24T11:02:00.779Z",
+      "updatedAt": "2025-10-24T11:02:00.779Z",
+      "__v": 0
+    },
+    {
+      "_id": "68fee0201211f3013ce595b0",
+      "courseId": "68e2bc91493704ef7977981c",
+      "topicId": "68fee0181211f3013ce595ab",
+      "item": {
+        "type": "Link",
+        "title": "Handout",
+        "url": "https://drive.google.com/file/d/1jQAa_S71rsJplDPEFOD8EkFCjG6yKnbl/view?usp=drivesdk"
+      },
+      "createdAt": "2025-10-27T02:59:44.896Z",
+      "updatedAt": "2025-10-27T02:59:44.896Z",
+      "__v": 0
+    },
+    {
+      "_id": "6900487f3db25b2578613c28",
+      "courseId": "1106",
+      "topicId": "6515",
+      "item": {
+        "id": "6900487f3db25b2578613c28",
+        "type": "Link",
+        "title": "Shortnote (ACAD: Win)",
+        "url": "https://drive.google.com/file/d/19ojmfRMj4yse7dOWDrLQaFE9GZGt3Yde/view?usp=drivesdk"
+      },
+      "createdAt": "2025-10-28T04:37:19.122Z",
+      "updatedAt": "2025-10-31T19:00:14.073Z",
+      "__v": 0
+    },
+    {
+      "_id": "690048d13db25b2578613c34",
+      "courseId": "1106",
+      "topicId": "6517",
+      "item": {
+        "id": "690048d13db25b2578613c34",
+        "type": "Link",
+        "title": "Shortnote (ACAD: Win)",
+        "url": "https://drive.google.com/file/d/13Q9026UzCqgcmNzJscplX1ITR6uE0Bmh/view?usp=drivesdk"
+      },
+      "createdAt": "2025-10-28T04:38:41.700Z",
+      "updatedAt": "2025-10-31T19:01:31.555Z",
+      "__v": 0
+    },
+    {
+      "_id": "690049043db25b2578613c38",
+      "courseId": "1106",
+      "topicId": "6518",
+      "item": {
+        "id": "690049043db25b2578613c38",
+        "type": "Link",
+        "title": "Shortnote (ACAD: Win)",
+        "url": "https://drive.google.com/file/d/1fqHfnuDQpv_7XRSJOtKWx2Aj-0_FNHh_/view?usp=drivesdk"
+      },
+      "createdAt": "2025-10-28T04:39:32.512Z",
+      "updatedAt": "2025-10-31T19:02:33.006Z",
+      "__v": 0
+    },
+    {
+      "_id": "690049303db25b2578613c3c",
+      "courseId": "1106",
+      "topicId": "6527",
+      "item": {
+        "id": "690049303db25b2578613c3c",
+        "type": "Link",
+        "title": "Shortnote (ACAD: Q)",
+        "url": "https://drive.google.com/file/d/1aGjLamNDOQN3sgl3fy11nVv_8fghsMEr/view?usp=drivesdk"
+      },
+      "createdAt": "2025-10-28T04:40:16.192Z",
+      "updatedAt": "2025-10-31T19:04:21.244Z",
+      "__v": 0
+    },
+    {
+      "_id": "6901bc1fa18cefbb8134d9b7",
+      "courseId": "1123",
+      "topicId": "6848",
+      "item": {
+        "type": "Link",
+        "title": "แนวคำตอบคำถามท้ายบรรยาย",
+        "url": "https://drive.google.com/file/d/1EKLpaTRli4XTWWV5HHI8qz9TMq4exv1J/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-29T07:02:55.687Z",
+      "updatedAt": "2025-10-29T07:02:55.687Z",
+      "__v": 0
+    },
+    {
+      "_id": "6901bc60a18cefbb8134d9bc",
+      "courseId": "1123",
+      "topicId": "6850",
+      "item": {
+        "type": "Link",
+        "title": "แนวคำตอบคำถามประจำสัปดาห์",
+        "url": "https://drive.google.com/file/d/1cc7Gr90W3-myB0fumPWb9Hl-Lk8CVddN/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-29T07:04:00.598Z",
+      "updatedAt": "2025-10-29T07:04:00.598Z",
+      "__v": 0
+    },
+    {
+      "_id": "6901bc9aa18cefbb8134d9c0",
+      "courseId": "1123",
+      "topicId": "6852",
+      "item": {
+        "type": "Link",
+        "title": "แนวคำตอบคำถามท้ายบรรยาย",
+        "url": "https://drive.google.com/file/d/11X18Do1IRP_r-w7_Iyc_rO8GL79ojrV0/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-29T07:04:58.301Z",
+      "updatedAt": "2025-10-29T07:04:58.301Z",
+      "__v": 0
+    },
+    {
+      "_id": "6901bcc7a18cefbb8134d9c4",
+      "courseId": "1123",
+      "topicId": "6854",
+      "item": {
+        "type": "Link",
+        "title": "แนวคำตอบคำถามประจำสัปดาห์",
+        "url": "https://drive.google.com/file/d/1VCkV14yWqsurhxDPEtoZTvvAvUvhqADd/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-29T07:05:43.036Z",
+      "updatedAt": "2025-10-29T07:05:43.036Z",
+      "__v": 0
+    },
+    {
+      "_id": "6901bd0da18cefbb8134d9c8",
+      "courseId": "1123",
+      "topicId": "6859",
+      "item": {
+        "type": "Link",
+        "title": "รายละเอียดงานกลุ่ม",
+        "url": "https://docs.google.com/spreadsheets/d/1l0-438aFzF-D18zbq9wivoja6raVbZFA/edit?usp=sharing&ouid=111083773664829697270&rtpof=true&sd=true"
+      },
+      "createdAt": "2025-10-29T07:06:53.031Z",
+      "updatedAt": "2025-10-29T07:06:53.031Z",
+      "__v": 0
+    },
+    {
+      "_id": "6901d5f8fab16accb19cd989",
+      "courseId": "1123",
+      "topicId": "6861",
+      "item": {
+        "type": "Link",
+        "title": "แนวคำตอบ คำถามท้ายการบรรยาย",
+        "url": "https://drive.google.com/file/d/1CXdnjpRcL4bQdpXzEYfvAIum1IaLMmyi/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-29T08:53:12.950Z",
+      "updatedAt": "2025-10-29T08:53:12.950Z",
+      "__v": 0
+    },
+    {
+      "_id": "6901d616fab16accb19cd98d",
+      "courseId": "1123",
+      "topicId": "6864",
+      "item": {
+        "type": "Link",
+        "title": "แนวคำตอบ คำถามท้ายการบรรยาย",
+        "url": "https://drive.google.com/file/d/1ZpSMGgilP29Tk5voA_97fLqMJ4xWNRmI/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-29T08:53:42.672Z",
+      "updatedAt": "2025-10-29T08:53:42.672Z",
+      "__v": 0
+    },
+    {
+      "_id": "6901d7edfab16accb19cd9a8",
+      "courseId": "1106",
+      "topicId": "6525",
+      "item": {
+        "id": "6901d7edfab16accb19cd9a8",
+        "type": "Link",
+        "title": "Shortnote (ACAD: Q)",
+        "url": "https://drive.google.com/file/d/18WDEBuN9rWvbNGMFXF7QLh-Wodi9VSGI/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-29T09:01:33.124Z",
+      "updatedAt": "2025-10-31T19:03:43.259Z",
+      "__v": 0
+    },
+    {
+      "_id": "6904c1cc425f876e89fec8d3",
+      "courseId": "1106",
+      "topicId": "6529",
+      "item": {
+        "id": "6904c1cc425f876e89fec8d3",
+        "type": "Link",
+        "title": "Shortnote (ACAD: Q)",
+        "url": "https://drive.google.com/file/d/1rVKR7TqlWQySI3x509DTTgl5HIa3Hgoy/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-31T14:03:56.135Z",
+      "updatedAt": "2025-10-31T19:05:03.690Z",
+      "__v": 0
+    },
+    {
+      "_id": "6904c1f7425f876e89fec8db",
+      "courseId": "1106",
+      "topicId": "6530",
+      "item": {
+        "id": "6904c1f7425f876e89fec8db",
+        "type": "Link",
+        "title": "Shortnote (Tutor: Focus)",
+        "url": "https://drive.google.com/file/d/1b6FQIRcFr8GGx-SW98z-BSvuqn6RkWNU/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-31T14:04:39.597Z",
+      "updatedAt": "2025-11-09T16:59:24.546Z",
+      "__v": 0
+    },
+    {
+      "_id": "6904c212425f876e89fec8e2",
+      "courseId": "1123",
+      "topicId": "6845",
+      "item": {
+        "id": "6904c212425f876e89fec8e2",
+        "type": "Link",
+        "title": "Shortnote (ACAD: Q)",
+        "url": "https://drive.google.com/file/d/1sMVzCYivIbSKvbmgClaG88lLrMyk77oy/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-31T14:05:06.494Z",
+      "updatedAt": "2025-11-01T04:18:56.539Z",
+      "__v": 0
+    },
+    {
+      "_id": "6904c224425f876e89fec8e6",
+      "courseId": "1123",
+      "topicId": "6855",
+      "item": {
+        "id": "6904c224425f876e89fec8e6",
+        "type": "Link",
+        "title": "Shortnote (ACAD: Q)",
+        "url": "https://drive.google.com/file/d/1EotPOffjIQXLxE_XCefeGoiNhcCzaTHu/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-31T14:05:24.333Z",
+      "updatedAt": "2025-11-01T04:19:18.042Z",
+      "__v": 0
+    },
+    {
+      "_id": "6904e3f01ee94d1b3ffec8ab",
+      "courseId": "1106",
+      "topicId": "6528",
+      "item": {
+        "id": "6904e3f01ee94d1b3ffec8ab",
+        "type": "Link",
+        "title": "Flashcard (ACAD: Imjai)",
+        "url": "https://drive.google.com/file/d/1ddFDvUh1qSWXzTWeYNg8lk7mYUYyNo5g/view?usp=sharing"
+      },
+      "createdAt": "2025-10-31T16:29:36.166Z",
+      "updatedAt": "2025-11-07T07:39:53.116Z",
+      "__v": 0
+    },
+    {
+      "_id": "6904e5a8fed397583a9157fc",
+      "courseId": "1106",
+      "topicId": "6530",
+      "item": {
+        "type": "Link",
+        "title": "Quiz (ACAD)",
+        "url": "https://drive.google.com/file/d/1M9M_b9RFPLEJb4bX77p4qZ4IPA33qYWX/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-31T16:36:56.440Z",
+      "updatedAt": "2025-10-31T16:36:56.440Z",
+      "__v": 0
+    },
+    {
+      "_id": "6904e5d8fed397583a915800",
+      "courseId": "1106",
+      "topicId": "6529",
+      "item": {
+        "type": "Link",
+        "title": "Quiz (ACAD)",
+        "url": "https://drive.google.com/file/d/1-b1baej1ReQ1in0EvK3-BWpbb8tdDG0W/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-31T16:37:44.283Z",
+      "updatedAt": "2025-10-31T16:37:44.283Z",
+      "__v": 0
+    },
+    {
+      "_id": "690504535fd9f0391856275b",
+      "courseId": "1106",
+      "topicId": "6528",
+      "item": {
+        "type": "Link",
+        "title": "Quiz (ACAD)",
+        "url": "https://drive.google.com/file/d/1wGPaCZfs4-SspK5S6SYiquosV94WDev9/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-31T18:47:47.624Z",
+      "updatedAt": "2025-10-31T18:47:47.624Z",
+      "__v": 0
+    },
+    {
+      "_id": "690504775fd9f03918562763",
+      "courseId": "1106",
+      "topicId": "6526",
+      "item": {
+        "type": "Link",
+        "title": "Quiz (ACAD)",
+        "url": "https://drive.google.com/file/d/1WoehOY2OXN3Jjfi3zmsx47XnPnS9Wr-C/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-31T18:48:23.284Z",
+      "updatedAt": "2025-10-31T18:48:23.284Z",
+      "__v": 0
+    },
+    {
+      "_id": "690504965fd9f03918562767",
+      "courseId": "1106",
+      "topicId": "6527",
+      "item": {
+        "type": "Link",
+        "title": "Quiz (ACAD)",
+        "url": "https://drive.google.com/file/d/1eFujdUeGRiGOWllIPrRyniqKB45vR30-/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-31T18:48:54.081Z",
+      "updatedAt": "2025-10-31T18:48:54.081Z",
+      "__v": 0
+    },
+    {
+      "_id": "690504b95fd9f0391856276b",
+      "courseId": "1106",
+      "topicId": "6525",
+      "item": {
+        "type": "Link",
+        "title": "Quiz (ACAD)",
+        "url": "https://drive.google.com/file/d/1i0oAJKM8zL1gwmM5MUlOr0B6lwt3ESRq/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-31T18:49:29.803Z",
+      "updatedAt": "2025-10-31T18:49:29.803Z",
+      "__v": 0
+    },
+    {
+      "_id": "69050d71f58e8c3fd5163740",
+      "courseId": "1106",
+      "topicId": "6515",
+      "item": {
+        "id": "69050d71f58e8c3fd5163740",
+        "type": "Link",
+        "title": "Shortnote (ACAD: Porsche)",
+        "url": "https://drive.google.com/file/d/1gUELc48nuAivnY8n2NZ05G6Gxv80U-WW/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-31T19:26:41.332Z",
+      "updatedAt": "2025-10-31T19:27:00.265Z",
+      "__v": 0
+    },
+    {
+      "_id": "69050dbcf58e8c3fd5163747",
+      "courseId": "1106",
+      "topicId": "6526",
+      "item": {
+        "type": "Link",
+        "title": "Shortnote (ACAD: Porsche)",
+        "url": "https://drive.google.com/file/d/1DdLW3oN2CpncNg21PC7NUHT79qUL9y8V/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-31T19:27:56.239Z",
+      "updatedAt": "2025-10-31T19:27:56.239Z",
+      "__v": 0
+    },
+    {
+      "_id": "69050ddff58e8c3fd516374b",
+      "courseId": "1106",
+      "topicId": "6524",
+      "item": {
+        "id": "69050ddff58e8c3fd516374b",
+        "type": "Link",
+        "title": "Shortnote (Tutor: Porsche)",
+        "url": "https://drive.google.com/file/d/1NyMXenDqnh5y3SCK8_iI7xkpXHIxk4mA/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-31T19:28:31.132Z",
+      "updatedAt": "2025-11-04T07:19:29.527Z",
+      "__v": 0
+    },
+    {
+      "_id": "69050f2773bb9ddc1aa1f947",
+      "courseId": "1106",
+      "topicId": "6518",
+      "item": {
+        "type": "Link",
+        "title": "Shortnote (ACAD: Porsche)",
+        "url": "https://drive.google.com/file/d/1kUPZaP1NcOlB5lSlpI5kdfXR6JUx2-_Y/view?usp=drive_link"
+      },
+      "createdAt": "2025-10-31T19:33:59.870Z",
+      "updatedAt": "2025-10-31T19:33:59.870Z",
+      "__v": 0
+    },
+    {
+      "_id": "690820a05ac3d3720c9bca90",
+      "courseId": "68e2bc91493704ef7977981c",
+      "topicId": "69081f8f5ac3d3720c9bca87",
+      "item": {
+        "type": "Link",
+        "title": "Handout 1",
+        "url": "https://drive.google.com/file/d/1eWRBP_NmbX0DpSyRAXw_8a1KlOqvN5o1/view?usp=drivesdk"
+      },
+      "createdAt": "2025-11-03T03:25:20.785Z",
+      "updatedAt": "2025-11-03T03:25:20.785Z",
+      "__v": 0
+    },
+    {
+      "_id": "690820b85ac3d3720c9bca95",
+      "courseId": "68e2bc91493704ef7977981c",
+      "topicId": "69081f8f5ac3d3720c9bca87",
+      "item": {
+        "type": "Link",
+        "title": "Handout 2",
+        "url": "https://drive.google.com/file/d/1LZJS8wZq9VSAmAOjFrEnQEumj21VkgQV/view?usp=drivesdk"
+      },
+      "createdAt": "2025-11-03T03:25:44.074Z",
+      "updatedAt": "2025-11-03T03:25:44.074Z",
+      "__v": 0
+    },
+    {
+      "_id": "690820e45ac3d3720c9bca9a",
+      "courseId": "68e2bc91493704ef7977981c",
+      "topicId": "69081f8f5ac3d3720c9bca87",
+      "item": {
+        "type": "Link",
+        "title": "Lecture 1",
+        "url": "https://drive.google.com/file/d/13RfTH-jYSMuCGrck4BiBTzmsx9c4K7D6/view?usp=drivesdk"
+      },
+      "createdAt": "2025-11-03T03:26:28.290Z",
+      "updatedAt": "2025-11-03T03:26:28.290Z",
+      "__v": 0
+    },
+    {
+      "_id": "690821005ac3d3720c9bca9f",
+      "courseId": "68e2bc91493704ef7977981c",
+      "topicId": "69081f8f5ac3d3720c9bca87",
+      "item": {
+        "type": "Link",
+        "title": "Lecture 2",
+        "url": "https://drive.google.com/file/d/1NjNps2sz8KUa80bRI5-GrCcJkRJUcuU8/view?usp=drivesdk"
+      },
+      "createdAt": "2025-11-03T03:26:56.468Z",
+      "updatedAt": "2025-11-03T03:26:56.468Z",
+      "__v": 0
+    },
+    {
+      "_id": "69082a6ba81be6220d97f804",
+      "courseId": "1123",
+      "topicId": "6842",
+      "item": {
+        "id": "69082a6ba81be6220d97f804",
+        "type": "Link",
+        "title": "แนวคำตอบ คำถามท้ายการบรรยาย",
+        "url": "https://drive.google.com/file/d/12cfZBoVqRq_qTsEI6OIiYl5k76ZA2DfY/view?usp=drivesdk"
+      },
+      "createdAt": "2025-11-03T04:07:07.688Z",
+      "updatedAt": "2025-11-03T04:42:34.483Z",
+      "__v": 0
+    },
+    {
+      "_id": "69083079a81be6220d97f934",
+      "courseId": "1123",
+      "topicId": "6842",
+      "item": {
+        "type": "Link",
+        "title": "คำถามท้ายการบรรยาย",
+        "url": "https://drive.google.com/file/d/1RW8EqerHMsHYikLNYA0i7w6xxlIQqE0K/view?usp=drivesdk"
+      },
+      "createdAt": "2025-11-03T04:32:57.444Z",
+      "updatedAt": "2025-11-03T04:32:57.444Z",
+      "__v": 0
+    },
+    {
+      "_id": "69085c51b2092dd7639a7e56",
+      "courseId": "1106",
+      "topicId": "6531",
+      "item": {
+        "type": "Link",
+        "title": "Quiz (ACAD)",
+        "url": "https://drive.google.com/file/d/1pNY9jUsvG8O00CY70eDzJLPJNx9F_kvF/view?usp=drive_link"
+      },
+      "createdAt": "2025-11-03T07:40:01.644Z",
+      "updatedAt": "2025-11-03T07:40:01.644Z",
+      "__v": 0
+    },
+    {
+      "_id": "6909aa4f109bc397527692a3",
+      "courseId": "1106",
+      "topicId": "6517",
+      "item": {
+        "type": "Link",
+        "title": "Shortnote (ACAD: Porsche)",
+        "url": "https://drive.google.com/file/d/1k-oDgOJfml53dA0wJ_lcEeUFBxJ9Lycp/view?usp=drive_link"
+      },
+      "createdAt": "2025-11-04T07:25:03.805Z",
+      "updatedAt": "2025-11-04T07:25:03.805Z",
+      "__v": 0
+    },
+    {
+      "_id": "690cc8d280c9dbb97e2cc2d2",
+      "courseId": "1106",
+      "topicId": "6518",
+      "item": {
+        "type": "Link",
+        "title": "Flashcard (ACAD: Q)",
+        "url": "https://drive.google.com/file/d/1fwlhkU3Air-WJSOYwvSuILeLEoWM10bp/view?usp=drivesdk"
+      },
+      "createdAt": "2025-11-06T16:12:02.337Z",
+      "updatedAt": "2025-11-06T16:12:02.337Z",
+      "__v": 0
+    },
+    {
+      "_id": "690cc94a1f2f200784382a22",
+      "courseId": "1106",
+      "topicId": "6520",
+      "item": {
+        "id": "690cc94a1f2f200784382a22",
+        "type": "Link",
+        "title": "Shortnote (Tutor: Win)",
+        "url": "https://drive.google.com/file/d/1YTHB778NvH1P_yYaDnLVzQnCSx6FCd66/view?usp=drivesdk"
+      },
+      "createdAt": "2025-11-06T16:14:02.340Z",
+      "updatedAt": "2025-11-25T05:27:13.964Z",
+      "__v": 0
+    },
+    {
+      "_id": "690da2329602cb2eaea09faa",
+      "courseId": "1106",
+      "topicId": "6519",
+      "item": {
+        "id": "690da2329602cb2eaea09faa",
+        "type": "Link",
+        "title": "Flashcard (ACAD: Q)",
+        "url": "https://drive.google.com/file/d/1D-LjH0uNcGPbEHKPJYcDTcYOdezQF6Dx/view?usp=drivesdk"
+      },
+      "createdAt": "2025-11-07T07:39:30.016Z",
+      "updatedAt": "2025-11-07T07:40:31.421Z",
+      "__v": 0
+    },
+    {
+      "_id": "690da3eb97a7e624fd7ba421",
+      "courseId": "1106",
+      "topicId": "6519",
+      "item": {
+        "type": "Link",
+        "title": "Handout (Tutor: Imjai)",
+        "url": "https://drive.google.com/file/d/1BayNmdVmqw5ClNoG-cZoPzif7W6DQUdF/view?usp=drivesdk"
+      },
+      "createdAt": "2025-11-07T07:46:51.994Z",
+      "updatedAt": "2025-11-07T07:46:51.994Z",
+      "__v": 0
+    },
+    {
+      "_id": "690da41a97a7e624fd7ba425",
+      "courseId": "1106",
+      "topicId": "6521",
+      "item": {
+        "type": "Link",
+        "title": "Handout (Tutor: Imjai)",
+        "url": "https://drive.google.com/file/d/1I5IShdsloGz1gtK8dub558DlquMt3n8v/view?usp=drivesdk"
+      },
+      "createdAt": "2025-11-07T07:47:38.598Z",
+      "updatedAt": "2025-11-07T07:47:38.598Z",
+      "__v": 0
+    },
+    {
+      "_id": "690da47f97a7e624fd7ba429",
+      "courseId": "1106",
+      "topicId": "6516",
+      "item": {
+        "type": "Link",
+        "title": "Shortnote (Tutor: Lilly)",
+        "url": "https://drive.google.com/file/d/14DxhawsKDGSK2lGZBwaYcE8rYN-q_pNK/view?usp=drivesdk"
+      },
+      "createdAt": "2025-11-07T07:49:19.835Z",
+      "updatedAt": "2025-11-07T07:49:19.835Z",
+      "__v": 0
+    },
+    {
+      "_id": "690da4bf97a7e624fd7ba42d",
+      "courseId": "1106",
+      "topicId": "6522",
+      "item": {
+        "type": "Link",
+        "title": "Shortnote (ACAD: Zen)",
+        "url": "https://drive.google.com/file/d/1Wyjw4_tOqiuUuZLdCDNwln3e4K_NeU5J/view?usp=drivesdk"
+      },
+      "createdAt": "2025-11-07T07:50:23.123Z",
+      "updatedAt": "2025-11-07T07:50:23.123Z",
+      "__v": 0
+    },
+    {
+      "_id": "690da4e397a7e624fd7ba431",
+      "courseId": "1106",
+      "topicId": "6528",
+      "item": {
+        "type": "Link",
+        "title": "Shortnote (ACAD: Zen)",
+        "url": "https://drive.google.com/file/d/1lovtXyoyPXY9llL2scS6Fy6uRfaYwtoO/view?usp=drivesdk"
+      },
+      "createdAt": "2025-11-07T07:50:59.327Z",
+      "updatedAt": "2025-11-07T07:50:59.327Z",
+      "__v": 0
+    },
+    {
+      "_id": "690da974c335212414fbc381",
+      "courseId": "1106",
+      "topicId": "6533",
+      "item": {
+        "type": "Link",
+        "title": "Shortnote (ACAD: Q)",
+        "url": "https://drive.google.com/file/d/1VefHay7hCjwv4qn6ZmGs_4sSFr5FUvvt/view?usp=drivesdk"
+      },
+      "createdAt": "2025-11-07T08:10:28.346Z",
+      "updatedAt": "2025-11-07T08:10:28.346Z",
+      "__v": 0
+    },
+    {
+      "_id": "690f68061b525ad57787d728",
+      "courseId": "1106",
+      "topicId": "6524",
+      "item": {
+        "type": "Link",
+        "title": "Tutor clip (Porsche)",
+        "url": "https://youtu.be/_0VwjXVOC8U"
+      },
+      "createdAt": "2025-11-08T15:55:50.868Z",
+      "updatedAt": "2025-11-08T15:55:50.868Z",
+      "__v": 0
+    },
+    {
+      "_id": "690f68321b525ad57787d72c",
+      "courseId": "1106",
+      "topicId": "6525",
+      "item": {
+        "type": "Link",
+        "title": "Tutor clip (AMON)",
+        "url": "https://youtu.be/JNgx6_JPTuo"
+      },
+      "createdAt": "2025-11-08T15:56:34.765Z",
+      "updatedAt": "2025-11-08T15:56:34.765Z",
+      "__v": 0
+    },
+    {
+      "_id": "690f686a1b525ad57787d732",
+      "courseId": "1106",
+      "topicId": "6517",
+      "item": {
+        "id": "690f686a1b525ad57787d732",
+        "type": "Link",
+        "title": "Tutor clip (Nene)",
+        "url": "https://youtu.be/mBICvcfFetk"
+      },
+      "createdAt": "2025-11-08T15:57:30.527Z",
+      "updatedAt": "2025-11-09T16:49:52.830Z",
+      "__v": 0
+    },
+    {
+      "_id": "690f68ba1b525ad57787d73a",
+      "courseId": "1106",
+      "topicId": "6516",
+      "item": {
+        "type": "Link",
+        "title": "Tutor clip (Lilly)",
+        "url": "https://youtu.be/HJna-lhSNCw?si=weE0bXYPzvvDTSid"
+      },
+      "createdAt": "2025-11-08T15:58:50.652Z",
+      "updatedAt": "2025-11-08T15:58:50.652Z",
+      "__v": 0
+    },
+    {
+      "_id": "690f68e91b525ad57787d73e",
+      "courseId": "1106",
+      "topicId": "6520",
+      "item": {
+        "type": "Link",
+        "title": "Tutor clip (Win)",
+        "url": "https://youtu.be/VLJmO5YAAY0?si=nfLbj4UOtw6-n1B4"
+      },
+      "createdAt": "2025-11-08T15:59:37.344Z",
+      "updatedAt": "2025-11-08T15:59:37.344Z",
+      "__v": 0
+    },
+    {
+      "_id": "690f69081b525ad57787d742",
+      "courseId": "1106",
+      "topicId": "6521",
+      "item": {
+        "type": "Link",
+        "title": "Tutor clip (Imjai)",
+        "url": "https://youtu.be/4CaHyNU_JCQ?si=xkLfIXaKYNE1fyCb"
+      },
+      "createdAt": "2025-11-08T16:00:08.469Z",
+      "updatedAt": "2025-11-08T16:00:08.469Z",
+      "__v": 0
+    },
+    {
+      "_id": "690f694c1b525ad57787d747",
+      "courseId": "1106",
+      "topicId": "6527",
+      "item": {
+        "type": "Link",
+        "title": "Tutor clip (Nan)",
+        "url": "https://youtu.be/bszXUvNg0sw?si=H1hgC97nbZKBry2M"
+      },
+      "createdAt": "2025-11-08T16:01:16.816Z",
+      "updatedAt": "2025-11-08T16:01:16.816Z",
+      "__v": 0
+    },
+    {
+      "_id": "691013378a8a4302e60c9ecc",
+      "courseId": "1106",
+      "topicId": "6518",
+      "item": {
+        "id": "691013378a8a4302e60c9ecc",
+        "type": "Link",
+        "title": "Tutor clip (Earth)",
+        "url": "https://youtu.be/_K4DTxglTH4"
+      },
+      "createdAt": "2025-11-09T04:06:15.412Z",
+      "updatedAt": "2025-11-14T17:30:24.102Z",
+      "__v": 0
+    },
+    {
+      "_id": "691013cd8a8a4302e60c9ed6",
+      "courseId": "1106",
+      "topicId": "6525",
+      "item": {
+        "type": "Link",
+        "title": "Shortnote (Tutor: Amon)",
+        "url": "https://drive.google.com/file/d/1KXVV8yDyItXt7zn78P9xN0I8oVjklBH7/view?usp=drive_link"
+      },
+      "createdAt": "2025-11-09T04:08:45.392Z",
+      "updatedAt": "2025-11-09T04:08:45.392Z",
+      "__v": 0
+    },
+    {
+      "_id": "691015158a8a4302e60c9ee0",
+      "courseId": "1106",
+      "topicId": "6515",
+      "item": {
+        "type": "Link",
+        "title": "Tutor clip (Tar)",
+        "url": "https://youtu.be/YpAcRwy8RjM?feature=shared"
+      },
+      "createdAt": "2025-11-09T04:14:13.224Z",
+      "updatedAt": "2025-11-09T04:14:13.224Z",
+      "__v": 0
+    },
+    {
+      "_id": "69104d576db3cb2d4c171e81",
+      "courseId": "1106",
+      "topicId": "6522",
+      "item": {
+        "id": "69104d576db3cb2d4c171e81",
+        "type": "Link",
+        "title": "Tutor clip (Jab) Tissue regeneration",
+        "url": "https://youtu.be/gtxB3l_87eI?si=mcqY_SkKXYoxHFl7"
+      },
+      "createdAt": "2025-11-09T08:14:15.938Z",
+      "updatedAt": "2025-11-09T16:54:38.745Z",
+      "__v": 0
+    },
+    {
+      "_id": "69104d836db3cb2d4c171e85",
+      "courseId": "1106",
+      "topicId": "6522",
+      "item": {
+        "type": "Link",
+        "title": "Tutor clip (Jab) Stem cell",
+        "url": "https://youtu.be/r9oqDma2WOY?si=-lGtlLXywJr1DCwa"
+      },
+      "createdAt": "2025-11-09T08:14:59.182Z",
+      "updatedAt": "2025-11-09T08:14:59.182Z",
+      "__v": 0
+    },
+    {
+      "_id": "6910c61ea7a6e2a5fb4f4b03",
+      "courseId": "1106",
+      "topicId": "6517",
+      "item": {
+        "id": "6910c61ea7a6e2a5fb4f4b03",
+        "type": "Link",
+        "title": "Shortnote (Tutor: Nene)",
+        "url": "https://drive.google.com/file/d/1ZlsXofop1vY3SD9ENESxQoVAeCH1xwnr/view?usp=drivesdk"
+      },
+      "createdAt": "2025-11-09T16:49:34.539Z",
+      "updatedAt": "2025-12-01T11:10:17.788Z",
+      "__v": 0
+    },
+    {
+      "_id": "6910c676a7a6e2a5fb4f4b0a",
+      "courseId": "1106",
+      "topicId": "6518",
+      "item": {
+        "id": "6910c676a7a6e2a5fb4f4b0a",
+        "type": "Link",
+        "title": "Shortnote (Tutor: Earth)",
+        "url": "https://drive.google.com/file/d/15jkBqSai8Sk-qK-ngipqDGhpsyTgoVD5/view?usp=drive_link"
+      },
+      "createdAt": "2025-11-09T16:51:02.600Z",
+      "updatedAt": "2025-11-15T19:28:18.119Z",
+      "__v": 0
+    },
+    {
+      "_id": "6910c6fba7a6e2a5fb4f4b0e",
+      "courseId": "1106",
+      "topicId": "6522",
+      "item": {
+        "type": "Link",
+        "title": "Shortnote (Tutor: Jab) Tissue regeneration",
+        "url": "https://drive.google.com/file/d/1IRYzCBvs3xRnjJ6i6fu9OiylJmDqXBw4/view?usp=drive_link"
+      },
+      "createdAt": "2025-11-09T16:53:15.082Z",
+      "updatedAt": "2025-11-09T16:53:15.082Z",
+      "__v": 0
+    },
+    {
+      "_id": "6910c738a7a6e2a5fb4f4b12",
+      "courseId": "1106",
+      "topicId": "6522",
+      "item": {
+        "type": "Link",
+        "title": "Shortnote (Tutor: Jab) Stem cell",
+        "url": "https://drive.google.com/file/d/1MlyCfneqlbul8daBK5O51WB-wDGPXG6s/view?usp=drive_link"
+      },
+      "createdAt": "2025-11-09T16:54:16.359Z",
+      "updatedAt": "2025-11-09T16:54:16.359Z",
+      "__v": 0
+    },
+    {
+      "_id": "6910c7eba7a6e2a5fb4f4b1f",
+      "courseId": "1106",
+      "topicId": "6528",
+      "item": {
+        "type": "Link",
+        "title": "Shortnote (Tutor: Porsche)",
+        "url": "https://drive.google.com/file/d/1nozn0xbvpoTi5nubhtDb9ZsaLKXIji9z/view?usp=drive_link"
+      },
+      "createdAt": "2025-11-09T16:57:15.824Z",
+      "updatedAt": "2025-11-09T16:57:15.824Z",
+      "__v": 0
+    },
+    {
+      "_id": "6910c83ca7a6e2a5fb4f4b23",
+      "courseId": "1106",
+      "topicId": "6528",
+      "item": {
+        "type": "Link",
+        "title": "Tutor clip (Porsche)",
+        "url": "https://youtu.be/BukiSGg4Gvs?si=WDN6fYlB47MdmASC"
+      },
+      "createdAt": "2025-11-09T16:58:36.024Z",
+      "updatedAt": "2025-11-09T16:58:36.024Z",
+      "__v": 0
+    },
+    {
+      "_id": "6910c94ca7a6e2a5fb4f4b2b",
+      "courseId": "1106",
+      "topicId": "6515",
+      "item": {
+        "type": "Link",
+        "title": "Shortnote (Tutor: Tar)",
+        "url": "https://drive.google.com/file/d/11gnbLbyyzprvq8pc2Rtp5GNDkVq2FKzD/view?usp=sharing"
+      },
+      "createdAt": "2025-11-09T17:03:08.989Z",
+      "updatedAt": "2025-11-09T17:03:08.989Z",
+      "__v": 0
+    },
+    {
+      "_id": "6911bb7f4f855b8137be4e06",
+      "courseId": "1106",
+      "topicId": "6519",
+      "item": {
+        "type": "Link",
+        "title": "Tutor clip (Imjai)",
+        "url": "https://youtu.be/rQfXwCnI4S0?si=QBsfn68mBzED5mu5"
+      },
+      "createdAt": "2025-11-10T10:16:31.221Z",
+      "updatedAt": "2025-11-10T10:16:31.221Z",
+      "__v": 0
+    },
+    {
+      "_id": "6912f9cde4f1d85ea2dcad18",
+      "courseId": "1106",
+      "topicId": "6527",
+      "item": {
+        "type": "Link",
+        "title": "Shortnote (Tutor: Nan)",
+        "url": "https://drive.google.com/file/d/13krlRoKgcyc-Qq9Lr0XC3uW2__3aKOzZ/view?usp=drive_link"
+      },
+      "createdAt": "2025-11-11T08:54:37.361Z",
+      "updatedAt": "2025-11-11T08:54:37.361Z",
+      "__v": 0
+    },
+    {
+      "_id": "6915980471ebd2fa13a86bce",
+      "courseId": "1106",
+      "topicId": "6533",
+      "item": {
+        "type": "Link",
+        "title": "Shortnote (ACAD: Zen)",
+        "url": "https://drive.google.com/file/d/1dfe-LeYC-KD7q5AALvMEubIwcgJ6F2aA/view"
+      },
+      "createdAt": "2025-11-13T08:34:12.401Z",
+      "updatedAt": "2025-11-13T08:34:12.401Z",
+      "__v": 0
+    },
+    {
+      "_id": "6918d306b3cb08352fa287d1",
+      "courseId": "1106",
+      "topicId": "6534",
+      "item": {
+        "type": "Link",
+        "title": "Quiz (ACAD)",
+        "url": "https://drive.google.com/file/d/1ONX0WsCA9TGjCABxHI4e7NTY-LQdtMhf/view?usp=drive_link"
+      },
+      "createdAt": "2025-11-15T19:22:46.708Z",
+      "updatedAt": "2025-11-15T19:22:46.708Z",
+      "__v": 0
+    },
+    {
+      "_id": "69193f0f1352632c76c8065c",
+      "courseId": "1106",
+      "topicId": "6532",
+      "item": {
+        "type": "Link",
+        "title": "Shortnote (ACAD: Porsche)",
+        "url": "https://drive.google.com/file/d/10_LK1ci_SO5uzXCg56R2dMDbRHlV0oRb/view?usp=drivesdk"
+      },
+      "createdAt": "2025-11-16T03:03:43.140Z",
+      "updatedAt": "2025-11-16T03:03:43.140Z",
+      "__v": 0
+    },
+    {
+      "_id": "69193f571352632c76c80660",
+      "courseId": "1106",
+      "topicId": "6533",
+      "item": {
+        "type": "Link",
+        "title": "Shortnote (ACAD: Porsche)",
+        "url": "https://drive.google.com/file/d/10uYomuUasjFDl2BMElgHAuoytXHCQPa5/view?usp=drivesdk"
+      },
+      "createdAt": "2025-11-16T03:04:55.419Z",
+      "updatedAt": "2025-11-16T03:04:55.419Z",
+      "__v": 0
+    },
+    {
+      "_id": "69197fb77850c6a5007b5dd2",
+      "courseId": "1106",
+      "topicId": "6526",
+      "item": {
+        "id": "69197fb77850c6a5007b5dd2",
+        "type": "Link",
+        "title": "Tutor clip (Earth)",
+        "url": "https://youtu.be/haPLAgi4eQg"
+      },
+      "createdAt": "2025-11-16T07:39:35.964Z",
+      "updatedAt": "2025-11-16T07:40:08.653Z",
+      "__v": 0
+    },
+    {
+      "_id": "691980827850c6a5007b5dd9",
+      "courseId": "1106",
+      "topicId": "6526",
+      "item": {
+        "type": "Link",
+        "title": "Shortnote (Tutor: Earth)",
+        "url": "https://drive.google.com/file/d/1E9zDZtsuAUqM8DWK1VJL0lmnRCJ3Adep/view?usp=drivesdk"
+      },
+      "createdAt": "2025-11-16T07:42:58.382Z",
+      "updatedAt": "2025-11-16T07:42:58.382Z",
+      "__v": 0
+    },
+    {
+      "_id": "6919f3be17d524ccfeef7c4b",
+      "courseId": "1106",
+      "topicId": "6517",
+      "item": {
+        "type": "Link",
+        "title": "Flashcard (ACAD: Zen)",
+        "url": "https://drive.google.com/file/d/1wI2zvmSURJvNKCjNvWJ75n9nhU1Cl0we/view?usp=sharing"
+      },
+      "createdAt": "2025-11-16T15:54:38.901Z",
+      "updatedAt": "2025-11-16T15:54:38.901Z",
+      "__v": 0
+    },
+    {
+      "_id": "6919f44817d524ccfeef7c52",
+      "courseId": "1106",
+      "topicId": "6518",
+      "item": {
+        "type": "Link",
+        "title": "Flashcard (ACAD: Zen)",
+        "url": "https://drive.google.com/file/d/19KEFWI1TuYeO0LAgMDwNHpE7F9anXVxE/view?usp=sharing"
+      },
+      "createdAt": "2025-11-16T15:56:56.542Z",
+      "updatedAt": "2025-11-16T15:56:56.542Z",
+      "__v": 0
+    },
+    {
+      "_id": "691b397c5b7b2f0376f389c3",
+      "courseId": "68e2bc91493704ef7977981c",
+      "topicId": "691b396d5b7b2f0376f389be",
+      "item": {
+        "type": "Link",
+        "title": "Handout",
+        "url": "https://drive.google.com/file/d/1FzTwQ8yx7V-ThlUukY1b5EVuwFNCa_P0/view?usp=drivesdk"
+      },
+      "createdAt": "2025-11-17T15:04:28.492Z",
+      "updatedAt": "2025-11-17T15:04:28.492Z",
+      "__v": 0
+    },
+    {
+      "_id": "691c2855359fb26fd467ad8d",
+      "courseId": "1106",
+      "topicId": "9706",
+      "item": {
+        "type": "Link",
+        "title": "เฉลย CLO4",
+        "url": "https://youtu.be/BbeeuzU5Qc8?si=DpmNeIvI9ocOjeYY"
+      },
+      "createdAt": "2025-11-18T08:03:33.178Z",
+      "updatedAt": "2025-11-18T08:03:33.178Z",
+      "__v": 0
+    },
+    {
+      "_id": "691c28cb359fb26fd467ad91",
+      "courseId": "1106",
+      "topicId": "8937",
+      "item": {
+        "type": "Link",
+        "title": "เฉลย CLO2",
+        "url": "https://youtu.be/UeQlXoyy8K8?si=dY1b0MHQVg9WKbp2"
+      },
+      "createdAt": "2025-11-18T08:05:31.682Z",
+      "updatedAt": "2025-11-18T08:05:31.682Z",
+      "__v": 0
+    },
+    {
+      "_id": "691c28f8359fb26fd467ad95",
+      "courseId": "1106",
+      "topicId": "8910",
+      "item": {
+        "type": "Link",
+        "title": "เฉลย CLO1",
+        "url": "https://youtu.be/QDia3e12czc?si=lo_enXLbCX7yOpyH"
+      },
+      "createdAt": "2025-11-18T08:06:16.501Z",
+      "updatedAt": "2025-11-18T08:06:16.501Z",
+      "__v": 0
+    },
+    {
+      "_id": "691c2a0f217506928c64f419",
+      "courseId": "1106",
+      "topicId": "9263",
+      "item": {
+        "type": "Link",
+        "title": "เฉลย CLO3",
+        "url": "https://youtu.be/OqAC6ddiNzI?si=QGHhssraL_3WCwhF"
+      },
+      "createdAt": "2025-11-18T08:10:55.933Z",
+      "updatedAt": "2025-11-18T08:10:55.933Z",
+      "__v": 0
+    },
+    {
+      "_id": "69200dfacfdc70a6d12c8e56",
+      "courseId": "1106",
+      "topicId": "691daf96703ffbd5a5192280",
+      "item": {
+        "type": "Link",
+        "title": "Summative 135",
+        "url": "https://drive.google.com/drive/folders/19ZQeV_uJEZLUL78b3G65xJFz8FywwE4a?usp=drive_link"
+      },
+      "createdAt": "2025-11-21T07:00:10.293Z",
+      "updatedAt": "2025-11-21T07:00:10.293Z",
+      "__v": 0
+    },
+    {
+      "_id": "69200e0ecfdc70a6d12c8e5a",
+      "courseId": "1106",
+      "topicId": "691daf96703ffbd5a5192280",
+      "item": {
+        "type": "Link",
+        "title": "Summative 134",
+        "url": "https://drive.google.com/drive/folders/11TKyyLB_iHGVH1hBRzWSqzmlW4yNOIgs?usp=drive_link"
+      },
+      "createdAt": "2025-11-21T07:00:30.412Z",
+      "updatedAt": "2025-11-21T07:00:30.412Z",
+      "__v": 0
+    },
+    {
+      "_id": "69200e1ecfdc70a6d12c8e5e",
+      "courseId": "1106",
+      "topicId": "691daf96703ffbd5a5192280",
+      "item": {
+        "type": "Link",
+        "title": "Summative 133",
+        "url": "https://drive.google.com/drive/folders/10Cj4voiNc77z-gdes854bgNjmUynhL9b?usp=drive_link"
+      },
+      "createdAt": "2025-11-21T07:00:46.859Z",
+      "updatedAt": "2025-11-21T07:00:46.859Z",
+      "__v": 0
+    },
+    {
+      "_id": "69200e36cfdc70a6d12c8e62",
+      "courseId": "1106",
+      "topicId": "691daf96703ffbd5a5192280",
+      "item": {
+        "type": "Link",
+        "title": "Summative 132",
+        "url": "https://drive.google.com/drive/folders/1UkzJFsqmZsKFIoIklXjUIghMmPEgTDIm?usp=drive_link"
+      },
+      "createdAt": "2025-11-21T07:01:10.559Z",
+      "updatedAt": "2025-11-21T07:01:10.559Z",
+      "__v": 0
+    },
+    {
+      "_id": "69200e79cfdc70a6d12c8e66",
+      "courseId": "1106",
+      "topicId": "691daf96703ffbd5a5192280",
+      "item": {
+        "type": "Link",
+        "title": "Summative 131",
+        "url": "https://drive.google.com/drive/folders/1BHuQhKGJcjdha45xt-CgNZWaxyVvpB6c?usp=drive_link"
+      },
+      "createdAt": "2025-11-21T07:02:17.549Z",
+      "updatedAt": "2025-11-21T07:02:17.549Z",
+      "__v": 0
+    },
+    {
+      "_id": "69200e8fcfdc70a6d12c8e6a",
+      "courseId": "1106",
+      "topicId": "691daf96703ffbd5a5192280",
+      "item": {
+        "type": "Link",
+        "title": "Summative 130",
+        "url": "https://drive.google.com/drive/folders/1CZ58PPcI3nttM5PzD11RUkzzjTedBfY9?usp=drive_link"
+      },
+      "createdAt": "2025-11-21T07:02:39.502Z",
+      "updatedAt": "2025-11-21T07:02:39.502Z",
+      "__v": 0
+    },
+    {
+      "_id": "69231a6556e6d9a82b028bca",
+      "courseId": "1106",
+      "topicId": "6531",
+      "item": {
+        "type": "Link",
+        "title": "Tutor clip (Zen)",
+        "url": "https://www.youtube.com/watch?v=RUh9jqtv6Lc"
+      },
+      "createdAt": "2025-11-23T14:29:57.505Z",
+      "updatedAt": "2025-11-23T14:29:57.505Z",
+      "__v": 0
+    },
+    {
+      "_id": "692365c4cafe0da65225c060",
+      "courseId": "1106",
+      "topicId": "6533",
+      "item": {
+        "type": "Link",
+        "title": "Shortnote (Tutor: Tar)",
+        "url": "https://drive.google.com/file/d/1z6dQENejzoLznRVVr8oyYHwXCazrRkiO/view?usp=sharing"
+      },
+      "createdAt": "2025-11-23T19:51:32.154Z",
+      "updatedAt": "2025-11-23T19:51:32.154Z",
+      "__v": 0
+    },
+    {
+      "_id": "69236605cafe0da65225c064",
+      "courseId": "1106",
+      "topicId": "6533",
+      "item": {
+        "type": "Link",
+        "title": "Tutor clip (Tar)",
+        "url": "https://youtu.be/EfSbCt_l3-E?feature=shared"
+      },
+      "createdAt": "2025-11-23T19:52:37.447Z",
+      "updatedAt": "2025-11-23T19:52:37.447Z",
+      "__v": 0
+    },
+    {
+      "_id": "69236ab6cafe0da65225c068",
+      "courseId": "1106",
+      "topicId": "6530",
+      "item": {
+        "type": "Link",
+        "title": "Tutor clip (Focus)",
+        "url": "https://youtu.be/p-AiXaZPreg?si=mmwSE8K_32_E5ktp"
+      },
+      "createdAt": "2025-11-23T20:12:38.644Z",
+      "updatedAt": "2025-11-23T20:12:38.644Z",
+      "__v": 0
+    },
+    {
+      "_id": "69236b78cafe0da65225c070",
+      "courseId": "1106",
+      "topicId": "69236b09cafe0da65225c06c",
+      "item": {
+        "type": "Link",
+        "title": "Mock summative SIID145",
+        "url": "https://drive.google.com/file/d/1WekhdgvfZAtOa-q5T1_Q7K80qSRxnlzb/view?usp=drivesdk"
+      },
+      "createdAt": "2025-11-23T20:15:52.006Z",
+      "updatedAt": "2025-11-23T20:15:52.006Z",
+      "__v": 0
+    },
+    {
+      "_id": "6923c65464d481c9d893d8b7",
+      "courseId": "1106",
+      "topicId": "6532",
+      "item": {
+        "id": "6923c65464d481c9d893d8b7",
+        "type": "Link",
+        "title": "Tutor clip (Nene)",
+        "url": "https://youtu.be/Gonxyac9hmU?si=lm4doUKDwYVRksbc"
+      },
+      "createdAt": "2025-11-24T02:43:33.013Z",
+      "updatedAt": "2025-11-24T02:47:00.875Z",
+      "__v": 0
+    },
+    {
+      "_id": "6923c70e64d481c9d893d8bd",
+      "courseId": "1106",
+      "topicId": "6532",
+      "item": {
+        "type": "Link",
+        "title": "Shortnote (Tutor: Nene)",
+        "url": "https://drive.google.com/file/d/1a8icHXvZaoSSRDc3ihp_BCmX4qtLz4NT/view?usp=drivesdk"
+      },
+      "createdAt": "2025-11-24T02:46:38.290Z",
+      "updatedAt": "2025-11-24T02:46:38.290Z",
+      "__v": 0
+    },
+    {
+      "_id": "692534b98ff15da06cba77c5",
+      "courseId": "1106",
+      "topicId": "6529",
+      "item": {
+        "type": "Link",
+        "title": "Tutor clip (Win)",
+        "url": "https://youtu.be/r8spzg4JxTs?si=gx4GEb8U1tYNcLAS"
+      },
+      "createdAt": "2025-11-25T04:46:49.220Z",
+      "updatedAt": "2025-11-25T04:46:49.220Z",
+      "__v": 0
+    },
+    {
+      "_id": "6925358b85d3d32a679494d6",
+      "courseId": "1106",
+      "topicId": "6529",
+      "item": {
+        "type": "Link",
+        "title": "Shortnote (Tutor: Win)",
+        "url": "https://drive.google.com/file/d/1Di6rtm1C2eyA6KlmaXJlWEFZyjSmYdfS/view?usp=drivesdk"
+      },
+      "createdAt": "2025-11-25T04:50:19.591Z",
+      "updatedAt": "2025-11-25T04:50:19.591Z",
+      "__v": 0
+    },
+    {
+      "_id": "6925358b85d3d32a679494d7",
+      "courseId": "1106",
+      "topicId": "6529",
+      "item": {
+        "type": "Link",
+        "title": "Shortnote (Tutor: Win)",
+        "url": "https://drive.google.com/file/d/1Di6rtm1C2eyA6KlmaXJlWEFZyjSmYdfS/view?usp=drivesdk"
+      },
+      "createdAt": "2025-11-25T04:50:19.591Z",
+      "updatedAt": "2025-11-25T04:50:19.591Z",
+      "__v": 0
+    },
+    {
+      "_id": "69253c66345e71200c5fb098",
+      "courseId": "1106",
+      "topicId": "6534",
+      "item": {
+        "type": "Link",
+        "title": "Shortnote (ACAD: Porsche)",
+        "url": "https://drive.google.com/file/d/1dNO-PXaBwUjqDdkcVfayuIHwcdCdhXuR/view?usp=drivesdk"
+      },
+      "createdAt": "2025-11-25T05:19:34.572Z",
+      "updatedAt": "2025-11-25T05:19:34.572Z",
+      "__v": 0
+    },
+    {
+      "_id": "69266c0468944f9c2370eafa",
+      "courseId": "1106",
+      "topicId": "6531",
+      "item": {
+        "type": "Link",
+        "title": "Shortnote (Tutor: Zen)",
+        "url": "https://drive.google.com/file/d/1M3FnnHKX3Zexa528kfRPoT738_pxluCU/view?usp=sharing"
+      },
+      "createdAt": "2025-11-26T02:55:00.183Z",
+      "updatedAt": "2025-11-26T02:55:00.183Z",
+      "__v": 0
+    },
+    {
+      "_id": "69285121f1b47805887a03ae",
+      "courseId": "1106",
+      "topicId": "6517",
+      "item": {
+        "type": "Link",
+        "title": "Flashcard (ACAD: Imjai)",
+        "url": "https://drive.google.com/file/d/1oR4G0Vj_qH_tbbt5LDC8Ogj5U4tsNDGI/view?usp=drivesdk"
+      },
+      "createdAt": "2025-11-27T13:24:49.113Z",
+      "updatedAt": "2025-11-27T13:24:49.113Z",
+      "__v": 0
+    },
+    {
+      "_id": "69285169f1b47805887a03b2",
+      "courseId": "1106",
+      "topicId": "6533",
+      "item": {
+        "type": "Link",
+        "title": "Flashcard (ACAD: Imjai)",
+        "url": "https://drive.google.com/file/d/1SDXFEQiFfG7TZX8m1mwCybddasqoI73w/view?usp=drivesdk"
+      },
+      "createdAt": "2025-11-27T13:26:01.482Z",
+      "updatedAt": "2025-11-27T13:26:01.482Z",
+      "__v": 0
+    },
+    {
+      "_id": "692851f1f1b47805887a03bf",
+      "courseId": "432",
+      "topicId": "692851caf1b47805887a03bb",
+      "item": {
+        "type": "Link",
+        "title": "How to Survive SIID144",
+        "url": "https://drive.google.com/file/d/1lUssL8H7twjoe2aqgSa1BqRFVy7RJcdp/view?usp=drivesdk"
+      },
+      "createdAt": "2025-11-27T13:28:17.425Z",
+      "updatedAt": "2025-11-27T13:28:17.425Z",
+      "__v": 0
+    },
+    {
+      "_id": "6928576577cd5ed68d1a8df0",
+      "courseId": "432",
+      "topicId": "6928574377cd5ed68d1a8dec",
+      "item": {
+        "id": "6928576577cd5ed68d1a8df0",
+        "type": "Link",
+        "title": "Summative-Shortnote (ACAD: Anonymous)",
+        "url": "https://drive.google.com/file/d/11yn3D74iv3JjApStreZ6RWF4RjCJ2mIQ/view?usp=drivesdk"
+      },
+      "createdAt": "2025-11-27T13:51:33.563Z",
+      "updatedAt": "2025-11-27T13:51:58.744Z",
+      "__v": 0
+    },
+    {
+      "_id": "692c0c12dbd8972439742bd7",
+      "courseId": "1106",
+      "topicId": "6528",
+      "item": {
+        "id": "692c0c12dbd8972439742bd7",
+        "type": "Link",
+        "title": "Shortnote (SI136: Pie)",
+        "url": "https://drive.google.com/file/d/10tm4yzjFfsski_a1Y0sFO-uuH6iILLPa/view?usp=drive_link"
+      },
+      "createdAt": "2025-11-30T09:19:14.283Z",
+      "updatedAt": "2025-11-30T13:59:34.267Z",
+      "__v": 0
+    },
+    {
+      "_id": "692da9a7a38836b89afd4109",
+      "courseId": "1106",
+      "topicId": "6534",
+      "item": {
+        "type": "Link",
+        "title": "Tutor clip (Nan)",
+        "url": "https://youtu.be/nurFgjdHqjY?si=37Y3bIbGBxNeuj9l"
+      },
+      "createdAt": "2025-12-01T14:43:51.751Z",
+      "updatedAt": "2025-12-01T14:43:51.751Z",
+      "__v": 0
+    },
+    {
+      "_id": "692da9e9a38836b89afd410d",
+      "courseId": "1106",
+      "topicId": "6534",
+      "item": {
+        "type": "Link",
+        "title": "Shortnote (Tutor: Nan)",
+        "url": "https://drive.google.com/file/d/15IyNAYDOm3klFUtVxJmxxYFVZ6iZb4NG/view?usp=drivesdk"
+      },
+      "createdAt": "2025-12-01T14:44:57.977Z",
+      "updatedAt": "2025-12-01T14:44:57.977Z",
+      "__v": 0
+    },
+    {
+      "_id": "694125cec79faf984a7c6a98",
+      "courseId": "1106",
+      "topicId": "691daf96703ffbd5a5192280",
+      "item": {
+        "type": "Link",
+        "title": "Summative 136",
+        "url": "https://drive.google.com/file/d/1mD7PwJgafK_dqODE6xUynDowFSJ_aa9n/view?usp=sharing"
+      },
+      "createdAt": "2025-12-16T09:26:38.356Z",
+      "updatedAt": "2025-12-16T09:26:38.356Z",
+      "__v": 0
+    },
+    {
+      "_id": "694188adf0934e1cf6d97630",
+      "courseId": "1106",
+      "topicId": "691daf96703ffbd5a5192280",
+      "item": {
+        "type": "Link",
+        "title": "Summative 136 (Answer)",
+        "url": "https://drive.google.com/file/d/1dXHw_BnFzvIjXzCGWoPir4TXVq6ig6Xm/view?usp=sharing"
+      },
+      "createdAt": "2025-12-16T16:28:29.921Z",
+      "updatedAt": "2025-12-16T16:28:29.921Z",
+      "__v": 0
+    },
+    {
+      "_id": "698ab56af29aa2f0335a4d3b",
+      "courseId": "698a9a6c4e59ccddf7cd6d59",
+      "topicId": "698aa950f29aa2f0335a4d19",
+      "item": {
+        "type": "Link",
+        "title": "Summary (Tutor: Amon)",
+        "url": "https://drive.google.com/file/d/1aWYM0l5kPz41wDjkXHe_V6aINv46vHfG/view?usp=drivesdk"
+      },
+      "createdAt": "2026-02-10T04:34:50.871Z",
+      "updatedAt": "2026-02-10T04:34:50.871Z",
+      "__v": 0
+    },
+    {
+      "_id": "698ab584f29aa2f0335a4d40",
+      "courseId": "698a9a6c4e59ccddf7cd6d59",
+      "topicId": "698aa97af29aa2f0335a4d24",
+      "item": {
+        "type": "Link",
+        "title": "Summary (Acad: Zen)",
+        "url": "https://drive.google.com/file/d/1_RI4t7KZRLSQYq7tsaG0pzfIyZNwB2Dv/view?usp=drivesdk"
+      },
+      "createdAt": "2026-02-10T04:35:16.802Z",
+      "updatedAt": "2026-02-10T04:35:16.802Z",
+      "__v": 0
+    },
+    {
+      "_id": "698ab596f29aa2f0335a4d45",
+      "courseId": "698a9a6c4e59ccddf7cd6d59",
+      "topicId": "698aa97af29aa2f0335a4d24",
+      "item": {
+        "type": "Link",
+        "title": "Summary (Acad: Q)",
+        "url": "https://drive.google.com/file/d/1Z3qorzpK06j1otVCo2U2n95XOHa29ouM/view?usp=drivesdk"
+      },
+      "createdAt": "2026-02-10T04:35:34.611Z",
+      "updatedAt": "2026-02-10T04:35:34.611Z",
+      "__v": 0
+    },
+    {
+      "_id": "698ab5abf29aa2f0335a4d4a",
+      "courseId": "698a9a6c4e59ccddf7cd6d59",
+      "topicId": "698aa988f29aa2f0335a4d29",
+      "item": {
+        "type": "Link",
+        "title": "Summary (Acad: Q)",
+        "url": "https://drive.google.com/file/d/1UVPRqoclJyABmqfPaZs7h-0Yp2CKv-5h/view?usp=drivesdk"
+      },
+      "createdAt": "2026-02-10T04:35:55.840Z",
+      "updatedAt": "2026-02-10T04:35:55.840Z",
+      "__v": 0
+    },
+    {
+      "_id": "698ac65c4e4633d4382e40e7",
+      "courseId": "698a9a6c4e59ccddf7cd6d59",
+      "topicId": "698aa97af29aa2f0335a4d24",
+      "item": {
+        "type": "Link",
+        "title": "Summary (Tutor: Porsche)",
+        "url": "https://l.instagram.com/?u=https%3A%2F%2Fdrive.google.com%2Ffile%2Fd%2F1AFRhY2y1GbmClB6F0wGMgZBLdIgofFvX%2Fview%3Fusp%3Ddrivesdk&e=AT0A-e7sWLx29d3cb08RjOlahZFOtucPbRET9YjtotMs3dMQmDyPOE57ewxH-gOlcalzxUW374QFUEQO4s24c9Cgd8obWmpVOJNKRUhvEdv1175ydotdm5dMZ3aU"
+      },
+      "createdAt": "2026-02-10T05:47:08.916Z",
+      "updatedAt": "2026-02-10T05:47:08.916Z",
+      "__v": 0
+    },
+    {
+      "_id": "698af1601a6c71fac750e9f5",
+      "courseId": "1305",
+      "topicId": "9914",
+      "item": {
+        "type": "Link",
+        "title": "Summary (Acad: Q)",
+        "url": "https://drive.google.com/file/d/1ccKSdaduZ9XGYEMJ6fzHMHUGy3kOhd7F/view?usp=drivesdk"
+      },
+      "createdAt": "2026-02-10T08:50:40.060Z",
+      "updatedAt": "2026-02-10T08:50:40.060Z",
+      "__v": 0
+    },
+    {
+      "_id": "698af2479dc2608ca42c2d15",
+      "courseId": "1305",
+      "topicId": "9916",
+      "item": {
+        "type": "Link",
+        "title": "Summary (Acad: Q)",
+        "url": "https://drive.google.com/file/d/1_mpAQJEd-lctvn-pAfopFlVV0UI7tK3b/view?usp=drivesdk"
+      },
+      "createdAt": "2026-02-10T08:54:31.308Z",
+      "updatedAt": "2026-02-10T08:54:31.308Z",
+      "__v": 0
+    },
+    {
+      "_id": "698af4539dc2608ca42c2d19",
+      "courseId": "1305",
+      "topicId": "9918",
+      "item": {
+        "type": "Link",
+        "title": "Summary (Acad: Q)",
+        "url": "https://drive.google.com/file/d/1qgHXM8aG2QBLUKO9v9qA9D2DB3lBWOE0/view?usp=drivesdk"
+      },
+      "createdAt": "2026-02-10T09:03:15.074Z",
+      "updatedAt": "2026-02-10T09:03:15.074Z",
+      "__v": 0
+    },
+    {
+      "_id": "69917a1d07eb7544b6cfce70",
+      "courseId": "698a9a6c4e59ccddf7cd6d59",
+      "topicId": "698aa950f29aa2f0335a4d19",
+      "item": {
+        "type": "Link",
+        "title": "Tutor clip (Amon)",
+        "url": "https://youtu.be/x7zY1BjLfJY?si=1s2pd8UDKCJ7aII2"
+      },
+      "createdAt": "2026-02-15T07:47:41.968Z",
+      "updatedAt": "2026-02-15T07:47:41.968Z",
+      "__v": 0
+    },
+    {
+      "_id": "699562f8778c1c05321a4701",
+      "courseId": "1305",
+      "topicId": "9911",
+      "item": {
+        "type": "Link",
+        "title": "Tutor clip (Jab)",
+        "url": "https://youtu.be/qKdJ_AK7PeQ?si=8ydXyStScYNMPYs8"
+      },
+      "createdAt": "2026-02-18T06:58:00.522Z",
+      "updatedAt": "2026-02-18T06:58:00.522Z",
+      "__v": 0
+    },
+    {
+      "_id": "69956319778c1c05321a4705",
+      "courseId": "1305",
+      "topicId": "9912",
+      "item": {
+        "type": "Link",
+        "title": "Tutor clip (Jab)",
+        "url": "https://youtu.be/m5cIklsm084?si=slZSeW_z2U-B5oiJ"
+      },
+      "createdAt": "2026-02-18T06:58:33.167Z",
+      "updatedAt": "2026-02-18T06:58:33.167Z",
+      "__v": 0
+    },
+    {
+      "_id": "6995651c778c1c05321a4709",
+      "courseId": "1305",
+      "topicId": "9911",
+      "item": {
+        "type": "Link",
+        "title": "Shortnote (Tutor: Jab)",
+        "url": "https://drive.google.com/file/d/1WDmyQM9S8tF23ubCpLhNHv2kG_fh6nH5/view?usp=drivesdk"
+      },
+      "createdAt": "2026-02-18T07:07:08.515Z",
+      "updatedAt": "2026-02-18T07:07:08.515Z",
+      "__v": 0
+    },
+    {
+      "_id": "69956555778c1c05321a470d",
+      "courseId": "1305",
+      "topicId": "9912",
+      "item": {
+        "type": "Link",
+        "title": "Shortnote (Tutor: Jab)",
+        "url": "https://drive.google.com/file/d/1xiV0EMTkBInkyj82-kecRGUJlQcamcMq/view?usp=drivesdk"
+      },
+      "createdAt": "2026-02-18T07:08:05.029Z",
+      "updatedAt": "2026-02-18T07:08:05.029Z",
+      "__v": 0
+    },
+    {
+      "_id": "6996e083921608451b648a00",
+      "courseId": "1305",
+      "topicId": "11212",
+      "item": {
+        "type": "Link",
+        "title": "Summary CLO1",
+        "url": "https://drive.google.com/file/d/1XsoX2bWrSBXa1uwxi-z8loegOQD2V6q4/view?usp=drivesdk"
+      },
+      "createdAt": "2026-02-19T10:05:55.837Z",
+      "updatedAt": "2026-02-19T10:05:55.837Z",
+      "__v": 0
+    },
+    {
+      "_id": "6996e09a921608451b648a04",
+      "courseId": "1305",
+      "topicId": "11213",
+      "item": {
+        "type": "Link",
+        "title": "Summary CLO2",
+        "url": "https://drive.google.com/file/d/1VXh_Y0ZaoW4KGj4LtnX_R70Tzo_tzYQi/view?usp=drivesdk"
+      },
+      "createdAt": "2026-02-19T10:06:18.507Z",
+      "updatedAt": "2026-02-19T10:06:18.507Z",
+      "__v": 0
+    },
+    {
+      "_id": "6996ffe1169c47e086e8ad5f",
+      "courseId": "1305",
+      "topicId": "6996ff4c169c47e086e8ad5b",
+      "item": {
+        "type": "Link",
+        "title": "Planner template (Resources: Punn)",
+        "url": "https://docs.google.com/spreadsheets/d/1NsFleX87UYJd3-DE_3C9-RxUy-5o8oSxs7jCLL08gtI/edit?usp=sharing"
+      },
+      "createdAt": "2026-02-19T12:19:45.979Z",
+      "updatedAt": "2026-02-19T12:19:45.979Z",
+      "__v": 0
+    },
+    {
+      "_id": "69970a3b907c73ac296db9c2",
+      "courseId": "1305",
+      "topicId": "9911",
+      "item": {
+        "type": "Link",
+        "title": "Quiz (ACAD)",
+        "url": "https://drive.google.com/file/d/1amhpLTY1zrHrpo4UVm7KjhnRmTATKwFr/view?usp=drivesdk"
+      },
+      "createdAt": "2026-02-19T13:03:55.895Z",
+      "updatedAt": "2026-02-19T13:03:55.895Z",
+      "__v": 0
+    },
+    {
+      "_id": "69970a6c907c73ac296db9c6",
+      "courseId": "1305",
+      "topicId": "9912",
+      "item": {
+        "type": "Link",
+        "title": "Quiz (ACAD)",
+        "url": "https://drive.google.com/file/d/1F8iDjdXZG6wKGz0AOwxO-9V9CcQt2wgG/view?usp=drivesdk"
+      },
+      "createdAt": "2026-02-19T13:04:44.240Z",
+      "updatedAt": "2026-02-19T13:04:44.240Z",
+      "__v": 0
+    },
+    {
+      "_id": "69970a81907c73ac296db9ca",
+      "courseId": "1305",
+      "topicId": "9913",
+      "item": {
+        "type": "Link",
+        "title": "Quiz (ACAD)",
+        "url": "https://drive.google.com/file/d/1dHCysurEUtR9w82ZpKqeNwAPaMnzFCNf/view?usp=drivesdk"
+      },
+      "createdAt": "2026-02-19T13:05:05.934Z",
+      "updatedAt": "2026-02-19T13:05:05.934Z",
+      "__v": 0
+    },
+    {
+      "_id": "69970a9f907c73ac296db9ce",
+      "courseId": "1305",
+      "topicId": "9914",
+      "item": {
+        "type": "Link",
+        "title": "Quiz (ACAD)",
+        "url": "https://drive.google.com/file/d/1lLwDXJALoy38RnrXwovrNd02Z1HfCfCt/view?usp=drivesdk"
+      },
+      "createdAt": "2026-02-19T13:05:35.215Z",
+      "updatedAt": "2026-02-19T13:05:35.215Z",
+      "__v": 0
+    },
+    {
+      "_id": "69970aee907c73ac296db9d6",
+      "courseId": "698a9a6c4e59ccddf7cd6d59",
+      "topicId": "698aa950f29aa2f0335a4d19",
+      "item": {
+        "type": "Link",
+        "title": "Quiz (ACAD)",
+        "url": "https://drive.google.com/file/d/1qGObOHeuyJTxvUN-qINIzLbOFUHo2F3t/view?usp=drivesdk"
+      },
+      "createdAt": "2026-02-19T13:06:54.397Z",
+      "updatedAt": "2026-02-19T13:06:54.397Z",
+      "__v": 0
+    },
+    {
+      "_id": "69970b02907c73ac296db9db",
+      "courseId": "698a9a6c4e59ccddf7cd6d59",
+      "topicId": "698aa969f29aa2f0335a4d1e",
+      "item": {
+        "type": "Link",
+        "title": "Quiz (ACAD)",
+        "url": "https://drive.google.com/file/d/1Pp-qTQfxZeLTY81SlSlyFci_P6-ERJhF/view?usp=drivesdk"
+      },
+      "createdAt": "2026-02-19T13:07:14.762Z",
+      "updatedAt": "2026-02-19T13:07:14.762Z",
+      "__v": 0
+    }
+  ],
+  "interactiveContents": []
+}

@@ -1,8 +1,7 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getSessionUserFromCookies } from "@/lib/server/auth/session";
 
 export default async function DashboardPage() {
-  const session = await getServerSession(authOptions);
+  const session = await getSessionUserFromCookies();
 
   if (!session) {
     return <div className="p-10 text-center">Access Denied. Please log in.</div>;
@@ -10,7 +9,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="p-10">
-      <h1>Welcome, {session.user?.name}</h1>
+      <h1>Welcome, {session.name || session.email || session.uid}</h1>
     </div>
   );
 }

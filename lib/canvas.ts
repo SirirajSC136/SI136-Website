@@ -151,7 +151,7 @@ async function processModuleItem(item: any): Promise<CanvasModuleItem> {
 
                     if (fileLinks.length === 1) {
                         const link = fileLinks.first();
-                        let fileHref = link.attr('href');
+                        const fileHref = link.attr('href');
                         const fileTitle = link.text().trim();
                         if (fileHref) {
                             const url = new URL(fileHref);

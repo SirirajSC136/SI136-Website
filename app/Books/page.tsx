@@ -1,7 +1,6 @@
 // app/book/page.tsx
 
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getSessionUserFromCookies } from "@/lib/server/auth/session";
 import LoginButton from "@/app/components/LoginButton";
 import Image from "next/image";
 
@@ -109,7 +108,7 @@ const PageHero = ({ title, subtitle }: { title: string; subtitle: string }) => (
 );
 
 export default async function BookPage() {
-	const session = await getServerSession(authOptions);
+	const session = await getSessionUserFromCookies();
 
 	return (
 		<main className="min-h-screen bg-background text-primary">

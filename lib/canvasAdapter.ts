@@ -2,9 +2,16 @@
 
 import { Subject, Topic, TopicItemData } from '@/types';
 import { CanvasCourse, CanvasModuleItem } from '@/lib/canvas';
-import { ICustomCourse } from '@/models/CustomCourse'; // Import the new type
+export type CustomCourseAdapterInput = {
+    id: string;
+    courseCode: string;
+    title: string;
+    year: number;
+    semester: number;
+    topics: Array<{ id: string; title: string }>;
+};
 
-export function mapCustomCourseToSubject(course: ICustomCourse): Subject {
+export function mapCustomCourseToSubject(course: CustomCourseAdapterInput): Subject {
     return {
         _id: course.id.toString(),
         courseCode: course.courseCode,
@@ -17,8 +24,9 @@ export function mapCustomCourseToSubject(course: ICustomCourse): Subject {
         syllabus: '',
         // Map the topics from the custom course document
         topics: course.topics.map(topic => ({
-            id: topic._id.toString(),
+            id: topic.id.toString(),
             title: topic.title,
+            isCustom: true,
             items: [], // Items will be merged in the detail page API
         })),
     };
@@ -58,6 +66,7 @@ function mapCanvasItemToTopicItem(item: CanvasModuleItem): TopicItemData | null 
                 id: item.id.toString(),
                 title: item.title,
                 type: 'Header',
+                isCustom: false,
             };
         case 'File':
             if (!item.url) return null;
@@ -66,6 +75,7 @@ function mapCanvasItemToTopicItem(item: CanvasModuleItem): TopicItemData | null 
                 title: item.title,
                 type: 'File',
                 url: item.url,
+                isCustom: false,
             };
         case 'ExternalUrl':
             if (!item.external_url) return null;
@@ -74,6 +84,7 @@ function mapCanvasItemToTopicItem(item: CanvasModuleItem): TopicItemData | null 
                 title: item.title,
                 type: 'Link',
                 url: item.external_url,
+                isCustom: false,
             };
         case 'Page':
             // We prioritize rendering the full page content
@@ -84,6 +95,7 @@ function mapCanvasItemToTopicItem(item: CanvasModuleItem): TopicItemData | null 
                     type: 'Page',
                     htmlContent: item.html_content,
                     canvasUrl: item.url,
+                    isCustom: false,
                 };
             }
             return null; // Don't render empty pages
@@ -97,6 +109,7 @@ function mapCanvasItemToTopicItem(item: CanvasModuleItem): TopicItemData | null 
                 title: item.title,
                 type: 'Link',
                 url: item.url,
+                isCustom: false,
             };
 
         default:
@@ -125,6 +138,7 @@ export function mapCanvasCourseToSubject(course: CanvasCourse): Subject {
         return {
             id: module.id.toString(),
             title: module.name,
+            isCustom: false,
             items: items, // Use the new, rich items array
         };
     });

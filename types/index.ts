@@ -46,6 +46,7 @@ export type TopicItemData = {
     _id?: string; // <-- ADD THIS LINE. The optional MongoDB document ID
     title: string;
     type: TopicItemType;
+    isCustom?: boolean;
     url?: string;
     htmlContent?: string;
     canvasUrl?: string;
@@ -56,6 +57,7 @@ export type Topic = {
     id: string;
     title: string;
     items: TopicItemData[]; // <-- Changed from 'files: TopicFile[]'
+    isCustom?: boolean;
     category?: string;  // <-- To classify where to put the topic
 };
 

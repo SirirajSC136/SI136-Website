@@ -6,7 +6,9 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "firebase:set-admin": "node ./scripts/set-admin-claims.mjs",
+    "migrate:mongo:firestore": "node ./scripts/migrate-mongo-to-firestore.mjs"
   },
   "dependencies": {
     "@fullcalendar/core": "^6.1.19",
@@ -23,20 +25,21 @@
     "embla-carousel": "^8.6.0",
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
+    "firebase": "^12.10.0",
+    "firebase-admin": "^13.7.0",
     "googleapis": "^159.0.0",
     "ical": "^0.8.0",
     "lucide-react": "^0.548.0",
     "luxon": "^3.7.2",
     "mongodb": "^6.19.0",
-    "mongoose": "^8.18.1",
     "next": "^16.1.6",
-    "next-auth": "^4.24.11",
     "next-themes": "^0.4.6",
     "papaparse": "^5.5.3",
     "react": "19.2.1",
     "react-dom": "19.2.1",
     "tailwind-merge": "^3.3.1",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
