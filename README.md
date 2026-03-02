@@ -1,125 +1,114 @@
-# Siriraj 136 Academic Hub
+# SI136 Website
 
-A comprehensive web portal for SI-136 students built with Next.js, TypeScript, and MongoDB. This platform serves as a centralized hub for academic information, upcoming events, assignments, and other useful resources.
+Next.js 16 App Router project for SI136 academic content, events, and admin-managed materials.
 
-![Project Overview Screenshot](https://i.imgur.com/65q5ji6bolvWRbMlloTCBi7PPQa-Jijq65V0qZUhnAEe0MIXMta2yhNySeJ8nS_1hsJ38jMt1GFKXZyQ9OMNiktd2fRdVGBYxIUNiShHogj4prI9H3CX4uPzAkeTDqFrtUfVSzt3d6pFmtdtUVuFrZtavDzG8icl0EujIRuGYtiFTZR68BTulQ=w1280) <!-- You can replace this with a better screenshot of your homepage -->
+## Stack
+- Next.js 16 + React 19 + TypeScript
+- Firebase Auth (client + admin SDK)
+- Firestore (primary runtime storage)
+- Canvas + Google Calendar integrations
+- Tailwind CSS
 
-## 🚀 Project Overview
+## Run Locally
+1. Install dependencies:
+```bash
+npm install
+```
+2. Copy environment:
+```bash
+cp .env.example .env.local
+```
+3. Fill `.env.local` values.
+4. Run dev:
+```bash
+npm run dev
+```
 
-This project is a modern, dynamic web application designed to streamline academic life for Siriraj 136 medical students. It features a live dashboard of upcoming events, a detailed breakdown of academic subjects with their materials, and a powerful admin panel for easy content management.
+## Key Scripts
+- `npm run dev`
+- `npm run lint`
+- `npm run build`
+- `npm run start`
+- `npm run firebase:seed-initial-admin`
+- `npm run firebase:set-admin` (legacy custom-claim helper; no longer used for app authorization)
+- `npm run migrate:mongo:firestore`
 
----
+## Environment Variables
+See `.env.example`.
 
-## ✨ Features
+Core:
+- Canvas: `CANVAS_URL`, `CANVAS_API`
+- Calendar: `GOOGLE_API_KEY`, `GOOGLE_CALENDAR_ID`
+- Firebase client: `NEXT_PUBLIC_FIREBASE_*`
+- Firebase admin: `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY`
 
-### For Students
-- **Dynamic Homepage Dashboard:** At-a-glance view of upcoming events, assignments, and examinations.
-- **Live Calendar Events:** Upcoming events are fetched in real-time from a public Google Calendar.
-- **Comprehensive Academics Section:** Browse all subjects, grouped by year and semester.
-- **Detailed Subject Pages:** View topics, lecture materials, resources (PDFs, links, videos), and related assignments for each subject.
-- **Useful Info Page:** A collection of static but important information, such as shuttle bus schedules.
+Feature/cost flags:
+- `USE_SUBJECT_PROJECTIONS`
+- `USE_SUBJECT_CACHE`
+- `USE_CONTEXT_MUTATION_PATHS`
+- `FIRESTORE_COST_LOGGING`
 
-### For Administrators
-- **Secure Admin Panel:** A dedicated section at `/admin` for managing all dynamic content.
-- **Subject Management:** Create new academic subjects directly from the UI.
-- **Task Management:** Create, view, and delete tasks (assignments and examinations).
-- **Resource Linking:** Add multiple resources (files, links, videos) to each task.
-- **MongoDB Integration:** All subject and task data is stored and managed in a robust MongoDB Atlas database.
+## Authentication and Authorization
 
----
+### Login
+1. Client signs in with Google.
+2. Client posts ID token to `POST /api/auth/session`.
+3. Server verifies ID token and enforces student-domain allowlist:
+   - `@student.mahidol.edu`
+   - `@student.mahidol.ac.th`
+4. Server creates `si_session` httpOnly session cookie.
 
-## 🛠️ Tech Stack
+### Admin Authorization (Firestore-backed)
+Admin authority comes from Firestore collection `admin_users`, not Firebase custom claims.
 
-- **Framework:** [Next.js](https://nextjs.org/) (App Router)
-- **Language:** [TypeScript](https://www.typescriptlang.org/)
-- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
-- **Database:** [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) with [Mongoose](https://mongoosejs.com/)
-- **API:** Next.js API Routes (Serverless Functions)
-- **External Services:** [Google Calendar API](https://developers.google.com/calendar)
-- **Static Assets:** Images are managed locally within the `/public` folder.
+Document:
+- Collection: `admin_users`
+- Doc ID: normalized email (lowercase, trimmed)
+- Fields: `email`, `emailNormalized`, `name?`, `active`, timestamps, optional metadata
 
----
+Auth resolution:
+- Session cookie is verified.
+- User email is looked up in `admin_users`.
+- `session.isAdmin = true` only when record exists and `active === true`.
 
-## 🏁 Getting Started
+### Seed initial admin
+Run:
+```bash
+npm run firebase:seed-initial-admin
+```
+This idempotently upserts:
+- `purin.den@student.mahidol.edu` as active admin.
 
-Follow these instructions to get a local copy of the project up and running for development and testing purposes.
+## Admin Area
+- `/admin` -> admin console landing
+- `/admin/customize` -> existing content customize flow
+- `/admin/admins` -> add/remove admins
+- `/admin/logs` -> audit log viewer for admin write attempts
 
-### Prerequisites
+All `/admin/*` pages are guarded by `app/admin/layout.tsx`.  
+All `/api/admin/*` routes enforce server-side admin authorization.
 
-- [Node.js](https://nodejs.org/) (v18.x or later)
-- `npm` or `yarn`
-- A free [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) account.
-- A [Google Cloud Platform](https://console.cloud.google.com/) project with the Google Calendar API enabled.
+## Admin Audit Logs
 
-### Installation
+Admin write attempts are stored in Firestore collection `admin_audit_logs`.
 
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/your-username/your-repo-name.git
-    cd your-repo-name
-    ```
+Coverage:
+- All `POST`, `PUT`, `DELETE` handlers under `/api/admin/*`
+- Includes both success and failure (validation/auth/business/server errors)
 
-2.  **Install dependencies:**
-    ```bash
-    npm install
-    ```
+Stored fields include:
+- actor info (uid/email/name when available)
+- action/resource metadata
+- method/path/http status/duration
+- sanitized request payload and query snapshot
+- `createdAt` and `expiresAt` for retention
 
-### Environment Setup
+Retention default:
+- `expiresAt = createdAt + 180 days` (configure Firestore TTL policy on `expiresAt`)
 
-1.  Create a `.env.local` file in the root of the project by copying the example file:
-    ```bash
-    cp .env.example .env.local
-    ```
-
-2.  Fill in the required values in your new `.env.local` file:
-
-    ```env
-    # MongoDB Connection String from Atlas
-    # Remember to replace <password> with your database user's password.
-    MONGODB_URI="mongodb+srv://your_user:<password>@your_cluster.mongodb.net/?retryWrites=true&w=majority"
-
-    # Google Calendar API Key (for public calendars)
-    # Get this from your Google Cloud Platform project credentials.
-    GOOGLE_API_KEY="your_google_api_key"
-
-    # The ID of the public Google Calendar to fetch events from.
-    # Found in the calendar's settings under "Integrate calendar".
-    GOOGLE_CALENDAR_ID="your_calendar_id@group.calendar.google.com"
-
-    # The base URL of your application for server-side API calls.
-    NEXT_PUBLIC_APP_URL="http://localhost:3000"
-    ```
-
-### Running the Application
-
-1.  **Run the development server:**
-    ```bash
-    npm run dev
-    ```
-    Open [http://localhost:3000](http://localhost:3000) to view the application in your browser.
-
-2.  **Build for production:**
-    ```bash
-    npm run build
-    ```
-
-3.  **Start the production server:**
-    ```bash
-    npm run start
-    ```
-
----
-
-## 📂 Project Structure
-
-A brief overview of the key directories in this project:
-
--   `app/`: The core of the Next.js App Router.
-    -   `academics/`: Pages for listing and viewing subjects.
-    -   `admin/`: The admin panel UI and its components.
-    -   `api/`: All backend serverless functions for handling data.
--   `components/`: Shared, reusable React components used across the application.
--   `lib/`: Shared utility functions, such as the MongoDB connection helper (`mongodb.ts`).
--   `models/`: Mongoose schemas that define the structure of the database collections (`Subject.ts`, `Task.ts`).
--   `public/`: Static assets, including all locally-hosted images.
--   `types/`: TypeScript type definitions for the project.
+## Project Structure
+- `app/` pages + API transport layer
+- `components/` shared UI
+- `lib/server/domains/*` backend domain modules
+- `lib/server/domains/admins/*` Firestore admin management
+- `scripts/` operational scripts (seed/migration/helpers)

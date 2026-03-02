@@ -11,7 +11,7 @@ import {
 	Send,
 } from "lucide-react";
 import React from "react";
-import PageHero from "@/app/components/main/PageHero";
+import PageHero from "@/components/main/PageHero";
 
 const SectionTitle = ({ children }: { children: React.ReactNode }) => (
 	<div className="relative text-center mb-12 flex items-center justify-center">

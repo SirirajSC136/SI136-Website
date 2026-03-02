@@ -1,6 +1,8 @@
 import { App, cert, getApp, getApps, initializeApp } from "firebase-admin/app";
 import { Auth, getAuth } from "firebase-admin/auth";
 import { Firestore, getFirestore } from "firebase-admin/firestore";
+import { getStorage } from "firebase-admin/storage";
+import type { Bucket } from "@google-cloud/storage";
 
 function readPrivateKey(): string | undefined {
 	const raw = process.env.FIREBASE_PRIVATE_KEY;
@@ -60,4 +62,22 @@ export function getFirestoreDb(): Firestore {
 
 export function getFirebaseAuth(): Auth {
 	return getAuth(getFirebaseAdminApp());
+}
+
+function readStorageBucketName(): string | undefined {
+	return (
+		process.env.FIREBASE_STORAGE_BUCKET ??
+		process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+	);
+}
+
+export function getFirebaseStorageBucket(): Bucket {
+	const app = getFirebaseAdminApp();
+	const bucketName = readStorageBucketName();
+	if (!bucketName) {
+		throw new Error(
+			"Missing Firebase storage bucket. Set FIREBASE_STORAGE_BUCKET or NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET."
+		);
+	}
+	return getStorage(app).bucket(bucketName);
 }

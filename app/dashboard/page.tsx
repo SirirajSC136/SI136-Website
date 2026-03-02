@@ -1,4 +1,4 @@
-import { getSessionUserFromCookies } from "@/lib/server/auth/session";
+import { getSessionUserFromCookies } from "@/lib/server/domains/auth/service";
 
 export default async function DashboardPage() {
   const session = await getSessionUserFromCookies();

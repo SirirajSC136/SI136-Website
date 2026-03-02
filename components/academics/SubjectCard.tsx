@@ -1,5 +1,3 @@
-// app/components/academics/SubjectCard.tsx
-
 import { Subject } from "@/types";
 import Link from "next/link";
 

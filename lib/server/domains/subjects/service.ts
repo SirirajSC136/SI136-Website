@@ -1,10 +1,11 @@
-import { mapCanvasCourseToSubject, mapCustomCourseToSubject } from "@/lib/canvasAdapter";
-import { fetchCourseDetails, fetchEnrolledCourses } from "@/lib/canvas";
-import { contentRepository } from "@/lib/server/repositories/contentRepository";
-import { isCustomId } from "@/lib/server/utils/id";
+import { fetchCourseDetails, fetchEnrolledCourses } from "@/lib/server/integrations/canvas/client";
+import { contentRepository } from "@/lib/server/domains/content/repository";
+import { isCustomId } from "@/lib/server/domains/content/ids";
+import { mapCanvasCourseToSubject } from "@/lib/server/domains/subjects/mappers/canvasToSubject";
+import { mapCustomCourseToSubject } from "@/lib/server/domains/subjects/mappers/customToSubject";
 import { Subject, Topic, TopicItemData } from "@/types";
-import { TopicRecord } from "@/lib/server/types/content";
-import { HttpError } from "@/lib/server/http/errors";
+import { TopicRecord } from "@/lib/server/domains/content/types";
+import { HttpError } from "@/lib/server/core/errors";
 
 function appendItemsToTopics(
 	topics: Topic[],
@@ -42,10 +43,57 @@ function ensureTopicExists(
 }
 
 export class SubjectsService {
+	private useSubjectProjections(): boolean {
+		return process.env.USE_SUBJECT_PROJECTIONS !== "0";
+	}
+
+	private mapCustomCourseSummaryToSubject(course: {
+		id: string;
+		courseCode: string;
+		title: string;
+		year: number;
+		semester: number;
+	}): Subject {
+		return mapCustomCourseToSubject({
+			id: course.id,
+			courseCode: course.courseCode,
+			title: course.title,
+			year: course.year,
+			semester: course.semester,
+			topics: [],
+		});
+	}
+
+	private async listCustomSubjectsForListing(): Promise<Subject[]> {
+		if (this.useSubjectProjections()) {
+			try {
+				const catalog = await contentRepository.getSubjectCatalog();
+				if (catalog) {
+					return catalog.courses.map((course) =>
+						this.mapCustomCourseSummaryToSubject(course)
+					);
+				}
+			} catch (error) {
+				console.error("Custom subject catalog fetch failed:", error);
+			}
+		}
+
+		const customCourses = await contentRepository.listCustomCourses();
+		return customCourses.map((course) =>
+			this.mapCustomCourseSummaryToSubject({
+				id: course.id,
+				courseCode: course.courseCode,
+				title: course.title,
+				year: course.year,
+				semester: course.semester,
+			})
+		);
+	}
+
 	async getAllSubjects(): Promise<Subject[]> {
 		const [canvasCoursesResult, customCoursesResult] = await Promise.allSettled([
 			fetchEnrolledCourses(),
-			contentRepository.listCustomCourses(),
+			this.listCustomSubjectsForListing(),
 		]);
 
 		const canvasSubjects =
@@ -53,18 +101,7 @@ export class SubjectsService {
 				? canvasCoursesResult.value.map(mapCanvasCourseToSubject)
 				: [];
 		const customSubjects =
-			customCoursesResult.status === "fulfilled"
-				? customCoursesResult.value.map((course) =>
-						mapCustomCourseToSubject({
-							id: course.id,
-							courseCode: course.courseCode,
-							title: course.title,
-							year: course.year,
-							semester: course.semester,
-							topics: [],
-						})
-					)
-				: [];
+			customCoursesResult.status === "fulfilled" ? customCoursesResult.value : [];
 
 		if (canvasCoursesResult.status === "rejected") {
 			console.error("Canvas subjects fetch failed:", canvasCoursesResult.reason);
@@ -78,30 +115,54 @@ export class SubjectsService {
 	}
 
 	async getSubjectById(subjectId: string): Promise<Subject> {
-		const customCourse =
-			isCustomId(subjectId) ? await contentRepository.getCourseById(subjectId) : null;
+		if (this.useSubjectProjections()) {
+			try {
+				const projected = await contentRepository.getSubjectView(subjectId);
+				if (projected) {
+					return projected;
+				}
+			} catch (error) {
+				console.error("Subject projection fetch failed:", error);
+			}
+		}
 
-		let subject: Subject | null = null;
+		const customCourse = isCustomId(subjectId)
+			? await contentRepository.getCourseById(subjectId)
+			: null;
 
 		if (customCourse && customCourse.kind === "custom") {
-			const topics = await contentRepository.listTopicsForCourse(subjectId);
-			subject = mapCustomCourseToSubject({
+			const customTopics = await contentRepository.listTopicsForCourse(subjectId);
+			const customMaterialsMap = await contentRepository.listMaterialsForCourse(
+				subjectId,
+				customTopics.map((topic) => topic.id)
+			);
+			const subject = mapCustomCourseToSubject({
 				id: customCourse.id,
 				courseCode: customCourse.courseCode,
 				title: customCourse.title,
 				year: customCourse.year,
 				semester: customCourse.semester,
-				topics: topics
+				topics: customTopics
 					.filter((topic) => topic.kind === "custom")
 					.map((topic) => ({ id: topic.id, title: topic.title })),
 			});
-		} else {
-			const canvasCourse = await fetchCourseDetails(subjectId);
-			if (!canvasCourse) {
-				throw new HttpError(404, "Subject not found", "subject_not_found");
+
+			let mergedTopics = appendItemsToTopics(subject.topics, customMaterialsMap);
+			for (const customTopic of customTopics) {
+				mergedTopics = ensureTopicExists(mergedTopics, customTopic, customMaterialsMap);
 			}
-			subject = mapCanvasCourseToSubject(canvasCourse);
+
+			return {
+				...subject,
+				topics: mergedTopics,
+			};
 		}
+
+		const canvasCourse = await fetchCourseDetails(subjectId);
+		if (!canvasCourse) {
+			throw new HttpError(404, "Subject not found", "subject_not_found");
+		}
+		const subject = mapCanvasCourseToSubject(canvasCourse);
 
 		const [customTopicsResult, customMaterialsResult] = await Promise.allSettled([
 			contentRepository.listTopicsForCourse(subjectId),
@@ -123,7 +184,6 @@ export class SubjectsService {
 		}
 
 		let mergedTopics = appendItemsToTopics(subject.topics, customMaterialsMap);
-
 		for (const customTopic of customTopics) {
 			mergedTopics = ensureTopicExists(mergedTopics, customTopic, customMaterialsMap);
 		}

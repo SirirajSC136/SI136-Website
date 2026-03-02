@@ -1,5 +1,3 @@
-// app/_components/main/Introduction.tsx
-
 import Image from 'next/image';
 import Link from 'next/link';
 import { GraduationCap, BookOpen, Info, MessageSquare } from 'lucide-react';

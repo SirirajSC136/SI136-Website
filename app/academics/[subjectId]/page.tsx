@@ -1,12 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Subject } from "@/types";
+import { Subject, TopicItemData } from "@/types";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
-import TopicItem from "@/app/components/academics/TopicItem";
+import { useSearchParams } from "next/navigation";
+import TopicItem from "@/components/academics/TopicItem";
 import { Home, Book, Globe, Loader2 } from "lucide-react";
+import InteractiveMaterialModal from "@/components/academics/InteractiveMaterialModal";
+import LoginButton from "@/components/LoginButton";
 
 // This helper function is correct and fetches from your merged API endpoint
 async function getSubject(id: string): Promise<Subject | undefined> {
@@ -38,7 +41,15 @@ const SubjectDetailPage = () => {
 	const [subject, setSubject] = useState<Subject | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
+	const [authChecked, setAuthChecked] = useState(false);
+	const [isAuthenticated, setIsAuthenticated] = useState(false);
+	const [interactiveOpen, setInteractiveOpen] = useState(false);
+	const [interactiveLoading, setInteractiveLoading] = useState(false);
+	const [interactiveError, setInteractiveError] = useState<string | null>(null);
+	const [interactiveData, setInteractiveData] = useState<any>(null);
+	const [showLoginModal, setShowLoginModal] = useState(false);
 	const router = useRouter();
+	const searchParams = useSearchParams();
 	// Get URL parameters using the hook
 	const params = useParams();
 	const subjectId = params.subjectId as string;
@@ -77,6 +88,80 @@ const SubjectDetailPage = () => {
 		fetchData();
 	}, [subjectId]);
 
+	useEffect(() => {
+		let mounted = true;
+		const checkAuth = async () => {
+			try {
+				const response = await fetch("/api/auth/me", { cache: "no-store" });
+				if (!mounted) return;
+				setIsAuthenticated(response.ok);
+			} catch {
+				if (!mounted) return;
+				setIsAuthenticated(false);
+			} finally {
+				if (mounted) setAuthChecked(true);
+			}
+		};
+		void checkAuth();
+		return () => {
+			mounted = false;
+		};
+	}, []);
+
+	const closeInteractiveModal = () => {
+		setInteractiveOpen(false);
+		setInteractiveData(null);
+		setInteractiveError(null);
+		const nextParams = new URLSearchParams(searchParams.toString());
+		nextParams.delete("interactive");
+		const suffix = nextParams.toString();
+		router.replace(suffix ? `/academics/${subjectId}?${suffix}` : `/academics/${subjectId}`);
+	};
+
+	const openInteractiveItem = async (item: TopicItemData) => {
+		if (!authChecked) return;
+		if (!isAuthenticated) {
+			setShowLoginModal(true);
+			return;
+		}
+
+		setInteractiveOpen(true);
+		setInteractiveLoading(true);
+		setInteractiveError(null);
+		setInteractiveData(null);
+		try {
+			const response = await fetch(`/api/interactive/${item.id}`, { cache: "no-store" });
+			const payload = await response.json().catch(() => ({}));
+			if (!response.ok || !payload?.data) {
+				throw new Error(payload?.error || "Failed to load interactive material.");
+			}
+			setInteractiveData(payload.data);
+			const nextParams = new URLSearchParams(searchParams.toString());
+			nextParams.set("interactive", item.id);
+			router.replace(`/academics/${subjectId}?${nextParams.toString()}`);
+		} catch (loadError) {
+			console.error("Interactive material load failed:", loadError);
+			setInteractiveError("Could not load this material.");
+		} finally {
+			setInteractiveLoading(false);
+		}
+	};
+
+	useEffect(() => {
+		if (!subject || !authChecked) return;
+		const deepLinkId = searchParams.get("interactive");
+		if (!deepLinkId || interactiveOpen) return;
+		const target = subject.topics
+			.flatMap((topic) => topic.items)
+			.find(
+				(item) =>
+					item.id === deepLinkId &&
+					(item.type === "Quiz" || item.type === "Flashcard")
+			);
+		if (!target) return;
+		void openInteractiveItem(target);
+	}, [authChecked, interactiveOpen, searchParams, subject]);
+
 	// --- Render loading and error states ---
 	if (isLoading) {
 		return (
@@ -108,6 +193,35 @@ const SubjectDetailPage = () => {
 	// --- Render the page with the fetched data ---
 	return (
 		<div className="min-h-screen bg-secondary-background">
+			<InteractiveMaterialModal
+				isOpen={interactiveOpen}
+				loading={interactiveLoading}
+				error={interactiveError}
+				data={interactiveData}
+				onClose={closeInteractiveModal}
+			/>
+			{showLoginModal && (
+				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+					<div className="w-full max-w-md rounded-xl bg-white p-6 text-center shadow-xl">
+						<h3 className="text-xl font-semibold text-slate-900">
+							Sign in required
+						</h3>
+						<p className="mt-2 text-slate-600">
+							You need to sign in to open quizzes and flashcards.
+						</p>
+						<div className="mt-4 flex justify-center">
+							<LoginButton />
+						</div>
+						<button
+							type="button"
+							onClick={() => setShowLoginModal(false)}
+							className="mt-4 rounded bg-slate-200 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-300"
+						>
+							Close
+						</button>
+					</div>
+				</div>
+			)}
 			{/* Breadcrumbs Header */}
 			<header className="border-b bg-background">
             <div className="container mx-auto flex items-center gap-2 p-4 text-sm text-secondary">
@@ -199,7 +313,15 @@ const SubjectDetailPage = () => {
 						<div className="space-y-4">
 							{/* This map function seamlessly renders all topics, regardless of their source */}
 							{subject.topics.map((topic) => (
-								<TopicItem key={topic.id} topic={topic} />
+								<TopicItem
+									key={topic.id}
+									topic={topic}
+									onOpenInteractive={(item) => {
+										if (item.type === "Quiz" || item.type === "Flashcard") {
+											void openInteractiveItem(item);
+										}
+									}}
+								/>
 							))}
 						</div>
 					</div>

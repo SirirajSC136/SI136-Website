@@ -8,7 +8,7 @@ import {
 	formatBangkokDateKey,
 	getBangkokDateKey,
 	sortEventsByStartTime,
-} from "@/lib/events/normalize";
+} from "@/lib/server/domains/events/normalizers";
 import styles from "./Calendar.module.css";
 
 const MAX_VISIBLE_EVENTS_PER_DAY = 2;

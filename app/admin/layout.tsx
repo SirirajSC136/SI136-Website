@@ -1,52 +1,49 @@
-import LoginButton from "@/app/components/LoginButton"; // Adjust the import path if necessary
-import { getSessionUserFromCookies } from "@/lib/server/auth/session";
+import LoginButton from "@/components/LoginButton";
+import { getSessionUserFromCookies } from "@/lib/server/domains/auth/service";
+
+type GuardCardProps = {
+	title: string;
+	description: string;
+	showLogin?: boolean;
+};
+
+function GuardCard({ title, description, showLogin = false }: GuardCardProps) {
+	return (
+		<div className="container mx-auto flex min-h-[calc(100vh-220px)] items-center justify-center px-4 py-16">
+			<div className="w-full max-w-md rounded-2xl border border-border bg-card p-8 text-center shadow-lg">
+				<h2 className="mb-3 text-2xl font-bold text-foreground">{title}</h2>
+				<p className="text-sm text-muted-foreground">{description}</p>
+				{showLogin ? <LoginButton /> : null}
+			</div>
+		</div>
+	);
+}
 
 export default async function AdminLayout({
-    children,
+	children,
 }: {
-    children: React.ReactNode;
+	children: React.ReactNode;
 }) {
-    const session = await getSessionUserFromCookies();
+	const session = await getSessionUserFromCookies();
 
-    // If the user is not logged in, show a login prompt.
-    if (!session) {
-        return (
-            <div className="container mx-auto px-4 py-16 flex items-center justify-center min-h-[calc(100vh-200px)]">
-                <div
-                    className="w-full max-w-md mx-auto 
-          rounded-2xl border border-gray-200/80 dark:border-gray-700/80
-          bg-white/50 dark:bg-gray-800/50
-          shadow-lg backdrop-blur-lg 
-          p-8 text-center 
-          transition-all duration-300 ease-in-out"
-                >
-                    <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4">
-                        Admin Access Required
-                    </h2>
-                    <p className="text-gray-600 dark:text-gray-300 mb-6">
-                        You must be logged in to access the admin dashboard. Please sign in
-                        to continue.
-                    </p>
-                    <LoginButton />
-                </div>
-            </div>
-        );
-    }
+	if (!session) {
+		return (
+			<GuardCard
+				title="Admin Access Required"
+				description="You must sign in to access the admin dashboard."
+				showLogin
+			/>
+		);
+	}
 
-    if (!session.isAdmin) {
-        return (
-            <div className="container mx-auto px-4 py-16 flex items-center justify-center min-h-[calc(100vh-200px)]">
-                <div className="w-full max-w-md mx-auto rounded-2xl border border-gray-200/80 dark:border-gray-700/80 bg-white/50 dark:bg-gray-800/50 shadow-lg backdrop-blur-lg p-8 text-center">
-                    <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4">
-                        Admin Role Required
-                    </h2>
-                    <p className="text-gray-600 dark:text-gray-300">
-                        Your account is authenticated but does not have admin access.
-                    </p>
-                </div>
-            </div>
-        );
-    }
+	if (!session.isAdmin) {
+		return (
+			<GuardCard
+				title="Admin Role Required"
+				description="Your account is authenticated but does not have admin access."
+			/>
+		);
+	}
 
-    return <>{children}</>;
+	return <>{children}</>;
 }

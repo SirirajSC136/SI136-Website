@@ -1,5 +1,5 @@
-import LoginButton from "@/app/components/LoginButton"; // Adjust the import path if necessary
-import { getSessionUserFromCookies } from "@/lib/server/auth/session";
+import LoginButton from "@/components/LoginButton";
+import { getSessionUserFromCookies } from "@/lib/server/domains/auth/service";
 
 export default async function AcademicsLayout({
     children,

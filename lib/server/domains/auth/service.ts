@@ -1,7 +1,9 @@
 import { cookies } from "next/headers";
 import { DecodedIdToken } from "firebase-admin/auth";
-import { getFirebaseAuth } from "@/lib/server/firebase/admin";
-import { HttpError } from "@/lib/server/http/errors";
+import { getFirebaseAuth } from "@/lib/server/integrations/firebase/admin";
+import { HttpError } from "@/lib/server/core/errors";
+import { adminsRepository } from "@/lib/server/domains/admins/repository";
+import { normalizeAdminEmail } from "@/lib/server/domains/admins/utils";
 
 export const SESSION_COOKIE_NAME = "si_session";
 export const SESSION_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
@@ -14,6 +16,9 @@ export type SessionUser = {
 	isAdmin: boolean;
 };
 
+const ADMIN_STATUS_CACHE_TTL_MS = 60_000;
+const adminStatusCache = new Map<string, { isAdmin: boolean; expiresAt: number }>();
+
 function parseCookieHeader(cookieHeader: string | null): Record<string, string> {
 	if (!cookieHeader) return {};
 
@@ -25,13 +30,59 @@ function parseCookieHeader(cookieHeader: string | null): Record<string, string> 
 	}, {});
 }
 
-function mapDecodedToken(token: DecodedIdToken): SessionUser {
+function getCachedAdminStatus(emailNormalized: string): boolean | null {
+	const cached = adminStatusCache.get(emailNormalized);
+	if (!cached) return null;
+	if (cached.expiresAt < Date.now()) {
+		adminStatusCache.delete(emailNormalized);
+		return null;
+	}
+	return cached.isAdmin;
+}
+
+async function resolveAdminStatus(email?: string | null): Promise<boolean> {
+	const emailNormalized = normalizeAdminEmail(email);
+	if (!emailNormalized) return false;
+
+	const cached = getCachedAdminStatus(emailNormalized);
+	if (cached !== null) return cached;
+
+	const isAdmin = await adminsRepository.isActiveAdminByEmail(emailNormalized);
+	adminStatusCache.set(emailNormalized, {
+		isAdmin,
+		expiresAt: Date.now() + ADMIN_STATUS_CACHE_TTL_MS,
+	});
+	return isAdmin;
+}
+
+function setAdminStatusCache(emailNormalized: string, isAdmin: boolean): void {
+	adminStatusCache.set(emailNormalized, {
+		isAdmin,
+		expiresAt: Date.now() + ADMIN_STATUS_CACHE_TTL_MS,
+	});
+}
+
+export function invalidateAdminStatusCache(email?: string): void {
+	const normalized = normalizeAdminEmail(email);
+	if (!normalized) {
+		adminStatusCache.clear();
+		return;
+	}
+	adminStatusCache.delete(normalized);
+}
+
+async function mapDecodedToken(token: DecodedIdToken): Promise<SessionUser> {
+	const emailNormalized = normalizeAdminEmail(token.email);
+	const isAdmin = await resolveAdminStatus(emailNormalized);
+	if (emailNormalized) {
+		setAdminStatusCache(emailNormalized, isAdmin);
+	}
 	return {
 		uid: token.uid,
 		email: token.email,
 		name: token.name,
 		picture: token.picture,
-		isAdmin: token.admin === true,
+		isAdmin,
 	};
 }
 
@@ -49,7 +100,7 @@ export async function verifySessionCookieValue(
 		sessionCookie,
 		checkRevoked
 	);
-	return mapDecodedToken(decoded);
+	return await mapDecodedToken(decoded);
 }
 
 export async function getSessionUserFromCookies(): Promise<SessionUser | null> {

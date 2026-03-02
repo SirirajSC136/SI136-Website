@@ -1,5 +1,3 @@
-// lib/canvas.ts
-
 import * as cheerio from 'cheerio';
 import { parseLinkHeader } from '@web3-storage/parse-link-header';
 

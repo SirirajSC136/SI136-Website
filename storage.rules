@@ -21,6 +21,12 @@ service firebase.storage {
       allow read, write, delete: if isAdmin();
     }
 
+    // Interactive media: signed-in students can read, admins can manage writes.
+    match /admin/interactive/{allPaths=**} {
+      allow read: if isSignedIn();
+      allow write, delete: if isAdmin();
+    }
+
     // Catch-all deny
     match /{allPaths=**} {
       allow read, write: if false;

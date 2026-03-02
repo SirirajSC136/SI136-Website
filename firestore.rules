@@ -32,6 +32,19 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    match /interactive_attempts/{attemptId} {
+      allow create: if isSignedIn() && request.auth.uid == request.resource.data.uid;
+      allow read: if isAdmin() || (isSignedIn() && request.auth.uid == resource.data.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    match /flashcard_sessions/{sessionId} {
+      allow create: if isSignedIn() && request.auth.uid == request.resource.data.uid;
+      allow read: if isAdmin() || (isSignedIn() && request.auth.uid == resource.data.uid);
+      allow update: if isSignedIn() && request.auth.uid == resource.data.uid;
+      allow delete: if isAdmin();
+    }
+
     // Explicit deny-all fallback
     match /{document=**} {
       allow read, write: if false;

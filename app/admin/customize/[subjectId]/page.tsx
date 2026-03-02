@@ -1,246 +1,466 @@
-// app/admin/customize/[subjectId]/page.tsx
 "use client";
 
-import { useState, useEffect } from 'react';
-import { Subject, TopicItemData } from '@/types';
-import { useParams } from 'next/navigation';
-import { PlusCircle, Trash, Edit, File as FileIcon, Link as LinkIcon, BrainCircuit, Layers3 } from 'lucide-react';
-import ItemEditorModal from './components/ItemEditorModal';
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Subject, TopicItemData } from "@/types";
+import { useParams } from "next/navigation";
+import {
+	PlusCircle,
+	Trash2,
+	Edit,
+	File as FileIcon,
+	Link as LinkIcon,
+	BrainCircuit,
+	Layers3,
+} from "lucide-react";
+import ItemEditorModal from "./components/ItemEditorModal";
+import AdminCard from "@/components/admin/AdminCard";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import AdminShell from "@/components/admin/AdminShell";
+import ConfirmActionDialog from "@/components/admin/ConfirmActionDialog";
+import NoticeBanner from "@/components/admin/NoticeBanner";
+import AdminStatusBadge from "@/components/admin/AdminStatusBadge";
+import AdminEmptyState from "@/components/admin/AdminEmptyState";
 
-// Helper to detect server-generated custom IDs (24-char hex).
-const isCustomId = (id: string): boolean => {
-    return /^[0-9a-fA-F]{24}$/.test(id);
+const isCustomId = (id: string): boolean => /^[0-9a-fA-F]{24}$/.test(id);
+
+const NewTopicForm = ({
+	onSave,
+	onCancel,
+}: {
+	onSave: (title: string) => void;
+	onCancel: () => void;
+}) => {
+	const [title, setTitle] = useState("");
+	return (
+		<form
+			onSubmit={(event) => {
+				event.preventDefault();
+				onSave(title);
+			}}
+			className="grid gap-3 md:grid-cols-[1fr_auto_auto]"
+		>
+			<input
+				value={title}
+				onChange={(event) => setTitle(event.target.value)}
+				placeholder="Topic Title"
+				required
+				className="rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground"
+			/>
+			<button
+				type="submit"
+				className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700"
+			>
+				Save Topic
+			</button>
+			<button
+				type="button"
+				onClick={onCancel}
+				className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground hover:bg-accent"
+			>
+				Cancel
+			</button>
+		</form>
+	);
 };
 
-// Component for creating a new topic
-const NewTopicForm = ({ onSave, onCancel }: { onSave: (title: string) => void, onCancel: () => void }) => {
-    const [title, setTitle] = useState('');
-    return (
-        <form onSubmit={(e) => { e.preventDefault(); onSave(title); }} className="p-4 my-2 border rounded-lg bg-slate-50">
-            <h4 className="font-bold mb-2">Add New Topic</h4>
-            <input
-                value={title}
-                onChange={e => setTitle(e.target.value)}
-                placeholder="Topic Title"
-                required
-                className="block w-full p-2 border rounded mb-2"
-            />
-            <div className="flex gap-2">
-                <button type="submit" className="flex items-center gap-1 px-3 py-1 bg-emerald-600 text-white rounded hover:bg-emerald-700">Save Topic</button>
-                <button type="button" onClick={onCancel} className="flex items-center gap-1 px-3 py-1 bg-slate-500 text-white rounded hover:bg-slate-600">Cancel</button>
-            </div>
-        </form>
-    );
-};
+function getItemIcon(item: TopicItemData) {
+	switch (item.type) {
+		case "Quiz":
+			return <BrainCircuit size={16} className="text-blue-500" />;
+		case "Flashcard":
+			return <Layers3 size={16} className="text-emerald-500" />;
+		case "File":
+			return <FileIcon size={16} className="text-muted-foreground" />;
+		default:
+			return <LinkIcon size={16} className="text-muted-foreground" />;
+	}
+}
 
 export default function CustomizeSubjectPage() {
-    const params = useParams();
-    const subjectId = params.subjectId as string;
-    const [subject, setSubject] = useState<Subject | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const [showNewTopicForm, setShowNewTopicForm] = useState(false);
+	const params = useParams();
+	const subjectId = params.subjectId as string;
 
-    // State specifically for the ItemEditorModal
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingItem, setEditingItem] = useState<TopicItemData | undefined>(undefined);
-    const [activeTopicId, setActiveTopicId] = useState<string | null>(null);
+	const [subject, setSubject] = useState<Subject | null>(null);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
+	const [notice, setNotice] = useState<
+		{ type: "success" | "error" | "info"; message: string } | null
+	>(null);
+	const [showNewTopicForm, setShowNewTopicForm] = useState(false);
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [editingItem, setEditingItem] = useState<TopicItemData | undefined>(undefined);
+	const [activeTopicId, setActiveTopicId] = useState<string | null>(null);
+	const [deleteItemId, setDeleteItemId] = useState<string | null>(null);
+	const [deleteTopicTarget, setDeleteTopicTarget] = useState<{
+		id: string;
+		title: string;
+	} | null>(null);
 
-    // --- DATA FETCHING ---
-    const fetchSubjectData = () => {
-        if (!subjectId) return;
-        setLoading(true);
-        setError(null);
-        fetch(`/api/subjects/${subjectId}`, { cache: 'no-store' })
-            .then(res => {
-                if (!res.ok) throw new Error(`API Error: ${res.status}`);
-                return res.json();
-            })
-            .then(data => setSubject(data))
-            .catch(err => {
-                console.error("Error fetching subject data:", err);
-                setError("Could not load subject data.");
-            })
-            .finally(() => setLoading(false));
-    };
+	const fetchSubjectData = useCallback(async () => {
+		if (!subjectId) return;
+		setLoading(true);
+		setError(null);
+		try {
+			const response = await fetch(`/api/subjects/${subjectId}`, { cache: "no-store" });
+			if (!response.ok) throw new Error(`API Error: ${response.status}`);
+			setSubject((await response.json()) as Subject);
+		} catch (fetchError) {
+			console.error("Error fetching subject data:", fetchError);
+			setError("Could not load subject data.");
+		} finally {
+			setLoading(false);
+		}
+	}, [subjectId]);
 
-    useEffect(fetchSubjectData, [subjectId]);
+	useEffect(() => {
+		void fetchSubjectData();
+	}, [fetchSubjectData]);
 
-    // --- MODAL HANDLERS ---
-    const handleOpenModalToAdd = (topicId: string) => {
-        setEditingItem(undefined);
-        setActiveTopicId(topicId);
-        setIsModalOpen(true);
-    };
+	const deleteItemTopicId = useMemo(() => {
+		if (!deleteItemId || !subject) return undefined;
+		return subject.topics.find((topic) =>
+			topic.items.some((item) => item.id === deleteItemId)
+		)?.id;
+	}, [deleteItemId, subject]);
 
-    const handleOpenModalToEdit = (item: TopicItemData) => {
-        setEditingItem(item);
-        setActiveTopicId(null);
-        setIsModalOpen(true);
-    };
+	const handleOpenModalToAdd = (topicId: string) => {
+		setEditingItem(undefined);
+		setActiveTopicId(topicId);
+		setIsModalOpen(true);
+	};
 
-    const handleCloseModal = () => {
-        setIsModalOpen(false);
-        setEditingItem(undefined);
-        setActiveTopicId(null);
-    };
+	const handleOpenModalToEdit = (item: TopicItemData) => {
+		setEditingItem(item);
+		setActiveTopicId(null);
+		setIsModalOpen(true);
+	};
 
-    // --- API ACTION HANDLERS ---
-    const handleSaveItem = async (itemData: any) => {
-        const isEditing = !!editingItem;
-        const url = isEditing ? `/api/admin/materials/${editingItem.id}` : '/api/admin/materials';
-        const method = isEditing ? 'PUT' : 'POST';
+	const handleCloseModal = () => {
+		setIsModalOpen(false);
+		setEditingItem(undefined);
+		setActiveTopicId(null);
+	};
 
-        const body = isEditing
-            ? { item: itemData }
-            : { courseId: subjectId, topicId: activeTopicId, item: itemData };
+	const findTopicIdForItem = (itemId: string): string | undefined => {
+		return subject?.topics.find((topic) => topic.items.some((item) => item.id === itemId))?.id;
+	};
 
-        try {
-            const response = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-            if (!response.ok) {
-                const err = await response.json();
-                throw new Error(err.error || 'Failed to save item.');
-            }
-            handleCloseModal();
-            fetchSubjectData();
-        } catch (err) {
-            console.error("Save item failed:", err);
-            alert(`Error: Could not save the item. ${err}`);
-        }
-    };
+	const handleSaveItem = async (itemData: TopicItemData) => {
+		const isEditing = Boolean(editingItem);
+		const url = isEditing ? `/api/admin/materials/${editingItem?.id}` : "/api/admin/materials";
+		const method = isEditing ? "PUT" : "POST";
+		const editingTopicId = editingItem ? findTopicIdForItem(editingItem.id) : undefined;
+		const body = isEditing
+			? { item: itemData, courseId: subjectId, topicId: editingTopicId }
+			: { courseId: subjectId, topicId: activeTopicId, item: itemData };
 
-    const handleDeleteItem = async (itemId: string) => {
-        if (confirm('Are you sure you want to delete this item?')) {
-            try {
-                const response = await fetch(`/api/admin/materials/${itemId}`, { method: 'DELETE' });
-                if (!response.ok) throw new Error('Failed to delete item.');
-                fetchSubjectData();
-            } catch (err) {
-                console.error("Delete item failed:", err);
-                alert("Error: Could not delete the item.");
-            }
-        }
-    };
+		try {
+			const response = await fetch(url, {
+				method,
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(body),
+			});
+			const payload = await response.json();
+			if (!response.ok || !payload?.data) {
+				throw new Error(payload?.error || "Failed to save item.");
+			}
 
-    const handleAddTopic = async (title: string) => {
-        try {
-            const response = await fetch(`/api/admin/topics`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ courseId: subjectId, title }),
-            });
-            if (!response.ok) throw new Error('Failed to add topic.');
-            setShowNewTopicForm(false);
-            fetchSubjectData();
-        } catch (err) {
-            console.error("Add topic failed:", err);
-            alert('Error: Could not add the topic.');
-        }
-    };
+			const savedItem = payload.data.item as TopicItemData;
+			if (isEditing && editingItem) {
+				setSubject((previous) => {
+					if (!previous) return previous;
+					return {
+						...previous,
+						topics: previous.topics.map((topic) => ({
+							...topic,
+							items: topic.items.map((item) =>
+								item.id === editingItem.id ? { ...savedItem, id: editingItem.id } : item
+							),
+						})),
+					};
+				});
+			} else if (activeTopicId) {
+				setSubject((previous) => {
+					if (!previous) return previous;
+					return {
+						...previous,
+						topics: previous.topics.map((topic) =>
+							topic.id === activeTopicId
+								? { ...topic, items: [...topic.items, savedItem] }
+								: topic
+						),
+					};
+				});
+			}
 
-    const handleDeleteTopic = async (topicId: string, topicTitle: string) => {
-        if (confirm(`Are you sure you want to delete the topic "${topicTitle}"? All materials inside it will also be deleted.`)) {
-            try {
-                const response = await fetch(`/api/admin/topics/${topicId}`, { method: 'DELETE' });
-                if (!response.ok) throw new Error('Failed to delete topic.');
-                fetchSubjectData();
-            } catch (err) {
-                console.error("Delete topic failed:", err);
-                alert('Error: Could not delete the topic.');
-            }
-        }
-    };
+			setNotice({ type: "success", message: "Item saved successfully." });
+			handleCloseModal();
+		} catch (saveError) {
+			console.error("Save item failed:", saveError);
+			setNotice({ type: "error", message: `Could not save item: ${saveError}` });
+			void fetchSubjectData();
+		}
+	};
 
-    // --- RENDER LOGIC ---
-    if (loading) return <div className="text-center p-8">Loading...</div>;
-    if (error) return <div className="text-center p-8 text-red-600">{error}</div>;
-    if (!subject) return <div className="text-center p-8">Could not load subject.</div>;
+	const confirmDeleteItem = async () => {
+		if (!deleteItemId) return;
+		const previousSubject = subject;
+		const topicId = deleteItemTopicId;
 
-    return (
-        <div className="container mx-auto p-4 md:p-8">
-            {isModalOpen && (
-                <ItemEditorModal
-                    itemToEdit={editingItem}
-                    onSave={handleSaveItem}
-                    onCancel={handleCloseModal}
-                />
-            )}
+		setSubject((previous) => {
+			if (!previous) return previous;
+			return {
+				...previous,
+				topics: previous.topics.map((topic) => ({
+					...topic,
+					items: topic.items.filter((item) => item.id !== deleteItemId),
+				})),
+			};
+		});
 
-            <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-2">
-                <div>
-                    <h1 className="text-3xl font-bold text-slate-900">Customize: {subject.title}</h1>
-                    <p className="text-slate-600 mt-1">Add, edit, or remove materials for this course.</p>
-                </div>
-                <button onClick={() => setShowNewTopicForm(true)} className="flex-shrink-0 flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700">
-                    <PlusCircle size={18} /> Add Custom Topic
-                </button>
-            </div>
+		try {
+			const response = await fetch(
+				`/api/admin/materials/${deleteItemId}?courseId=${encodeURIComponent(
+					subjectId
+				)}&topicId=${encodeURIComponent(topicId ?? "")}`,
+				{ method: "DELETE" }
+			);
+			if (!response.ok) {
+				const payload = await response.json();
+				throw new Error(payload?.error || "Failed to delete item.");
+			}
+			setNotice({ type: "success", message: "Item deleted." });
+		} catch (deleteError) {
+			setSubject(previousSubject);
+			console.error("Delete item failed:", deleteError);
+			setNotice({ type: "error", message: `Could not delete item: ${deleteError}` });
+			void fetchSubjectData();
+		} finally {
+			setDeleteItemId(null);
+		}
+	};
 
-            {showNewTopicForm && <NewTopicForm onSave={handleAddTopic} onCancel={() => setShowNewTopicForm(false)} />}
+	const handleAddTopic = async (title: string) => {
+		try {
+			const response = await fetch("/api/admin/topics", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ courseId: subjectId, title }),
+			});
+			const payload = await response.json();
+			if (!response.ok || !payload?.data) {
+				throw new Error(payload?.error || "Failed to add topic.");
+			}
 
-            <div className="mt-6 space-y-4">
-                {subject.topics.map(topic => {
-                    const isCustomTopic = isCustomId(topic.id);
-                    return (
-                        <div key={topic.id} className="p-4 border rounded-lg bg-white shadow-sm">
-                            <div className="flex justify-between items-center pb-3 border-b mb-3">
-                                <div className="flex items-center gap-3">
-                                    <h2 className="text-xl font-bold text-slate-800">{topic.title}</h2>
-                                    {isCustomTopic ?
-                                        <span className="text-xs px-2 py-0.5 bg-green-100 text-green-700 rounded-full">Custom</span> :
-                                        <span className="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full">Canvas</span>
-                                    }
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    {/* --- THE FIX IS HERE --- */}
-                                    {/* The "Delete Topic" button is ONLY for custom topics. */}
-                                    {isCustomTopic && (
-                                        <button onClick={() => handleDeleteTopic(topic.id, topic.title)} className="p-2 text-red-500 rounded-md hover:bg-red-100" title="Delete Topic">
-                                            <Trash size={16} />
-                                        </button>
-                                    )}
-                                    {/* The "Add Item" button is available for ALL topics. */}
-                                    <button onClick={() => handleOpenModalToAdd(topic.id)} className="flex items-center gap-1 text-sm px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">
-                                        <PlusCircle size={16} /> Add Item
-                                    </button>
-                                    {/* --- END OF FIX --- */}
-                                </div>
-                            </div>
+			setSubject((previous) => {
+				if (!previous) return previous;
+				return {
+					...previous,
+					topics: [
+						...previous.topics,
+						{
+							id: payload.data.id,
+							title: payload.data.title,
+							items: [],
+							isCustom: true,
+						},
+					],
+				};
+			});
+			setShowNewTopicForm(false);
+			setNotice({ type: "success", message: "Topic added." });
+		} catch (addError) {
+			console.error("Add topic failed:", addError);
+			setNotice({ type: "error", message: `Could not add topic: ${addError}` });
+			void fetchSubjectData();
+		}
+	};
 
-                            {topic.items.length > 0 ? (
-                                <ul className="space-y-2">
-                                    {topic.items.map(item => {
-                                        const isCustomItem = isCustomId(item.id);
-                                        let icon;
-                                        switch (item.type) {
-                                            case 'Quiz': icon = <BrainCircuit size={16} className="text-blue-500" />; break;
-                                            case 'Flashcard': icon = <Layers3 size={16} className="text-emerald-500" />; break;
-                                            case 'File': icon = <FileIcon size={16} className="text-slate-500" />; break;
-                                            default: icon = <LinkIcon size={16} className="text-slate-500" />;
-                                        }
-                                        return (
-                                            <li key={item.id} className="flex items-center justify-between p-2 rounded hover:bg-slate-50">
-                                                <div className="flex items-center gap-3">
-                                                    {icon}
-                                                    <span className="text-slate-800">{item.title}</span>
-                                                </div>
-                                                {isCustomItem && (
-                                                    <div className="flex items-center gap-2">
-                                                        <button onClick={() => handleOpenModalToEdit(item)} className="p-1 text-slate-500 hover:text-slate-800" title="Edit Item"><Edit size={16} /></button>
-                                                        <button onClick={() => handleDeleteItem(item.id)} className="p-1 text-red-500 hover:text-red-800" title="Delete Item"><Trash size={16} /></button>
-                                                    </div>
-                                                )}
-                                            </li>
-                                        );
-                                    })}
-                                </ul>
-                            ) : (
-                                <p className="text-sm text-slate-500 px-2">No items in this topic yet.</p>
-                            )}
-                        </div>
-                    );
-                })}
-            </div>
-        </div>
-    );
+	const confirmDeleteTopic = async () => {
+		if (!deleteTopicTarget) return;
+		const topicId = deleteTopicTarget.id;
+		const previousSubject = subject;
+		setSubject((previous) => {
+			if (!previous) return previous;
+			return {
+				...previous,
+				topics: previous.topics.filter((topic) => topic.id !== topicId),
+			};
+		});
+
+		try {
+			const response = await fetch(
+				`/api/admin/topics/${topicId}?courseId=${encodeURIComponent(subjectId)}`,
+				{ method: "DELETE" }
+			);
+			if (!response.ok) {
+				const payload = await response.json();
+				throw new Error(payload?.error || "Failed to delete topic.");
+			}
+			setNotice({ type: "success", message: "Topic deleted." });
+		} catch (deleteError) {
+			setSubject(previousSubject);
+			console.error("Delete topic failed:", deleteError);
+			setNotice({ type: "error", message: `Could not delete topic: ${deleteError}` });
+			void fetchSubjectData();
+		} finally {
+			setDeleteTopicTarget(null);
+		}
+	};
+
+	if (loading) {
+		return (
+			<AdminShell>
+				<AdminCard>Loading...</AdminCard>
+			</AdminShell>
+		);
+	}
+
+	if (error || !subject) {
+		return (
+			<AdminShell>
+				<AdminEmptyState
+					title="Could not load subject."
+					description={error ?? "No data returned for this subject."}
+				/>
+			</AdminShell>
+		);
+	}
+
+	return (
+		<AdminShell>
+			<AdminPageHeader
+				title={`Customize: ${subject.title}`}
+				subtitle="Add, edit, or remove materials and custom topics for this subject."
+				actions={
+					<button
+						onClick={() => setShowNewTopicForm((value) => !value)}
+						className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700"
+					>
+						<PlusCircle size={16} />
+						{showNewTopicForm ? "Hide Topic Form" : "Add Custom Topic"}
+					</button>
+				}
+			/>
+
+			{notice ? <NoticeBanner type={notice.type} message={notice.message} /> : null}
+
+			{showNewTopicForm ? (
+				<AdminCard className="mb-4">
+					<h2 className="mb-3 text-base font-semibold text-foreground">Add New Topic</h2>
+					<NewTopicForm
+						onSave={handleAddTopic}
+						onCancel={() => setShowNewTopicForm(false)}
+					/>
+				</AdminCard>
+			) : null}
+
+			{isModalOpen ? (
+				<ItemEditorModal
+					itemToEdit={editingItem}
+					onSave={handleSaveItem}
+					onCancel={handleCloseModal}
+				/>
+			) : null}
+
+			<div className="space-y-4">
+				{subject.topics.map((topic) => {
+					const isCustomTopic = isCustomId(topic.id);
+					return (
+						<AdminCard key={topic.id} className="p-4">
+							<div className="mb-3 flex flex-col gap-3 border-b border-border pb-3 sm:flex-row sm:items-center sm:justify-between">
+								<div className="flex items-center gap-2">
+									<h2 className="text-lg font-semibold text-foreground">{topic.title}</h2>
+									<AdminStatusBadge
+										variant={isCustomTopic ? "active" : "info"}
+										label={isCustomTopic ? "Custom" : "Canvas"}
+									/>
+								</div>
+								<div className="flex items-center gap-2">
+									{isCustomTopic ? (
+										<button
+											onClick={() =>
+												setDeleteTopicTarget({ id: topic.id, title: topic.title })
+											}
+											className="inline-flex items-center gap-1 rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700"
+											title="Delete Topic"
+										>
+											<Trash2 size={14} /> Delete Topic
+										</button>
+									) : null}
+									<button
+										onClick={() => handleOpenModalToAdd(topic.id)}
+										className="inline-flex items-center gap-1 rounded-md bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-700"
+									>
+										<PlusCircle size={14} /> Add Item
+									</button>
+								</div>
+							</div>
+
+							{topic.items.length > 0 ? (
+								<ul className="space-y-2">
+									{topic.items.map((item) => {
+										const isCustomItem = isCustomId(item.id);
+										return (
+											<li
+												key={item.id}
+												className="flex items-center justify-between rounded-lg border border-border bg-background px-3 py-2"
+											>
+												<div className="flex items-center gap-3">
+													{getItemIcon(item)}
+													<span className="text-sm text-foreground">{item.title}</span>
+												</div>
+												{isCustomItem ? (
+													<div className="flex items-center gap-1">
+														<button
+															onClick={() => handleOpenModalToEdit(item)}
+															className="rounded-md border border-border px-2 py-1 text-xs font-semibold text-foreground hover:bg-accent"
+															title="Edit Item"
+														>
+															<Edit size={14} />
+														</button>
+														<button
+															onClick={() => setDeleteItemId(item.id)}
+															className="rounded-md bg-red-600 px-2 py-1 text-xs font-semibold text-white hover:bg-red-700"
+															title="Delete Item"
+														>
+															<Trash2 size={14} />
+														</button>
+													</div>
+												) : null}
+											</li>
+										);
+									})}
+								</ul>
+							) : (
+								<p className="text-sm text-muted-foreground">No items in this topic yet.</p>
+							)}
+						</AdminCard>
+					);
+				})}
+			</div>
+
+			<ConfirmActionDialog
+				open={deleteItemId !== null}
+				title="Delete Item"
+				description="Delete this item permanently?"
+				confirmLabel="Delete Item"
+				onCancel={() => setDeleteItemId(null)}
+				onConfirm={confirmDeleteItem}
+			/>
+
+			<ConfirmActionDialog
+				open={deleteTopicTarget !== null}
+				title="Delete Topic"
+				description={
+					deleteTopicTarget
+						? `Delete topic "${deleteTopicTarget.title}" and all materials inside it?`
+						: ""
+				}
+				confirmLabel="Delete Topic"
+				onCancel={() => setDeleteTopicTarget(null)}
+				onConfirm={confirmDeleteTopic}
+			/>
+		</AdminShell>
+	);
 }

@@ -1,7 +1,7 @@
 // app/book/page.tsx
 
-import { getSessionUserFromCookies } from "@/lib/server/auth/session";
-import LoginButton from "@/app/components/LoginButton";
+import { getSessionUserFromCookies } from "@/lib/server/domains/auth/service";
+import LoginButton from "@/components/LoginButton";
 import Image from "next/image";
 
 const subjects = [

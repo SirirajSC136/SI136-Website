@@ -14,7 +14,13 @@ import {
 	PlayCircle,
 } from "lucide-react";
 
-const ItemRenderer = ({ item }: { item: TopicItemData }) => {
+const ItemRenderer = ({
+	item,
+	onOpenInteractive,
+}: {
+	item: TopicItemData;
+	onOpenInteractive?: (item: TopicItemData) => void;
+}) => {
 	const isNotPureNumberId = /[^0-9]/.test(item.id);
 
 	const containerClasses = isNotPureNumberId
@@ -69,8 +75,9 @@ const ItemRenderer = ({ item }: { item: TopicItemData }) => {
 			);
 		case "Quiz":
 			return (
-				<a
-					href={`/quiz/${item.id}`}
+				<button
+					type="button"
+					onClick={() => onOpenInteractive?.(item)}
 					className={`group flex items-center justify-between rounded-lg p-3 text-secondary transition-colors hover:bg-slate-100 dark:hover:bg-stone-800 ${containerClasses}`}>
 					<div className="flex items-center gap-3">
 						<BrainCircuit className="h-5 w-5 flex-shrink-0 text-blue-500" />
@@ -80,13 +87,14 @@ const ItemRenderer = ({ item }: { item: TopicItemData }) => {
 						Start Quiz
 						<PlayCircle size={16} />
 					</div>
-				</a>
+				</button>
 			);
 
 		case "Flashcard":
 			return (
-				<a
-					href={`/flashcards/${item.id}`}
+				<button
+					type="button"
+					onClick={() => onOpenInteractive?.(item)}
 					className={`group flex items-center justify-between rounded-lg p-3 text-secondary transition-colors hover:bg-slate-100 dark:hover:bg-stone-800 ${containerClasses}`}>
 					<div className="flex items-center gap-3">
 						<Layers3 className="h-5 w-5 flex-shrink-0 text-emerald-500" />
@@ -96,7 +104,7 @@ const ItemRenderer = ({ item }: { item: TopicItemData }) => {
 						View Deck
 						<PlayCircle size={16} />
 					</div>
-				</a>
+				</button>
 			);
 
 		default:
@@ -104,7 +112,13 @@ const ItemRenderer = ({ item }: { item: TopicItemData }) => {
 	}
 };
 
-const TopicItem = ({ topic }: { topic: Topic }) => {
+const TopicItem = ({
+	topic,
+	onOpenInteractive,
+}: {
+	topic: Topic;
+	onOpenInteractive?: (item: TopicItemData) => void;
+}) => {
 	const [isOpen, setIsOpen] = useState(false);
 
 	if (!topic.items || topic.items.length === 0) {
@@ -141,7 +155,11 @@ const TopicItem = ({ topic }: { topic: Topic }) => {
 				<div className="border-t border-border p-4">
 					<div className="space-y-1">
 						{displayItems.map((item) => (
-							<ItemRenderer key={item.id} item={item} />
+							<ItemRenderer
+								key={item.id}
+								item={item}
+								onOpenInteractive={onOpenInteractive}
+							/>
 						))}
 					</div>
 				</div>

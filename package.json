@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "firebase:set-admin": "node ./scripts/set-admin-claims.mjs",
-    "migrate:mongo:firestore": "node ./scripts/migrate-mongo-to-firestore.mjs"
+    "firebase:seed-initial-admin": "node ./scripts/seed-initial-admin.mjs",
+    "migrate:mongo:firestore": "node ./scripts/migrate-mongo-to-firestore.mjs",
+    "cleanup:legacy:interactive": "node ./scripts/cleanup-legacy-inline-interactive.mjs"
   },
   "dependencies": {
     "@fullcalendar/core": "^6.1.19",
@@ -27,8 +29,10 @@
     "embla-carousel-react": "^8.6.0",
     "firebase": "^12.10.0",
     "firebase-admin": "^13.7.0",
+    "framer-motion": "^12.23.24",
     "googleapis": "^159.0.0",
     "ical": "^0.8.0",
+    "katex": "^0.16.25",
     "lucide-react": "^0.548.0",
     "luxon": "^3.7.2",
     "mongodb": "^6.19.0",
@@ -37,6 +41,9 @@
     "papaparse": "^5.5.3",
     "react": "19.2.1",
     "react-dom": "19.2.1",
+    "react-markdown": "^10.1.0",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0",
     "tailwind-merge": "^3.3.1",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^4.3.6"

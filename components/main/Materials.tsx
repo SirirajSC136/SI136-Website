@@ -1,5 +1,3 @@
-// app/components/main/Materials.tsx
-
 import { ReactNode } from "react";
 import { Laptop, Library, Users, ArrowUpRight, University } from "lucide-react";
 

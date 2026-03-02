@@ -1,10 +1,10 @@
 // app/academics/page.tsx
 
-import AcademicHero from "@/app/components/academics/AcademicHero";
-import SubjectCard from "@/app/components/academics/SubjectCard";
+import AcademicHero from "@/components/academics/AcademicHero";
+import SubjectCard from "@/components/academics/SubjectCard";
 import { getAllSubjects } from "@/lib/subjects";
 import { Subject } from "@/types";
-import PageHero from "../components/main/PageHero";
+import PageHero from "@/components/main/PageHero";
 
 
 async function getSubjects(): Promise<Subject[]> {

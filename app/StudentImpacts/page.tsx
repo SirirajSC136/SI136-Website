@@ -8,7 +8,7 @@ import {
 	ArrowRight,
 } from "lucide-react";
 import { ReactNode } from "react";
-import PageHero from "@/app/components/main/PageHero";
+import PageHero from "@/components/main/PageHero";
 
 const ActionCard = ({
 	icon,

@@ -7,7 +7,7 @@ import {
 	formatBangkokDateKey,
 	getBangkokDateKey,
 	sortEventsByStartTime,
-} from "@/lib/events/normalize";
+} from "@/lib/server/domains/events/normalizers";
 import { GetNowTime } from "@/util/time";
 import { AssignmentCard } from "./upcomingEvents/AssignmentCard";
 

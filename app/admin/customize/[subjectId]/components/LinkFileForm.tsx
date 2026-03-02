@@ -1,19 +1,22 @@
-// app/admin/customize/[subjectId]/components/LinkFileForm.tsx
 "use client";
 
-export default function LinkFileForm({ data, setData }: { data: any, setData: Function }) {
-    return (
-        <>
-            <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">URL</label>
-                <input
-                    value={data.url || ''}
-                    onChange={e => setData({ ...data, url: e.target.value })}
-                    placeholder="https://..."
-                    required
-                    className="block w-full p-2 border rounded"
-                />
-            </div>
-        </>
-    );
+export default function LinkFileForm({
+	data,
+	setData,
+}: {
+	data: any;
+	setData: (next: any) => void;
+}) {
+	return (
+		<div>
+			<label className="mb-1 block text-sm font-medium text-muted-foreground">URL</label>
+			<input
+				value={data.url || ""}
+				onChange={(event) => setData({ ...data, url: event.target.value })}
+				placeholder="https://..."
+				required
+				className="block w-full rounded-lg border border-border bg-background p-2 text-sm text-foreground"
+			/>
+		</div>
+	);
 }

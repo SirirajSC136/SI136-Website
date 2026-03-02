@@ -1,8 +1,9 @@
 import "./globals.css";
+import "katex/dist/katex.min.css";
 import type { Metadata } from "next";
 import { Kanit } from "next/font/google";
-import Navbar from "@/app/components/shared/Navbar";
-import Footer from "./components/shared/Footer";
+import NavbarServer from "@/components/shared/NavbarServer";
+import Footer from "@/components/shared/Footer";
 import { ThemeProvider } from "next-themes";
 import Script from "next/script";
 
@@ -28,7 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="th" className={kanit.className} suppressHydrationWarning>
       <body>
         <ThemeProvider attribute="class" enableSystem defaultTheme="light">
-          <Navbar />
+          <NavbarServer />
           <main>{children}</main>
           <Footer />
         </ThemeProvider>
