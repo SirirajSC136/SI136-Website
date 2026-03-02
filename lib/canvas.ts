@@ -33,12 +33,24 @@ export type CanvasCourse = {
 const CANVAS_URL = process.env.CANVAS_URL;
 const ACCESS_TOKEN = process.env.CANVAS_API;
 const CANVAS_HOSTNAME = process.env.CANVAS_URL_HOSTNAME || 'instructure.com';
+const CANVAS_REQUEST_TIMEOUT_MS = Number(process.env.CANVAS_REQUEST_TIMEOUT_MS || '15000');
+type NextFetchInit = RequestInit & {
+    next?: {
+        revalidate?: number | false;
+        tags?: string[];
+    };
+};
 
 function getHeaders() {
     if (!CANVAS_URL || !ACCESS_TOKEN) {
         throw new Error('Server configuration error: Canvas URL or API token is missing.');
     }
     return { Authorization: `Bearer ${ACCESS_TOKEN}` };
+}
+
+async function fetchWithTimeout(url: string, init?: NextFetchInit): Promise<Response> {
+    const signal = AbortSignal.timeout(CANVAS_REQUEST_TIMEOUT_MS);
+    return fetch(url, { ...init, signal });
 }
 
 async function fetchAllPaginated(url: string): Promise<any[]> {
@@ -48,7 +60,7 @@ async function fetchAllPaginated(url: string): Promise<any[]> {
 
     while (nextUrl) {
         // Added Next.js revalidation for caching (5 minutes)
-        const response = await fetch(nextUrl, { headers, next: { revalidate: 300 } });
+        const response = await fetchWithTimeout(nextUrl, { headers, next: { revalidate: 300 } });
         if (!response.ok) {
             throw new Error(`Failed to fetch paginated data from ${nextUrl}: ${response.statusText}`);
         }
@@ -77,7 +89,7 @@ async function fetchAllPaginated(url: string): Promise<any[]> {
 async function resolveApiFileUrl(apiUrl: string): Promise<string> {
     try {
         const headers = getHeaders();
-        const response = await fetch(apiUrl, { headers });
+        const response = await fetchWithTimeout(apiUrl, { headers });
         if (!response.ok) return apiUrl;
 
         const data = await response.json();
@@ -121,7 +133,7 @@ async function processModuleItem(item: any): Promise<CanvasModuleItem> {
     if (item.type === 'Page' && item.url) {
         try {
             const headers = getHeaders();
-            const response = await fetch(item.url, { headers });
+            const response = await fetchWithTimeout(item.url, { headers });
 
             // 1. Check if the fetch was successful
             if (!response.ok) {
@@ -198,7 +210,7 @@ export async function fetchCourseDetails(courseId: string): Promise<CanvasCourse
     const modulesUrl = `${CANVAS_URL}/courses/${courseId}/modules`;
 
     const [courseResult, modulesData] = await Promise.all([
-        fetch(courseUrl, { headers }),
+        fetchWithTimeout(courseUrl, { headers }),
         fetchAllPaginated(modulesUrl)
     ]);
 

@@ -25,15 +25,23 @@ type SheetExam = {
 	Time: string;
 };
 
+const FETCH_TIMEOUT_MS = 12000;
+const APP_BASE_URL = process.env.NEXT_PUBLIC_APP_URL;
+
 async function getGoogleCalendarEvents(
 	startDateKey: string,
 	endDateKey: string
 ): Promise<CalendarEvent[]> {
+	if (!APP_BASE_URL) {
+		console.warn("NEXT_PUBLIC_APP_URL is missing; skipping calendar fetch.");
+		return [];
+	}
+
 	try {
 		const params = new URLSearchParams({ start: startDateKey, end: endDateKey });
 		const res = await fetch(
-			`${process.env.NEXT_PUBLIC_APP_URL}/api/events?${params.toString()}`,
-			{ next: { revalidate: 900 } }
+			`${APP_BASE_URL}/api/events?${params.toString()}`,
+			{ next: { revalidate: 900 }, signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) }
 		);
 		if (!res.ok) return [];
 		const data = await res.json();
@@ -48,11 +56,17 @@ async function getUpcomingData(): Promise<{
 	assignments: SheetAssignment[];
 	examinations: SheetExam[];
 }> {
+	if (!APP_BASE_URL) {
+		console.warn("NEXT_PUBLIC_APP_URL is missing; skipping upcoming data fetch.");
+		return { assignments: [], examinations: [] };
+	}
+
 	try {
 		const res = await fetch(
-			`${process.env.NEXT_PUBLIC_APP_URL}/api/canvas/secondupcoming`,
+			`${APP_BASE_URL}/api/canvas/secondupcoming`,
 			{
 				next: { revalidate: 900 },
+				signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
 			}
 		);
 		if (!res.ok) return { assignments: [], examinations: [] };

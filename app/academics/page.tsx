@@ -2,22 +2,14 @@
 
 import AcademicHero from "@/app/components/academics/AcademicHero";
 import SubjectCard from "@/app/components/academics/SubjectCard";
+import { getAllSubjects } from "@/lib/subjects";
 import { Subject } from "@/types";
 import PageHero from "../components/main/PageHero";
 
 
 async function getSubjects(): Promise<Subject[]> {
 	try {
-		const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/subjects`, {
-			next: { revalidate: 900 },
-		});
-
-		if (!res.ok) {
-			console.error("API responded with an error:", res.status);
-			return [];
-		}
-
-		return res.json();
+		return await getAllSubjects();
 	} catch (error) {
 		console.error("Failed to fetch subjects:", error);
 		return [];
@@ -76,7 +68,6 @@ function normalizeYearSemester(subject: Subject): Subject {
 
 const AcademicPage = async () => {
 	const allSubjects = await getSubjects();
-
 	// Exclude unwanted IDs
 	const excludedIdList = ["1266", "208", "549", "1105", "1318"];
 	const filtered = allSubjects.filter(
