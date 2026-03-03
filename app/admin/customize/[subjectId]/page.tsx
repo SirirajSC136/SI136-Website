@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Subject, TopicItemData } from "@/types";
+import { FlashcardContent, QuizContent, Subject, TopicItemData } from "@/types";
 import { useParams } from "next/navigation";
 import {
 	PlusCircle,
@@ -20,6 +20,7 @@ import ConfirmActionDialog from "@/components/admin/ConfirmActionDialog";
 import NoticeBanner from "@/components/admin/NoticeBanner";
 import AdminStatusBadge from "@/components/admin/AdminStatusBadge";
 import AdminEmptyState from "@/components/admin/AdminEmptyState";
+import { createClientCustomId } from "@/lib/client/ids";
 
 const isCustomId = (id: string): boolean => /^[0-9a-fA-F]{24}$/.test(id);
 
@@ -90,6 +91,9 @@ export default function CustomizeSubjectPage() {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [editingItem, setEditingItem] = useState<TopicItemData | undefined>(undefined);
 	const [activeTopicId, setActiveTopicId] = useState<string | null>(null);
+	const [editingTopicId, setEditingTopicId] = useState<string | null>(null);
+	const [draftItemId, setDraftItemId] = useState<string | null>(null);
+	const [isModalBusy, setIsModalBusy] = useState(false);
 	const [deleteItemId, setDeleteItemId] = useState<string | null>(null);
 	const [deleteTopicTarget, setDeleteTopicTarget] = useState<{
 		id: string;
@@ -126,19 +130,50 @@ export default function CustomizeSubjectPage() {
 	const handleOpenModalToAdd = (topicId: string) => {
 		setEditingItem(undefined);
 		setActiveTopicId(topicId);
+		setEditingTopicId(null);
+		setDraftItemId(createClientCustomId());
 		setIsModalOpen(true);
 	};
 
-	const handleOpenModalToEdit = (item: TopicItemData) => {
-		setEditingItem(item);
-		setActiveTopicId(null);
-		setIsModalOpen(true);
+	const handleOpenModalToEdit = async (item: TopicItemData) => {
+		setIsModalBusy(true);
+		try {
+			const topicId = findTopicIdForItem(item.id) ?? null;
+			if (item.type === "Quiz" || item.type === "Flashcard") {
+				const response = await fetch(`/api/interactive/${item.id}`, { cache: "no-store" });
+				const payload = await response.json().catch(() => ({}));
+				if (!response.ok || !payload?.data) {
+					throw new Error(payload?.error || "Failed to load interactive content.");
+				}
+				setEditingItem({
+					...item,
+					interactiveRefId: payload.data.id ?? item.id,
+					content: payload.data.content as QuizContent | FlashcardContent,
+				});
+			} else {
+				setEditingItem(item);
+			}
+			setActiveTopicId(null);
+			setEditingTopicId(topicId);
+			setDraftItemId(null);
+			setIsModalOpen(true);
+		} catch (openError) {
+			console.error("Open editor failed:", openError);
+			setNotice({
+				type: "error",
+				message: "Could not open item editor. Try again.",
+			});
+		} finally {
+			setIsModalBusy(false);
+		}
 	};
 
 	const handleCloseModal = () => {
 		setIsModalOpen(false);
 		setEditingItem(undefined);
 		setActiveTopicId(null);
+		setEditingTopicId(null);
+		setDraftItemId(null);
 	};
 
 	const findTopicIdForItem = (itemId: string): string | undefined => {
@@ -149,10 +184,34 @@ export default function CustomizeSubjectPage() {
 		const isEditing = Boolean(editingItem);
 		const url = isEditing ? `/api/admin/materials/${editingItem?.id}` : "/api/admin/materials";
 		const method = isEditing ? "PUT" : "POST";
-		const editingTopicId = editingItem ? findTopicIdForItem(editingItem.id) : undefined;
+		const resolvedTopicId = editingTopicId ?? (editingItem ? findTopicIdForItem(editingItem.id) : undefined);
+		const interactivePayload =
+			itemData.type === "Quiz" || itemData.type === "Flashcard"
+				? {
+						contentType: itemData.type,
+						content: itemData.content,
+				  }
+				: undefined;
+		const normalizedItem: TopicItemData = {
+			...itemData,
+			interactiveRefId:
+				itemData.type === "Quiz" || itemData.type === "Flashcard" ? itemData.id : undefined,
+			content: undefined,
+		};
 		const body = isEditing
-			? { item: itemData, courseId: subjectId, topicId: editingTopicId }
-			: { courseId: subjectId, topicId: activeTopicId, item: itemData };
+			? {
+					item: normalizedItem,
+					interactive: interactivePayload,
+					courseId: subjectId,
+					topicId: resolvedTopicId,
+			  }
+			: {
+					courseId: subjectId,
+					topicId: activeTopicId,
+					itemId: itemData.id,
+					item: normalizedItem,
+					interactive: interactivePayload,
+			  };
 
 		try {
 			const response = await fetch(url, {
@@ -162,7 +221,10 @@ export default function CustomizeSubjectPage() {
 			});
 			const payload = await response.json();
 			if (!response.ok || !payload?.data) {
-				throw new Error(payload?.error || "Failed to save item.");
+				const details = payload?.details?.fieldErrors
+					? JSON.stringify(payload.details.fieldErrors)
+					: "";
+				throw new Error(payload?.error || details || "Failed to save item.");
 			}
 
 			const savedItem = payload.data.item as TopicItemData;
@@ -357,7 +419,10 @@ export default function CustomizeSubjectPage() {
 
 			{isModalOpen ? (
 				<ItemEditorModal
+					courseId={subjectId}
+					topicId={editingTopicId ?? activeTopicId ?? "unknown-topic"}
 					itemToEdit={editingItem}
+					defaultItemId={draftItemId ?? undefined}
 					onSave={handleSaveItem}
 					onCancel={handleCloseModal}
 				/>
@@ -413,8 +478,9 @@ export default function CustomizeSubjectPage() {
 												{isCustomItem ? (
 													<div className="flex items-center gap-1">
 														<button
-															onClick={() => handleOpenModalToEdit(item)}
-															className="rounded-md border border-border px-2 py-1 text-xs font-semibold text-foreground hover:bg-accent"
+															onClick={() => void handleOpenModalToEdit(item)}
+															disabled={isModalBusy}
+															className="rounded-md border border-border px-2 py-1 text-xs font-semibold text-foreground hover:bg-accent disabled:opacity-60"
 															title="Edit Item"
 														>
 															<Edit size={14} />

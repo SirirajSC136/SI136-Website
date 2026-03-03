@@ -2,21 +2,10 @@
 
 import { ChangeEvent, useMemo, useState } from "react";
 import { Loader2, Trash2, Upload } from "lucide-react";
-import { deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { ImageAsset } from "@/types";
-import { getFirebaseClientStorage } from "@/lib/firebase/client";
-import { createClientCustomId } from "@/lib/client/ids";
 
 const MAX_SIZE_BYTES = 5 * 1024 * 1024;
 const ALLOWED_MIME = new Set(["image/jpeg", "image/png", "image/webp"]);
-
-function extFromFile(file: File): string {
-	if (file.type === "image/jpeg") return "jpg";
-	if (file.type === "image/png") return "png";
-	if (file.type === "image/webp") return "webp";
-	const nameParts = file.name.split(".");
-	return nameParts.length > 1 ? nameParts[nameParts.length - 1].toLowerCase() : "img";
-}
 
 type Props = {
 	label: string;
@@ -40,48 +29,62 @@ export default function InteractiveImageUploader({
 
 	const previewAlt = useMemo(() => value?.alt ?? "", [value?.alt]);
 
-	const uploadPathPrefix = `admin/interactive/${courseId}/${topicId}/${itemId}`;
-
 	const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
-		const file = event.target.files?.[0];
+		const inputEl = event.currentTarget;
+		const file = inputEl.files?.[0];
 		if (!file) return;
 
 		setError(null);
 		if (!ALLOWED_MIME.has(file.type)) {
 			setError("Only JPEG, PNG, and WebP images are allowed.");
-			event.currentTarget.value = "";
+			inputEl.value = "";
 			return;
 		}
 		if (file.size > MAX_SIZE_BYTES) {
 			setError("Image must be 5MB or less.");
-			event.currentTarget.value = "";
+			inputEl.value = "";
 			return;
 		}
 
 		setUploading(true);
 		try {
-			const extension = extFromFile(file);
-			const assetId = createClientCustomId();
-			const path = `${uploadPathPrefix}/${assetId}.${extension}`;
-			const storage = getFirebaseClientStorage();
-			const uploadRef = ref(storage, path);
-			await uploadBytes(uploadRef, file, { contentType: file.type });
-			const url = await getDownloadURL(uploadRef);
 			const previousPath = value?.path;
+			const formData = new FormData();
+			formData.append("courseId", courseId);
+			formData.append("topicId", topicId);
+			formData.append("itemId", itemId);
+			formData.append("file", file);
+			if (previousPath) {
+				formData.append("previousPath", previousPath);
+			}
+
+			const response = await fetch("/api/admin/interactive-assets", {
+				method: "POST",
+				body: formData,
+			});
+			const payload = await response.json().catch(() => ({}));
+			if (!response.ok) {
+				throw new Error(
+					typeof payload?.error === "string" ? payload.error : "Failed to upload image."
+				);
+			}
+			const path = payload?.data?.path as string | undefined;
+			const url = payload?.data?.url as string | undefined;
+			if (!path || !url) {
+				throw new Error("Upload response is missing image metadata.");
+			}
+
 			onChange({
 				path,
 				url,
 				alt: value?.alt?.trim() || file.name,
 			});
-			if (previousPath && previousPath !== path) {
-				await deleteObject(ref(storage, previousPath)).catch(() => null);
-			}
 		} catch (uploadError) {
 			console.error("Interactive image upload failed:", uploadError);
 			setError("Failed to upload image. Please try again.");
 		} finally {
 			setUploading(false);
-			event.currentTarget.value = "";
+			inputEl.value = "";
 		}
 	};
 
@@ -90,8 +93,13 @@ export default function InteractiveImageUploader({
 		const previousPath = value.path;
 		onChange(undefined);
 		try {
-			const storage = getFirebaseClientStorage();
-			await deleteObject(ref(storage, previousPath));
+			await fetch("/api/admin/interactive-assets", {
+				method: "DELETE",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ path: previousPath }),
+			});
 		} catch {
 			// Best effort delete only.
 		}

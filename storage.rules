@@ -6,8 +6,19 @@ service firebase.storage {
       return request.auth != null;
     }
 
-    function isAdmin() {
+    function hasAdminClaim() {
       return isSignedIn() && request.auth.token.admin == true;
+    }
+
+    function hasActiveAdminRecord() {
+      return isSignedIn()
+        && request.auth.token.email is string
+        && firestore.exists(/databases/(default)/documents/admin_users/$(request.auth.token.email.lower()))
+        && firestore.get(/databases/(default)/documents/admin_users/$(request.auth.token.email.lower())).data.active == true;
+    }
+
+    function isAdmin() {
+      return hasAdminClaim() || hasActiveAdminRecord();
     }
 
     // Public-ish files for signed-in students

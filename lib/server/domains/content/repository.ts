@@ -122,10 +122,27 @@ function toTopicRecord(snapshot: QueryDocumentSnapshot<TopicDoc>): TopicRecord {
 	};
 }
 
+function stripUndefinedDeep<T>(value: T): T {
+	if (Array.isArray(value)) {
+		return value
+			.filter((entry) => entry !== undefined)
+			.map((entry) => stripUndefinedDeep(entry)) as T;
+	}
+	if (value && typeof value === "object") {
+		const result: Record<string, unknown> = {};
+		for (const [key, entry] of Object.entries(value as Record<string, unknown>)) {
+			if (entry === undefined) continue;
+			result[key] = stripUndefinedDeep(entry);
+		}
+		return result as T;
+	}
+	return value;
+}
+
 function toStorageItem(item: TopicItemData): Partial<TopicItemData> {
+	const { id: _ignoredId, ...rest } = item;
 	return {
-		...item,
-		id: undefined,
+		...stripUndefinedDeep(rest),
 		isCustom: true,
 	};
 }

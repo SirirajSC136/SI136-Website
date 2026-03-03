@@ -6,8 +6,19 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    function isAdmin() {
+    function hasAdminClaim() {
       return isSignedIn() && request.auth.token.admin == true;
+    }
+
+    function hasActiveAdminRecord() {
+      return isSignedIn()
+        && request.auth.token.email is string
+        && exists(/databases/$(database)/documents/admin_users/$(request.auth.token.email.lower()))
+        && get(/databases/$(database)/documents/admin_users/$(request.auth.token.email.lower())).data.active == true;
+    }
+
+    function isAdmin() {
+      return hasAdminClaim() || hasActiveAdminRecord();
     }
 
     // Custom/overlay course tree

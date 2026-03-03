@@ -30,14 +30,40 @@ export type CanvasCourse = {
 // ===================================================================
 const CANVAS_URL = process.env.CANVAS_URL;
 const ACCESS_TOKEN = process.env.CANVAS_API;
-const CANVAS_HOSTNAME = process.env.CANVAS_URL_HOSTNAME || 'instructure.com';
 const CANVAS_REQUEST_TIMEOUT_MS = Number(process.env.CANVAS_REQUEST_TIMEOUT_MS || '15000');
+const CANVAS_RETRY_MAX_ATTEMPTS = Number(process.env.CANVAS_RETRY_MAX_ATTEMPTS || "5");
+const CANVAS_RETRY_BASE_DELAY_MS = Number(process.env.CANVAS_RETRY_BASE_DELAY_MS || "500");
+const CANVAS_RETRY_MAX_DELAY_MS = Number(process.env.CANVAS_RETRY_MAX_DELAY_MS || "10000");
 type NextFetchInit = RequestInit & {
     next?: {
         revalidate?: number | false;
         tags?: string[];
     };
 };
+
+class CanvasFetchError extends Error {
+	status?: number;
+	statusText?: string;
+	url: string;
+	attempts: number;
+
+	constructor(
+		message: string,
+		input: {
+			url: string;
+			attempts: number;
+			status?: number;
+			statusText?: string;
+		}
+	) {
+		super(message);
+		this.name = "CanvasFetchError";
+		this.url = input.url;
+		this.attempts = input.attempts;
+		this.status = input.status;
+		this.statusText = input.statusText;
+	}
+}
 
 function getHeaders() {
     if (!CANVAS_URL || !ACCESS_TOKEN) {
@@ -51,6 +77,85 @@ async function fetchWithTimeout(url: string, init?: NextFetchInit): Promise<Resp
     return fetch(url, { ...init, signal });
 }
 
+function isRetriableStatus(status: number): boolean {
+	return status === 429 || (status >= 500 && status < 600);
+}
+
+function sleep(ms: number): Promise<void> {
+	return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function parseRetryAfterHeader(headerValue: string | null): number | null {
+	if (!headerValue) return null;
+	const asSeconds = Number(headerValue);
+	if (Number.isFinite(asSeconds) && asSeconds >= 0) {
+		return asSeconds * 1000;
+	}
+	const asDate = Date.parse(headerValue);
+	if (!Number.isNaN(asDate)) {
+		return Math.max(0, asDate - Date.now());
+	}
+	return null;
+}
+
+function computeBackoffMs(attempt: number, retryAfterMs: number | null): number {
+	if (retryAfterMs !== null) {
+		return Math.min(CANVAS_RETRY_MAX_DELAY_MS, Math.max(0, retryAfterMs));
+	}
+	const exponent = Math.max(0, attempt - 1);
+	const baseDelay = CANVAS_RETRY_BASE_DELAY_MS * 2 ** exponent;
+	const jitter = Math.floor(Math.random() * 250);
+	return Math.min(CANVAS_RETRY_MAX_DELAY_MS, baseDelay + jitter);
+}
+
+async function fetchWithRetry(url: string, init?: NextFetchInit): Promise<Response> {
+	let attempt = 0;
+	let lastStatus: number | undefined;
+	let lastStatusText: string | undefined;
+
+	while (attempt < CANVAS_RETRY_MAX_ATTEMPTS) {
+		attempt += 1;
+		const response = await fetchWithTimeout(url, init);
+		if (response.ok) return response;
+
+		lastStatus = response.status;
+		lastStatusText = response.statusText;
+
+		if (!isRetriableStatus(response.status) || attempt >= CANVAS_RETRY_MAX_ATTEMPTS) {
+			throw new CanvasFetchError(
+				`Failed to fetch Canvas resource after ${attempt} attempt(s): ${response.status} ${response.statusText}`,
+				{
+					url,
+					attempts: attempt,
+					status: response.status,
+					statusText: response.statusText,
+				}
+			);
+		}
+
+		const retryAfterMs = parseRetryAfterHeader(response.headers.get("Retry-After"));
+		const waitMs = computeBackoffMs(attempt, retryAfterMs);
+		console.warn("[canvas-retry]", {
+			url,
+			status: response.status,
+			statusText: response.statusText,
+			attempt,
+			waitMs,
+		});
+		await sleep(waitMs);
+	}
+
+	throw new CanvasFetchError(
+		`Failed to fetch Canvas resource after ${attempt} attempt(s).`,
+		{
+			url,
+			attempts: attempt,
+			status: lastStatus,
+			statusText: lastStatusText,
+		}
+	);
+}
+
 async function fetchAllPaginated(url: string): Promise<any[]> {
     let results: any[] = [];
     let nextUrl: string | null = url;
@@ -58,10 +163,7 @@ async function fetchAllPaginated(url: string): Promise<any[]> {
 
     while (nextUrl) {
         // Added Next.js revalidation for caching (5 minutes)
-        const response = await fetchWithTimeout(nextUrl, { headers, next: { revalidate: 300 } });
-        if (!response.ok) {
-            throw new Error(`Failed to fetch paginated data from ${nextUrl}: ${response.statusText}`);
-        }
+        const response = await fetchWithRetry(nextUrl, { headers, next: { revalidate: 300 } });
         const pageData = await response.json();
         results = results.concat(pageData);
         const linkHeader = response.headers.get('Link');
@@ -87,7 +189,7 @@ async function fetchAllPaginated(url: string): Promise<any[]> {
 async function resolveApiFileUrl(apiUrl: string): Promise<string> {
     try {
         const headers = getHeaders();
-        const response = await fetchWithTimeout(apiUrl, { headers });
+        const response = await fetchWithRetry(apiUrl, { headers });
         if (!response.ok) return apiUrl;
 
         const data = await response.json();
@@ -131,7 +233,7 @@ async function processModuleItem(item: any): Promise<CanvasModuleItem> {
     if (item.type === 'Page' && item.url) {
         try {
             const headers = getHeaders();
-            const response = await fetchWithTimeout(item.url, { headers });
+            const response = await fetchWithRetry(item.url, { headers });
 
             // 1. Check if the fetch was successful
             if (!response.ok) {
@@ -189,7 +291,19 @@ async function fetchAndProcessModule(courseId: string, module: any): Promise<Can
         const processedItems = await Promise.all(items.map(processModuleItem));
         return { id: module.id, name: module.name, items: processedItems };
     } catch (error) {
-        console.error(`Failed to fetch items for module ${module.id}:`, error);
+        if (error instanceof CanvasFetchError) {
+            console.warn("[canvas-module-items-unavailable]", {
+                courseId,
+                moduleId: module.id,
+                moduleName: module.name,
+                url: error.url,
+                attempts: error.attempts,
+                status: error.status,
+                statusText: error.statusText,
+            });
+        } else {
+            console.error(`Failed to fetch items for module ${module.id}:`, error);
+        }
         return { ...module, items: [] };
     }
 }
@@ -208,7 +322,7 @@ export async function fetchCourseDetails(courseId: string): Promise<CanvasCourse
     const modulesUrl = `${CANVAS_URL}/courses/${courseId}/modules`;
 
     const [courseResult, modulesData] = await Promise.all([
-        fetchWithTimeout(courseUrl, { headers }),
+        fetchWithRetry(courseUrl, { headers }),
         fetchAllPaginated(modulesUrl)
     ]);
 
