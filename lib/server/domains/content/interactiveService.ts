@@ -175,7 +175,7 @@ export class InteractiveService {
 	constructor(
 		private readonly dbFactory: () => Firestore = getFirestoreDb,
 		private readonly bucketFactory: () => Bucket = getFirebaseStorageBucket
-	) {}
+	) { }
 
 	private getDb(): Firestore {
 		return this.dbFactory();
@@ -221,33 +221,36 @@ export class InteractiveService {
 		previous?: InteractiveContentRecord;
 	}> {
 		const ref = this.interactiveRef(input.itemId);
-		const snapshot = await ref.get();
-		const existing = snapshot.exists ? (snapshot.data() as InteractiveDoc) : null;
-		const now = FieldValue.serverTimestamp();
-		const nextVersion = (existing?.version ?? 0) + 1;
-		await ref.set({
-			courseId: input.courseId,
-			topicId: input.topicId,
-			title: input.title,
-			contentType: input.contentType,
-			version: nextVersion,
-			content: input.content,
-			createdAt: existing?.createdAt ?? now,
-			updatedAt: now,
-		});
+		const db = this.getDb();
 
-		const record: InteractiveContentRecord = {
-			id: input.itemId,
-			courseId: input.courseId,
-			topicId: input.topicId,
-			title: input.title,
-			contentType: input.contentType,
-			version: nextVersion,
-			content: input.content,
-		};
+		return db.runTransaction(async (tx) => {
+			const snapshot = await tx.get(ref);
+			const existing = snapshot.exists ? (snapshot.data() as InteractiveDoc) : null;
+			const now = FieldValue.serverTimestamp();
+			const nextVersion = (existing?.version ?? 0) + 1;
+			tx.set(ref, {
+				courseId: input.courseId,
+				topicId: input.topicId,
+				title: input.title,
+				contentType: input.contentType,
+				version: nextVersion,
+				content: input.content,
+				createdAt: existing?.createdAt ?? now,
+				updatedAt: now,
+			});
 
-		const previous: InteractiveContentRecord | undefined = existing
-			? {
+			const record: InteractiveContentRecord = {
+				id: input.itemId,
+				courseId: input.courseId,
+				topicId: input.topicId,
+				title: input.title,
+				contentType: input.contentType,
+				version: nextVersion,
+				content: input.content,
+			};
+
+			const previous: InteractiveContentRecord | undefined = existing
+				? {
 					id: input.itemId,
 					courseId: existing.courseId,
 					topicId: existing.topicId,
@@ -255,10 +258,11 @@ export class InteractiveService {
 					contentType: existing.contentType,
 					version: existing.version,
 					content: existing.content,
-			  }
-			: undefined;
+				}
+				: undefined;
 
-		return { record, previous };
+			return { record, previous };
+		});
 	}
 
 	async deleteInteractiveContent(itemId: string): Promise<InteractiveContentRecord | null> {
@@ -389,26 +393,44 @@ export class InteractiveService {
 
 	async appendFlashcardSessionEvents(input: {
 		sessionId: string;
+		itemId?: string;
 		uid: string;
 		events: FlashcardSessionEvent[];
 	}): Promise<void> {
+		const MAX_EVENTS_PER_SESSION = 2000;
 		const ref = this.sessionsRef().doc(input.sessionId);
-		const snapshot = await ref.get();
-		if (!snapshot.exists) {
-			throw new HttpError(404, "Session not found", "session_not_found");
-		}
-		const existing = snapshot.data() as FlashcardSessionDoc | undefined;
-		if (!existing || existing.uid !== input.uid) {
-			throw new HttpError(403, "Forbidden", "forbidden");
-		}
-		await ref.update({
-			events: FieldValue.arrayUnion(...input.events),
-			updatedAt: FieldValue.serverTimestamp(),
+		const db = this.getDb();
+
+		await db.runTransaction(async (tx) => {
+			const snapshot = await tx.get(ref);
+			if (!snapshot.exists) {
+				throw new HttpError(404, "Session not found", "session_not_found");
+			}
+			const existing = snapshot.data() as FlashcardSessionDoc | undefined;
+			if (!existing || existing.uid !== input.uid) {
+				throw new HttpError(403, "Forbidden", "forbidden");
+			}
+			if (input.itemId && existing.itemId !== input.itemId) {
+				throw new HttpError(403, "Session does not belong to this item", "forbidden");
+			}
+			const currentEvents = existing.events ?? [];
+			if (currentEvents.length + input.events.length > MAX_EVENTS_PER_SESSION) {
+				throw new HttpError(
+					400,
+					`Session event limit reached (max ${MAX_EVENTS_PER_SESSION}).`,
+					"event_limit_reached"
+				);
+			}
+			tx.update(ref, {
+				events: [...currentEvents, ...input.events],
+				updatedAt: FieldValue.serverTimestamp(),
+			});
 		});
 	}
 
 	async completeFlashcardSession(input: {
 		sessionId: string;
+		itemId?: string;
 		uid: string;
 		summary?: {
 			cardsViewed: number;
@@ -424,6 +446,9 @@ export class InteractiveService {
 		const existing = snapshot.data() as FlashcardSessionDoc | undefined;
 		if (!existing || existing.uid !== input.uid) {
 			throw new HttpError(403, "Forbidden", "forbidden");
+		}
+		if (input.itemId && existing.itemId !== input.itemId) {
+			throw new HttpError(403, "Session does not belong to this item", "forbidden");
 		}
 		await ref.update({
 			endedAt: FieldValue.serverTimestamp(),
@@ -448,12 +473,13 @@ export class InteractiveService {
 		attemptsDeleted: number;
 		sessionsDeleted: number;
 	}> {
+		const QUERY_LIMIT = 1000;
 		const beforeTimestamp = Timestamp.fromDate(before);
 		const [attemptsSnapshot, endedSessionsSnapshot, startedSessionsSnapshot] =
 			await Promise.all([
-				this.attemptsRef().where("submittedAt", "<=", beforeTimestamp).get(),
-				this.sessionsRef().where("endedAt", "<=", beforeTimestamp).get(),
-				this.sessionsRef().where("startedAt", "<=", beforeTimestamp).get(),
+				this.attemptsRef().where("submittedAt", "<=", beforeTimestamp).limit(QUERY_LIMIT).get(),
+				this.sessionsRef().where("endedAt", "<=", beforeTimestamp).limit(QUERY_LIMIT).get(),
+				this.sessionsRef().where("startedAt", "<=", beforeTimestamp).limit(QUERY_LIMIT).get(),
 			]);
 
 		const attemptPaths = attemptsSnapshot.docs.map((doc) => doc.ref.path);
@@ -471,9 +497,10 @@ export class InteractiveService {
 	}
 
 	async cleanupLegacyInlineInteractiveMaterials(): Promise<{ deletedMaterials: number }> {
+		const QUERY_LIMIT = 1000;
 		const [quizSnapshot, flashcardSnapshot] = await Promise.all([
-			this.getDb().collectionGroup("items").where("item.type", "==", "Quiz").get(),
-			this.getDb().collectionGroup("items").where("item.type", "==", "Flashcard").get(),
+			this.getDb().collectionGroup("items").where("item.type", "==", "Quiz").limit(QUERY_LIMIT).get(),
+			this.getDb().collectionGroup("items").where("item.type", "==", "Flashcard").limit(QUERY_LIMIT).get(),
 		]);
 
 		const stalePaths = unique(

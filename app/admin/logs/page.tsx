@@ -36,6 +36,29 @@ type LogsResponse = {
 	nextCursor?: string;
 };
 
+const BANGKOK_TIME_ZONE = "Asia/Bangkok";
+
+function toBangkokIsoBoundary(dateKey: string, boundary: "start" | "end"): string {
+	const time = boundary === "start" ? "00:00:00.000" : "23:59:59.999";
+	return new Date(`${dateKey}T${time}+07:00`).toISOString();
+}
+
+function formatBangkokDateTime(value?: string): string {
+	if (!value) return "-";
+	const date = new Date(value);
+	if (Number.isNaN(date.getTime())) return "-";
+	return `${new Intl.DateTimeFormat("en-GB", {
+		year: "numeric",
+		month: "2-digit",
+		day: "2-digit",
+		hour: "2-digit",
+		minute: "2-digit",
+		second: "2-digit",
+		hour12: false,
+		timeZone: BANGKOK_TIME_ZONE,
+	}).format(date)} UTC+7`;
+}
+
 export default function AdminLogsPage() {
 	const [entries, setEntries] = useState<AdminAuditEntry[]>([]);
 	const [nextCursor, setNextCursor] = useState<string | undefined>(undefined);
@@ -76,8 +99,8 @@ export default function AdminLogsPage() {
 			if (actionFilter) params.set("action", actionFilter);
 			if (statusFilter) params.set("status", statusFilter);
 			if (actorEmailFilter) params.set("actorEmail", actorEmailFilter);
-			if (fromDate) params.set("from", new Date(fromDate).toISOString());
-			if (toDate) params.set("to", new Date(toDate).toISOString());
+			if (fromDate) params.set("from", toBangkokIsoBoundary(fromDate, "start"));
+			if (toDate) params.set("to", toBangkokIsoBoundary(toDate, "end"));
 			return params;
 		},
 		[actionFilter, statusFilter, actorEmailFilter, fromDate, toDate]
@@ -241,9 +264,7 @@ export default function AdminLogsPage() {
 						{entries.map((entry) => (
 							<tr key={entry.id} className="align-top">
 								<td className="px-4 py-3 text-muted-foreground">
-									{entry.createdAt
-										? new Date(entry.createdAt).toLocaleString()
-										: "-"}
+									{formatBangkokDateTime(entry.createdAt)}
 								</td>
 								<td className="px-4 py-3">
 									<div className="font-medium text-foreground">

@@ -117,6 +117,7 @@ function sortSubjects(subjects: Subject[]): Subject[] {
 export default function AdminCustomizeLandingPage() {
 	const [subjects, setSubjects] = useState<Subject[]>([]);
 	const [loading, setLoading] = useState(true);
+	const [isDeletingCourse, setIsDeletingCourse] = useState(false);
 	const [showNewCourseForm, setShowNewCourseForm] = useState(false);
 	const [notice, setNotice] = useState<
 		{ type: "success" | "error" | "info"; message: string } | null
@@ -167,14 +168,17 @@ export default function AdminCustomizeLandingPage() {
 	};
 
 	const confirmDeleteCourse = async () => {
-		if (!deleteTarget) return;
+		if (!deleteTarget || isDeletingCourse) return;
+		const target = deleteTarget;
+		setDeleteTarget(null);
+		setIsDeletingCourse(true);
 		const previousSubjects = subjects;
 		setSubjects((previous) =>
-			previous.filter((subject) => subject._id !== deleteTarget.id)
+			previous.filter((subject) => subject._id !== target.id)
 		);
 
 		try {
-			const response = await fetch(`/api/admin/courses?id=${deleteTarget.id}`, {
+			const response = await fetch(`/api/admin/courses?id=${target.id}`, {
 				method: "DELETE",
 			});
 			if (!response.ok) {
@@ -187,7 +191,7 @@ export default function AdminCustomizeLandingPage() {
 			setNotice({ type: "error", message: `Could not delete course: ${error}` });
 			void fetchSubjects();
 		} finally {
-			setDeleteTarget(null);
+			setIsDeletingCourse(false);
 		}
 	};
 
@@ -259,10 +263,11 @@ export default function AdminCustomizeLandingPage() {
 									</Link>
 									{!subject.canvasUrl ? (
 										<button
+											disabled={isDeletingCourse}
 											onClick={() =>
 												setDeleteTarget({ id: subject._id, courseCode: subject.courseCode })
 											}
-											className="inline-flex items-center gap-2 rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700"
+											className="inline-flex items-center gap-2 rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
 											title={`Delete course ${subject.courseCode}`}
 										>
 											<Trash2 size={14} /> Delete
@@ -284,7 +289,7 @@ export default function AdminCustomizeLandingPage() {
 						: ""
 				}
 				confirmLabel="Delete Course"
-				onCancel={() => setDeleteTarget(null)}
+				onCancel={() => !isDeletingCourse && setDeleteTarget(null)}
 				onConfirm={confirmDeleteCourse}
 			/>
 		</AdminShell>

@@ -16,6 +16,7 @@ import {
 
 const DEFAULT_LIMIT = 25;
 const RETENTION_DAYS = 180;
+const BANGKOK_OFFSET_MINUTES = 7 * 60;
 
 type AdminAuditLogDoc = {
 	createdAt?: FieldValue | Timestamp;
@@ -40,7 +41,8 @@ type AdminAuditLogDoc = {
 
 function asIso(value: unknown): string | undefined {
 	if (value instanceof Timestamp) {
-		return value.toDate().toISOString();
+		const millis = value.toDate().getTime() + BANGKOK_OFFSET_MINUTES * 60 * 1000;
+		return new Date(millis).toISOString().replace("Z", "+07:00");
 	}
 	return undefined;
 }

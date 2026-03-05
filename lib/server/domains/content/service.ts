@@ -266,14 +266,21 @@ export class AdminContentService {
 		}
 
 		const quizContent = interactive.content as QuizContent;
-		const scored = interactiveService.scoreQuiz(quizContent, input.answers);
+		const validQuestionIds = new Set(quizContent.questions.map((q) => q.id));
+		const filteredAnswers: typeof input.answers = {};
+		for (const [key, value] of Object.entries(input.answers)) {
+			if (validQuestionIds.has(key)) {
+				filteredAnswers[key] = value;
+			}
+		}
+		const scored = interactiveService.scoreQuiz(quizContent, filteredAnswers);
 		const attempt = await interactiveService.createQuizAttempt({
 			itemId: interactive.id,
 			courseId: interactive.courseId,
 			topicId: interactive.topicId,
 			uid: input.uid,
 			quizVersion: interactive.version,
-			answers: input.answers,
+			answers: filteredAnswers,
 			snapshot: quizContent,
 			score: scored,
 		});
@@ -307,6 +314,7 @@ export class AdminContentService {
 
 	async appendFlashcardSessionEvents(input: {
 		sessionId: string;
+		itemId?: string;
 		uid: string;
 		events: Array<{
 			at: string;
@@ -320,6 +328,7 @@ export class AdminContentService {
 
 	async completeFlashcardSession(input: {
 		sessionId: string;
+		itemId?: string;
 		uid: string;
 		summary?: {
 			cardsViewed: number;

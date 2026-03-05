@@ -132,6 +132,14 @@ function InteractiveQuizPlayer({
 	};
 
 	const handleSubmitQuiz = async () => {
+		const answeredCount = Object.keys(answers).length;
+		const totalCount = questionOrder.length;
+		if (answeredCount < totalCount) {
+			const confirmed = window.confirm(
+				`You have answered ${answeredCount} of ${totalCount} questions. Submit anyway?`
+			);
+			if (!confirmed) return;
+		}
 		setSubmitError(null);
 		setSubmitting(true);
 		try {
@@ -159,27 +167,34 @@ function InteractiveQuizPlayer({
 			: submitResult?.perQuestion.find((entry) => entry.questionId === currentQuestion.id);
 
 	return (
-		<div className="space-y-4">
-			<div className="flex items-center justify-between">
-				<h3 className="text-xl font-semibold text-slate-900">{data.title}</h3>
+		<div className="space-y-5">
+			<div className="flex items-center justify-between gap-3">
+				<h3 className="text-xl font-bold text-primary leading-tight">{data.title}</h3>
 				<button
 					type="button"
 					onClick={onClose}
-					className="rounded bg-slate-200 p-2 text-slate-700 hover:bg-slate-300"
+					className="shrink-0 rounded-lg bg-muted p-2 text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
 				>
 					<X size={16} />
 				</button>
 			</div>
 
-			<div className="flex items-center justify-between text-sm text-slate-600">
-				<span>
-					Question {currentIndex + 1} / {questionOrder.length}
-				</span>
-				{submitResult && (
-					<span className="font-semibold text-emerald-700">
-						Score: {submitResult.score.toFixed(2)} / {submitResult.maxScore.toFixed(2)}
-					</span>
-				)}
+			{/* Progress bar */}
+			<div className="space-y-1.5">
+				<div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
+					<span>Question {currentIndex + 1} of {questionOrder.length}</span>
+					{submitResult && (
+						<span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-500/30">
+							Score: {submitResult.score.toFixed(2)} / {submitResult.maxScore.toFixed(2)}
+						</span>
+					)}
+				</div>
+				<div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
+					<div
+						className="h-full rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-500"
+						style={{ width: `${((currentIndex + 1) / questionOrder.length) * 100}%` }}
+					/>
+				</div>
 			</div>
 
 			<AnimatePresence mode="wait">
@@ -189,7 +204,7 @@ function InteractiveQuizPlayer({
 					animate={shouldReduceMotion ? {} : { opacity: 1, x: 0 }}
 					exit={shouldReduceMotion ? {} : { opacity: 0, x: -18 }}
 					transition={{ duration: 0.2 }}
-					className="rounded-lg border bg-slate-50 p-4 space-y-3"
+					className="rounded-xl bg-card ring-1 ring-border shadow-sm p-5 space-y-4"
 				>
 					<div className="prose prose-slate max-w-none">
 						<MarkdownMath value={currentQuestion.promptMarkdown} />
@@ -211,11 +226,15 @@ function InteractiveQuizPlayer({
 								return (
 									<label
 										key={option.id}
-										className="flex items-center gap-3 rounded border bg-white p-3"
+										className={`flex items-center gap-3 rounded-lg p-3 cursor-pointer transition-all ring-1 ${checked
+											? "ring-blue-500/60 bg-blue-500/10"
+											: "ring-border bg-muted/50 hover:ring-primary/40 hover:bg-muted"
+											}`}
 									>
 										<input
 											type="checkbox"
 											checked={checked}
+											className="accent-blue-500"
 											onChange={(event) =>
 												updateQuestionAnswer(currentQuestion.id, (previous) => {
 													const nextSet = new Set(previous.selectedOptionIds ?? []);
@@ -231,7 +250,7 @@ function InteractiveQuizPlayer({
 												})
 											}
 										/>
-										<div className="prose prose-slate max-w-none text-sm">
+										<div className="prose prose-slate dark:prose-invert max-w-none text-sm">
 											<MarkdownMath value={option.textMarkdown} />
 										</div>
 									</label>
@@ -241,50 +260,56 @@ function InteractiveQuizPlayer({
 					) : (
 						<textarea
 							value={answers[currentQuestion.id]?.shortAnswer ?? ""}
+							maxLength={10_000}
 							onChange={(event) =>
 								updateQuestionAnswer(currentQuestion.id, (previous) => ({
 									...previous,
 									shortAnswer: event.target.value,
 								}))
 							}
-							className="w-full rounded border p-3"
-							placeholder="Type your answer"
+							className="w-full rounded-lg bg-muted/50 ring-1 ring-border p-3 text-primary placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 transition-shadow"
+							placeholder="Type your answer…"
 							rows={3}
 						/>
 					)}
 
-					{quiz.settings.feedbackMode === "instant" && !submitResult && (
-						<button
-							type="button"
-							onClick={() =>
-								setInstantResults((previous) => ({
-									...previous,
-									[currentQuestion.id]: gradeSingleQuestion(
-										currentQuestion,
-										answers[currentQuestion.id]
-									),
-								}))
-							}
-							className="rounded bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700"
-						>
-							Check Question
-						</button>
-					)}
+					{quiz.settings.feedbackMode === "instant" && !submitResult && (() => {
+						const currentAnswer = answers[currentQuestion.id];
+						const hasAnswer = currentQuestion.kind === "mcq"
+							? (currentAnswer?.selectedOptionIds?.length ?? 0) > 0
+							: (currentAnswer?.shortAnswer?.trim().length ?? 0) > 0;
+						return (
+							<button
+								type="button"
+								disabled={!hasAnswer}
+								onClick={() =>
+									setInstantResults((previous) => ({
+										...previous,
+										[currentQuestion.id]: gradeSingleQuestion(
+											currentQuestion,
+											currentAnswer
+										),
+									}))
+								}
+								className="inline-flex items-center rounded-lg bg-gradient-to-r from-blue-500 to-indigo-500 px-3.5 py-1.5 text-sm font-semibold text-white shadow-md shadow-blue-500/25 hover:brightness-110 transition-all disabled:opacity-50"
+							>
+								Check Answer
+							</button>
+						);
+					})()}
 
 					{activeFeedback && (
 						<div
-							className={`rounded border p-2 text-sm ${
-								activeFeedback.correct
-									? "border-emerald-200 bg-emerald-50 text-emerald-700"
-									: "border-amber-200 bg-amber-50 text-amber-700"
-							}`}
+							className={`rounded-lg p-3 text-sm ring-1 ${activeFeedback.correct
+								? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 ring-emerald-500/30"
+								: "bg-amber-500/15 text-amber-600 dark:text-amber-400 ring-amber-500/30"
+								}`}
 						>
 							<p className="font-semibold">
-								{activeFeedback.correct ? "Correct" : "Needs Review"} (
-								{activeFeedback.earnedPoints.toFixed(2)} / {activeFeedback.maxPoints.toFixed(2)})
+								{activeFeedback.correct ? "✓ Correct" : "○ Needs Review"} — {activeFeedback.earnedPoints.toFixed(2)} / {activeFeedback.maxPoints.toFixed(2)} pts
 							</p>
 							{currentQuestion.explanationMarkdown && (
-								<div className="prose prose-sm max-w-none mt-2">
+								<div className="prose prose-sm dark:prose-invert max-w-none mt-2">
 									<MarkdownMath value={currentQuestion.explanationMarkdown} />
 								</div>
 							)}
@@ -299,9 +324,9 @@ function InteractiveQuizPlayer({
 						type="button"
 						disabled={currentIndex === 0}
 						onClick={() => setCurrentIndex((previous) => Math.max(0, previous - 1))}
-						className="rounded bg-slate-200 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-300 disabled:opacity-50"
+						className="rounded-lg bg-muted px-3 py-1.5 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors disabled:opacity-40"
 					>
-						Previous
+						← Previous
 					</button>
 					<button
 						type="button"
@@ -309,22 +334,22 @@ function InteractiveQuizPlayer({
 						onClick={() =>
 							setCurrentIndex((previous) => Math.min(questionOrder.length - 1, previous + 1))
 						}
-						className="rounded bg-slate-200 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-300 disabled:opacity-50"
+						className="rounded-lg bg-muted px-3 py-1.5 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors disabled:opacity-40"
 					>
-						Next
+						Next →
 					</button>
 				</div>
 				<button
 					type="button"
-					disabled={submitting || questionOrder.length === 0}
+					disabled={submitting || !!submitResult || questionOrder.length === 0}
 					onClick={handleSubmitQuiz}
-					className="rounded bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-60"
+					className="rounded-lg bg-gradient-to-r from-emerald-500 to-teal-500 px-5 py-2 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:from-emerald-600 hover:to-teal-600 transition-all disabled:opacity-50"
 				>
-					{submitting ? "Submitting..." : "Submit Quiz"}
+					{submitting ? "Submitting…" : "Submit Quiz"}
 				</button>
 			</div>
 
-			{submitError && <p className="text-sm text-red-600">{submitError}</p>}
+			{submitError && <p className="text-sm text-destructive">{submitError}</p>}
 		</div>
 	);
 }
@@ -343,6 +368,7 @@ function InteractiveFlashcardPlayer({
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [flipped, setFlipped] = useState(false);
 	const [sessionStart] = useState(() => Date.now());
+	const [sessionError, setSessionError] = useState<string | null>(null);
 	const eventBufferRef = useRef<FlashcardEvent[]>([]);
 	const flushingRef = useRef(false);
 	const flipCountRef = useRef(0);
@@ -386,27 +412,53 @@ function InteractiveFlashcardPlayer({
 		[flushEvents]
 	);
 
-	const completeSession = useCallback(async () => {
+	const completeSession = useCallback(async (isUnmount = false) => {
 		const currentSessionId = sessionIdRef.current;
 		if (!currentSessionId) return;
 		pushEvent({ type: "close", cardId: currentCardIdRef.current });
-		await flushEvents();
+
+		// Flush remaining events
+		const pendingEvents = [...eventBufferRef.current];
+		eventBufferRef.current = [];
+		if (pendingEvents.length > 0) {
+			try {
+				await fetch(`/api/interactive/${data.id}/sessions/${currentSessionId}`, {
+					method: "PATCH",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ events: pendingEvents }),
+					keepalive: isUnmount,
+				});
+			} catch {
+				// Best effort on unmount
+			}
+		}
+
 		const durationMs = Math.max(0, Date.now() - sessionStart);
-		await fetch(`/api/interactive/${data.id}/sessions/${currentSessionId}/complete`, {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({
-				summary: {
-					cardsViewed: viewedCardIdsRef.current.size,
-					flipCount: flipCountRef.current,
-					durationMs,
-				},
-			}),
-		}).catch((error) => {
-			console.error("Failed to complete flashcard session:", error);
+		const completeBody = JSON.stringify({
+			summary: {
+				cardsViewed: viewedCardIdsRef.current.size,
+				flipCount: flipCountRef.current,
+				durationMs,
+			},
 		});
+
+		if (isUnmount && navigator.sendBeacon) {
+			navigator.sendBeacon(
+				`/api/interactive/${data.id}/sessions/${currentSessionId}/complete`,
+				new Blob([completeBody], { type: "application/json" })
+			);
+		} else {
+			await fetch(`/api/interactive/${data.id}/sessions/${currentSessionId}/complete`, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: completeBody,
+				keepalive: isUnmount,
+			}).catch((error) => {
+				console.error("Failed to complete flashcard session:", error);
+			});
+		}
 		sessionIdRef.current = null;
-	}, [data.id, flushEvents, pushEvent, sessionStart]);
+	}, [data.id, pushEvent, sessionStart]);
 
 	useEffect(() => {
 		let cancelled = false;
@@ -429,12 +481,15 @@ function InteractiveFlashcardPlayer({
 				}
 			} catch (error) {
 				console.error("Failed to start flashcard session:", error);
+				if (!cancelled) {
+					setSessionError("Failed to start session. Your progress may not be saved.");
+				}
 			}
 		};
 		void createSession();
 		return () => {
 			cancelled = true;
-			void completeSession();
+			void completeSession(true);
 		};
 	}, [completeSession, data.id, pushEvent]);
 	useEffect(() => {
@@ -489,29 +544,34 @@ function InteractiveFlashcardPlayer({
 	};
 
 	return (
-		<div className="space-y-4">
-			<div className="flex items-center justify-between">
-				<h3 className="text-xl font-semibold text-slate-900">{data.title}</h3>
+		<div className="space-y-5">
+			<div className="flex items-center justify-between gap-3">
+				<h3 className="text-xl font-bold text-primary leading-tight">{data.title}</h3>
 				<button
 					type="button"
 					onClick={() => {
-						void completeSession().finally(onClose);
+						void completeSession(false).finally(onClose);
 					}}
-					className="rounded bg-slate-200 p-2 text-slate-700 hover:bg-slate-300"
+					className="shrink-0 rounded-lg bg-muted p-2 text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
 				>
 					<X size={16} />
 				</button>
 			</div>
 
-			<div className="flex flex-wrap items-center justify-between gap-2 text-sm text-slate-600">
-				<span>
-					Card {currentIndex + 1} / {cards.length}
+			{sessionError && (
+				<p className="text-xs text-amber-600 dark:text-amber-400">{sessionError}</p>
+			)}
+
+			<div className="flex flex-wrap items-center justify-between gap-2">
+				<span className="text-sm font-medium text-muted-foreground">
+					Card {currentIndex + 1} of {cards.length}
 				</span>
-				<label className="inline-flex items-center gap-2">
+				<label className="inline-flex items-center gap-2 text-sm text-muted-foreground cursor-pointer select-none">
 					<input
 						type="checkbox"
 						checked={shuffleEnabled}
 						disabled={!deck.settings.shuffleAllowed}
+						className="accent-emerald-500"
 						onChange={toggleShuffle}
 					/>
 					Shuffle
@@ -524,37 +584,46 @@ function InteractiveFlashcardPlayer({
 						key={`${currentCard.id}-${flipped ? "back" : "front"}`}
 						type="button"
 						onClick={toggleFlip}
-						className="h-full w-full rounded-xl border bg-white p-6 text-left shadow-sm"
+						className="relative h-full w-full rounded-2xl bg-card ring-1 ring-border p-6 text-left shadow-lg hover:shadow-xl transition-shadow overflow-hidden"
 						initial={shouldReduceMotion ? false : { opacity: 0, y: 16 }}
 						animate={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
 						exit={shouldReduceMotion ? {} : { opacity: 0, y: -16 }}
 						transition={{ duration: 0.22 }}
 					>
+						{/* Gradient accent bar */}
+						<div className={`absolute inset-x-0 top-0 h-1 ${flipped
+							? "bg-gradient-to-r from-emerald-500 to-teal-500"
+							: "bg-gradient-to-r from-blue-500 to-indigo-500"
+							}`} />
 						{flipped ? (
-							<div className="space-y-3">
-								<p className="text-xs font-semibold uppercase text-slate-400">Back</p>
-								<div className="prose prose-slate max-w-none">
+							<div className="space-y-3 pt-2">
+								<p className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+									<span className="h-2 w-2 rounded-full bg-emerald-500" /> Back
+								</p>
+								<div className="prose prose-slate dark:prose-invert max-w-none">
 									<MarkdownMath value={currentCard.backMarkdown} />
 								</div>
 								{currentCard.backImage && (
 									<img
 										src={currentCard.backImage.url}
 										alt={currentCard.backImage.alt}
-										className="max-h-52 w-full rounded border object-contain bg-slate-50"
+										className="max-h-52 w-full rounded-lg border border-border object-contain bg-muted"
 									/>
 								)}
 							</div>
 						) : (
-							<div className="space-y-3">
-								<p className="text-xs font-semibold uppercase text-slate-400">Front</p>
-								<div className="prose prose-slate max-w-none">
+							<div className="space-y-3 pt-2">
+								<p className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+									<span className="h-2 w-2 rounded-full bg-blue-500" /> Front
+								</p>
+								<div className="prose prose-slate dark:prose-invert max-w-none">
 									<MarkdownMath value={currentCard.frontMarkdown} />
 								</div>
 								{currentCard.frontImage && (
 									<img
 										src={currentCard.frontImage.url}
 										alt={currentCard.frontImage.alt}
-										className="max-h-52 w-full rounded border object-contain bg-slate-50"
+										className="max-h-52 w-full rounded-lg border border-border object-contain bg-muted"
 									/>
 								)}
 							</div>
@@ -568,17 +637,17 @@ function InteractiveFlashcardPlayer({
 					type="button"
 					onClick={() => goTo(currentIndex - 1)}
 					disabled={currentIndex === 0}
-					className="rounded bg-slate-200 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-300 disabled:opacity-50"
+					className="rounded-lg bg-muted px-3 py-1.5 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors disabled:opacity-40"
 				>
-					Previous
+					← Previous
 				</button>
 				<button
 					type="button"
 					onClick={() => goTo(currentIndex + 1)}
 					disabled={currentIndex >= cards.length - 1}
-					className="rounded bg-slate-200 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-300 disabled:opacity-50"
+					className="rounded-lg bg-muted px-3 py-1.5 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors disabled:opacity-40"
 				>
-					Next
+					Next →
 				</button>
 			</div>
 		</div>
@@ -604,35 +673,35 @@ export default function InteractiveMaterialModal({
 					exit={shouldReduceMotion ? {} : { opacity: 0 }}
 				>
 					<motion.div
-						className="w-full max-w-4xl max-h-[92vh] overflow-y-auto rounded-xl bg-white p-5 shadow-2xl"
+						className="w-full max-w-4xl max-h-[92vh] overflow-y-auto rounded-2xl bg-background ring-1 ring-border shadow-2xl shadow-black/25 p-6"
 						initial={shouldReduceMotion ? false : { scale: 0.96, opacity: 0 }}
 						animate={shouldReduceMotion ? {} : { scale: 1, opacity: 1 }}
 						exit={shouldReduceMotion ? {} : { scale: 0.96, opacity: 0 }}
 						transition={{ duration: 0.18 }}
 					>
 						{loading ? (
-							<div className="flex min-h-[280px] items-center justify-center gap-2 text-slate-600">
+							<div className="flex min-h-[280px] items-center justify-center gap-2 text-muted-foreground">
 								<Loader2 size={18} className="animate-spin" />
-								<span>Loading interactive material...</span>
+								<span>Loading interactive material…</span>
 							</div>
 						) : error ? (
-							<div className="space-y-3 text-center">
-								<p className="text-red-600">{error}</p>
+							<div className="space-y-4 text-center py-6">
+								<p className="text-destructive font-medium">{error}</p>
 								<button
 									type="button"
 									onClick={onClose}
-									className="rounded bg-slate-200 px-3 py-1.5 text-slate-700 hover:bg-slate-300"
+									className="rounded-lg bg-muted px-4 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
 								>
 									Close
 								</button>
 							</div>
 						) : !data ? (
-							<div className="space-y-3 text-center">
-								<p className="text-slate-700">Material not found.</p>
+							<div className="space-y-4 text-center py-6">
+								<p className="text-muted-foreground">Material not found.</p>
 								<button
 									type="button"
 									onClick={onClose}
-									className="rounded bg-slate-200 px-3 py-1.5 text-slate-700 hover:bg-slate-300"
+									className="rounded-lg bg-muted px-4 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
 								>
 									Close
 								</button>

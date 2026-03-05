@@ -15,6 +15,25 @@ import {
 	quizAttemptSubmissionSchema,
 	patchFlashcardSessionSchema,
 } from "@/lib/server/domains/content/schemas";
+import { createRateLimiter } from "@/lib/server/core/rateLimit";
+
+// 10 quiz submissions per user per minute
+const quizAttemptLimiter = createRateLimiter("quiz-attempt", {
+	windowMs: 60_000,
+	maxRequests: 10,
+});
+
+// 5 flashcard session creations per user per minute
+const flashcardSessionLimiter = createRateLimiter("flashcard-session", {
+	windowMs: 60_000,
+	maxRequests: 5,
+});
+
+// 30 event flush requests per user per minute
+const flashcardEventLimiter = createRateLimiter("flashcard-events", {
+	windowMs: 60_000,
+	maxRequests: 30,
+});
 
 function assertCustomId(itemId: string): void {
 	if (!isCustomId(itemId)) {
@@ -44,6 +63,15 @@ export const postInteractiveAttemptHandler = withErrorHandling(
 		const { itemId } = await params;
 		assertCustomId(itemId);
 
+		const rateLimit = quizAttemptLimiter.check(user.uid);
+		if (!rateLimit.allowed) {
+			throw new HttpError(
+				429,
+				"Too many quiz submissions. Try again shortly.",
+				"rate_limited"
+			);
+		}
+
 		const body = await request.json();
 		const parsed = quizAttemptSubmissionSchema.safeParse(body);
 		if (!parsed.success) {
@@ -72,6 +100,15 @@ export const postInteractiveSessionHandler = withErrorHandling(
 		const user = await requireAuthFromRequest(request);
 		const { itemId } = await params;
 		assertCustomId(itemId);
+
+		const rateLimit = flashcardSessionLimiter.check(user.uid);
+		if (!rateLimit.allowed) {
+			throw new HttpError(
+				429,
+				"Too many flashcard sessions created. Try again shortly.",
+				"rate_limited"
+			);
+		}
 
 		const body = await request.json().catch(() => ({}));
 		const parsed = createFlashcardSessionSchema.safeParse(body);
@@ -105,6 +142,15 @@ export const patchInteractiveSessionByIdHandler = withErrorHandling(
 		assertCustomId(itemId);
 		assertCustomId(sessionId);
 
+		const rateLimit = flashcardEventLimiter.check(user.uid);
+		if (!rateLimit.allowed) {
+			throw new HttpError(
+				429,
+				"Too many event requests. Try again shortly.",
+				"rate_limited"
+			);
+		}
+
 		const body = await request.json();
 		const parsed = patchFlashcardSessionSchema.safeParse(body);
 		if (!parsed.success) {
@@ -118,6 +164,7 @@ export const patchInteractiveSessionByIdHandler = withErrorHandling(
 
 		await adminContentService.appendFlashcardSessionEvents({
 			sessionId,
+			itemId,
 			uid: user.uid,
 			events: parsed.data.events,
 		});
@@ -150,6 +197,7 @@ export const postCompleteInteractiveSessionByIdHandler = withErrorHandling(
 
 		await adminContentService.completeFlashcardSession({
 			sessionId,
+			itemId,
 			uid: user.uid,
 			summary: parsed.data.summary,
 		});

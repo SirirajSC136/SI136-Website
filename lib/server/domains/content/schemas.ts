@@ -43,7 +43,7 @@ export const quizContentSchema = z.object({
 		feedbackMode: z.enum(["instant", "after_submit"]),
 		shuffleQuestions: z.boolean(),
 	}),
-	questions: z.array(quizQuestionSchema).max(100),
+	questions: z.array(quizQuestionSchema).min(1).max(100),
 });
 
 const flashcardCardSchema = z.object({
@@ -58,7 +58,7 @@ export const flashcardContentSchema = z.object({
 	settings: z.object({
 		shuffleAllowed: z.boolean(),
 	}),
-	cards: z.array(flashcardCardSchema).max(300),
+	cards: z.array(flashcardCardSchema).min(1).max(300),
 });
 
 const baseItemSchema = z.object({
@@ -193,11 +193,27 @@ export const createInteractiveSchema = z.object({
 	title: z.string().trim().min(1),
 	contentType: z.enum(["Quiz", "Flashcard"]),
 	content: z.union([quizContentSchema, flashcardContentSchema]),
+}).superRefine((value, ctx) => {
+	if (value.contentType === "Quiz") {
+		const result = quizContentSchema.safeParse(value.content);
+		if (!result.success) {
+			for (const issue of result.error.issues) {
+				ctx.addIssue({ ...issue, path: ["content", ...issue.path] });
+			}
+		}
+	} else {
+		const result = flashcardContentSchema.safeParse(value.content);
+		if (!result.success) {
+			for (const issue of result.error.issues) {
+				ctx.addIssue({ ...issue, path: ["content", ...issue.path] });
+			}
+		}
+	}
 });
 
 const attemptAnswerSchema = z.object({
 	selectedOptionIds: z.array(z.string().trim().min(1)).optional(),
-	shortAnswer: z.string().optional(),
+	shortAnswer: z.string().max(10_000).optional(),
 });
 
 export const quizAttemptSubmissionSchema = z.object({

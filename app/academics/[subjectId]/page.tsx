@@ -5,7 +5,6 @@ import { Subject, TopicItemData } from "@/types";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
-import { useSearchParams } from "next/navigation";
 import TopicItem from "@/components/academics/TopicItem";
 import { Home, Book, Globe, Loader2 } from "lucide-react";
 import InteractiveMaterialModal from "@/components/academics/InteractiveMaterialModal";
@@ -49,7 +48,6 @@ const SubjectDetailPage = () => {
 	const [interactiveData, setInteractiveData] = useState<any>(null);
 	const [showLoginModal, setShowLoginModal] = useState(false);
 	const router = useRouter();
-	const searchParams = useSearchParams();
 	// Get URL parameters using the hook
 	const params = useParams();
 	const subjectId = params.subjectId as string;
@@ -112,10 +110,7 @@ const SubjectDetailPage = () => {
 		setInteractiveOpen(false);
 		setInteractiveData(null);
 		setInteractiveError(null);
-		const nextParams = new URLSearchParams(searchParams.toString());
-		nextParams.delete("interactive");
-		const suffix = nextParams.toString();
-		router.replace(suffix ? `/academics/${subjectId}?${suffix}` : `/academics/${subjectId}`);
+		router.push(`/academics/${subjectId}`);
 	};
 
 	const openInteractiveItem = async (item: TopicItemData) => {
@@ -136,9 +131,6 @@ const SubjectDetailPage = () => {
 				throw new Error(payload?.error || "Failed to load interactive material.");
 			}
 			setInteractiveData(payload.data);
-			const nextParams = new URLSearchParams(searchParams.toString());
-			nextParams.set("interactive", item.id);
-			router.replace(`/academics/${subjectId}?${nextParams.toString()}`);
 		} catch (loadError) {
 			console.error("Interactive material load failed:", loadError);
 			setInteractiveError("Could not load this material.");
@@ -148,19 +140,14 @@ const SubjectDetailPage = () => {
 	};
 
 	useEffect(() => {
-		if (!subject || !authChecked) return;
-		const deepLinkId = searchParams.get("interactive");
-		if (!deepLinkId || interactiveOpen) return;
-		const target = subject.topics
-			.flatMap((topic) => topic.items)
-			.find(
-				(item) =>
-					item.id === deepLinkId &&
-					(item.type === "Quiz" || item.type === "Flashcard")
-			);
-		if (!target) return;
-		void openInteractiveItem(target);
-	}, [authChecked, interactiveOpen, searchParams, subject]);
+		if (!subjectId) return;
+		if (typeof window === "undefined") return;
+		const currentUrl = new URL(window.location.href);
+		if (!currentUrl.searchParams.has("interactive")) return;
+		currentUrl.searchParams.delete("interactive");
+		const suffix = currentUrl.searchParams.toString();
+		router.replace(suffix ? `/academics/${subjectId}?${suffix}` : `/academics/${subjectId}`);
+	}, [router, subjectId]);
 
 	// --- Render loading and error states ---
 	if (isLoading) {

@@ -94,6 +94,8 @@ export default function CustomizeSubjectPage() {
 	const [editingTopicId, setEditingTopicId] = useState<string | null>(null);
 	const [draftItemId, setDraftItemId] = useState<string | null>(null);
 	const [isModalBusy, setIsModalBusy] = useState(false);
+	const [isDeletingItem, setIsDeletingItem] = useState(false);
+	const [isDeletingTopic, setIsDeletingTopic] = useState(false);
 	const [deleteItemId, setDeleteItemId] = useState<string | null>(null);
 	const [deleteTopicTarget, setDeleteTopicTarget] = useState<{
 		id: string;
@@ -265,9 +267,12 @@ export default function CustomizeSubjectPage() {
 	};
 
 	const confirmDeleteItem = async () => {
-		if (!deleteItemId) return;
+		if (!deleteItemId || isDeletingItem) return;
+		const itemId = deleteItemId;
 		const previousSubject = subject;
 		const topicId = deleteItemTopicId;
+		setDeleteItemId(null);
+		setIsDeletingItem(true);
 
 		setSubject((previous) => {
 			if (!previous) return previous;
@@ -275,14 +280,14 @@ export default function CustomizeSubjectPage() {
 				...previous,
 				topics: previous.topics.map((topic) => ({
 					...topic,
-					items: topic.items.filter((item) => item.id !== deleteItemId),
+					items: topic.items.filter((item) => item.id !== itemId),
 				})),
 			};
 		});
 
 		try {
 			const response = await fetch(
-				`/api/admin/materials/${deleteItemId}?courseId=${encodeURIComponent(
+				`/api/admin/materials/${itemId}?courseId=${encodeURIComponent(
 					subjectId
 				)}&topicId=${encodeURIComponent(topicId ?? "")}`,
 				{ method: "DELETE" }
@@ -298,7 +303,7 @@ export default function CustomizeSubjectPage() {
 			setNotice({ type: "error", message: `Could not delete item: ${deleteError}` });
 			void fetchSubjectData();
 		} finally {
-			setDeleteItemId(null);
+			setIsDeletingItem(false);
 		}
 	};
 
@@ -339,9 +344,12 @@ export default function CustomizeSubjectPage() {
 	};
 
 	const confirmDeleteTopic = async () => {
-		if (!deleteTopicTarget) return;
-		const topicId = deleteTopicTarget.id;
+		if (!deleteTopicTarget || isDeletingTopic) return;
+		const target = deleteTopicTarget;
+		const topicId = target.id;
 		const previousSubject = subject;
+		setDeleteTopicTarget(null);
+		setIsDeletingTopic(true);
 		setSubject((previous) => {
 			if (!previous) return previous;
 			return {
@@ -366,7 +374,7 @@ export default function CustomizeSubjectPage() {
 			setNotice({ type: "error", message: `Could not delete topic: ${deleteError}` });
 			void fetchSubjectData();
 		} finally {
-			setDeleteTopicTarget(null);
+			setIsDeletingTopic(false);
 		}
 	};
 
@@ -444,10 +452,11 @@ export default function CustomizeSubjectPage() {
 								<div className="flex items-center gap-2">
 									{isCustomTopic ? (
 										<button
+											disabled={isDeletingTopic}
 											onClick={() =>
 												setDeleteTopicTarget({ id: topic.id, title: topic.title })
 											}
-											className="inline-flex items-center gap-1 rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700"
+											className="inline-flex items-center gap-1 rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
 											title="Delete Topic"
 										>
 											<Trash2 size={14} /> Delete Topic
@@ -486,8 +495,9 @@ export default function CustomizeSubjectPage() {
 															<Edit size={14} />
 														</button>
 														<button
+															disabled={isDeletingItem}
 															onClick={() => setDeleteItemId(item.id)}
-															className="rounded-md bg-red-600 px-2 py-1 text-xs font-semibold text-white hover:bg-red-700"
+															className="rounded-md bg-red-600 px-2 py-1 text-xs font-semibold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
 															title="Delete Item"
 														>
 															<Trash2 size={14} />
@@ -511,7 +521,7 @@ export default function CustomizeSubjectPage() {
 				title="Delete Item"
 				description="Delete this item permanently?"
 				confirmLabel="Delete Item"
-				onCancel={() => setDeleteItemId(null)}
+				onCancel={() => !isDeletingItem && setDeleteItemId(null)}
 				onConfirm={confirmDeleteItem}
 			/>
 
@@ -524,7 +534,7 @@ export default function CustomizeSubjectPage() {
 						: ""
 				}
 				confirmLabel="Delete Topic"
-				onCancel={() => setDeleteTopicTarget(null)}
+				onCancel={() => !isDeletingTopic && setDeleteTopicTarget(null)}
 				onConfirm={confirmDeleteTopic}
 			/>
 		</AdminShell>
