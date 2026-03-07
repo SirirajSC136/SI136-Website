@@ -24,6 +24,8 @@ cp .env.example .env.local
 npm run dev
 ```
 
+`NEXT_PUBLIC_APP_URL` is used for server-side absolute fetches. Browser-side same-origin API calls should use relative paths and do not depend on it.
+
 ## Key Scripts
 - `npm run dev`
 - `npm run lint`
@@ -39,6 +41,7 @@ See `.env.example`.
 Core:
 - Canvas: `CANVAS_URL`, `CANVAS_API`
 - Calendar: `GOOGLE_API_KEY`, `GOOGLE_CALENDAR_ID`
+- App base URL for server-side internal fetches: `NEXT_PUBLIC_APP_URL`
 - Firebase client: `NEXT_PUBLIC_FIREBASE_*`
 - Firebase admin: `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY`
 

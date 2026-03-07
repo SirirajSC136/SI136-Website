@@ -13,12 +13,9 @@ import LoginButton from "@/components/LoginButton";
 // This helper function is correct and fetches from your merged API endpoint
 async function getSubject(id: string): Promise<Subject | undefined> {
 	try {
-		const res = await fetch(
-			`${process.env.NEXT_PUBLIC_APP_URL}/api/subjects/${id}`,
-			{
-				next: { revalidate: 60 },
-			}
-		);
+		const res = await fetch(`/api/subjects/${id}`, {
+			next: { revalidate: 60 },
+		});
 		if (!res.ok) {
 			// Log the error status for better debugging
 			console.error(

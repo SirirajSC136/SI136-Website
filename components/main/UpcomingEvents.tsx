@@ -8,6 +8,7 @@ import {
 	getBangkokDateKey,
 	sortEventsByStartTime,
 } from "@/lib/server/domains/events/normalizers";
+import { buildServerAppUrl } from "@/lib/server/core/appUrl";
 import { GetNowTime } from "@/util/time";
 import { AssignmentCard } from "./upcomingEvents/AssignmentCard";
 
@@ -26,23 +27,17 @@ type SheetExam = {
 };
 
 const FETCH_TIMEOUT_MS = 12000;
-const APP_BASE_URL = process.env.NEXT_PUBLIC_APP_URL;
 
 async function getGoogleCalendarEvents(
 	startDateKey: string,
 	endDateKey: string
 ): Promise<CalendarEvent[]> {
-	if (!APP_BASE_URL) {
-		console.warn("NEXT_PUBLIC_APP_URL is missing; skipping calendar fetch.");
-		return [];
-	}
-
 	try {
 		const params = new URLSearchParams({ start: startDateKey, end: endDateKey });
-		const res = await fetch(
-			`${APP_BASE_URL}/api/events?${params.toString()}`,
-			{ next: { revalidate: 900 }, signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) }
-		);
+		const res = await fetch(buildServerAppUrl(`/api/events?${params.toString()}`), {
+			next: { revalidate: 900 },
+			signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+		});
 		if (!res.ok) return [];
 		const data = await res.json();
 		return sortEventsByStartTime(Array.isArray(data.events) ? data.events : []);
@@ -56,19 +51,11 @@ async function getUpcomingData(): Promise<{
 	assignments: SheetAssignment[];
 	examinations: SheetExam[];
 }> {
-	if (!APP_BASE_URL) {
-		console.warn("NEXT_PUBLIC_APP_URL is missing; skipping upcoming data fetch.");
-		return { assignments: [], examinations: [] };
-	}
-
 	try {
-		const res = await fetch(
-			`${APP_BASE_URL}/api/canvas/secondupcoming`,
-			{
-				next: { revalidate: 900 },
-				signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
-			}
-		);
+		const res = await fetch(buildServerAppUrl("/api/canvas/secondupcoming"), {
+			next: { revalidate: 900 },
+			signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+		});
 		if (!res.ok) return { assignments: [], examinations: [] };
 
 		const data = await res.json();
