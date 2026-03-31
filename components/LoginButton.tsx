@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { signInWithPopup } from "firebase/auth";
-import { firebaseGoogleProvider, getFirebaseClientAuth } from "@/lib/firebase/client";
+import { resetAndSignInWithGoogle } from "@/lib/firebase/sessionClient";
 
 export default function LoginButton() {
 	const [loading, setLoading] = useState(false);
@@ -10,25 +9,10 @@ export default function LoginButton() {
 	const handleSignIn = async () => {
 		setLoading(true);
 		try {
-			const auth = getFirebaseClientAuth();
-			const result = await signInWithPopup(auth, firebaseGoogleProvider);
-			const idToken = await result.user.getIdToken();
-
-			const sessionResponse = await fetch("/api/auth/session", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ idToken }),
-			});
-
-			if (!sessionResponse.ok) {
-				const errorData = await sessionResponse.json().catch(() => ({}));
-				throw new Error(errorData.error || "Failed to establish session");
-			}
-
-			window.location.reload();
+			await resetAndSignInWithGoogle();
 		} catch (error) {
 			console.error("Login failed:", error);
-			alert("Login failed. Please try again with your student email.");
+			alert("Sign in failed. Please try again with your student email.");
 		} finally {
 			setLoading(false);
 		}
