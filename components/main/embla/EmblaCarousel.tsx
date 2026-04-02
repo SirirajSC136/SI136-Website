@@ -18,7 +18,7 @@ type PropType = {
 
 const EmblaCarousel: React.FC<PropType> = (props) => {
   const { slides, options } = props;
-  const birthDayDateStart = new Date("2026-04-03T00:00:00+07:00");
+  const birthDayDateStart = new Date("2026-04-02T00:00:00+07:00");
   const birthDayDateEnd = new Date("2026-04-03T23:59:59+07:00");
   const isBirthday =
     Date.now() >= birthDayDateStart.getTime() &&
@@ -231,7 +231,7 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
 
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-          <div className="bg-white rounded-xl p-6 w-[90%] max-w-md shadow-xl">
+          <div className="bg-secondary-background rounded-xl p-6 w-[90%] max-w-md shadow-xl">
             <h2 className="text-xl font-bold mb-3">
               🎉 Wish Poon a Happy Birthday!
             </h2>
@@ -252,17 +252,17 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
               onChange={(e) => setSender(e.target.value)}
             />
 
-            <div className="flex justify-end gap-2">
+            <div className="flex justify-end gap-2 ">
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="px-4 py-2 bg-gray-300 rounded-lg cursor-pointer"
+                className="px-4 py-2 bg-gray-500 text-white rounded-lg cursor-pointer"
               >
                 ไม่ส่งละ😢
               </button>
 
               <button
                 onClick={handleSubmit}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg cursor-pointer"
+                className="px-4 py-2 bg-chart-2 text-white rounded-lg cursor-pointer"
               >
                 ส่ง 🎊
               </button>
