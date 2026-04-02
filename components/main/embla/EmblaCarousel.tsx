@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { EmblaOptionsType } from "embla-carousel";
 import { useParallax } from "./useParallax"; // Assumes you kept the hook from the previous step
@@ -26,7 +26,11 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [sender, setSender] = useState("");
-  const [audio] = useState(() => new Audio("/sound/yay.mp3"));
+  const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    setAudio(new Audio("/sound/yay.mp3"));
+  }, []);
   const db = getFirebaseClientFirestore();
 
   const handleSubmit = async () => {
@@ -43,9 +47,12 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
         spread: 300,
         origin: { y: 0.6 },
       });
-      audio.volume = 0.5;
-      audio.currentTime = 0;
-      audio.play();
+      if (audio) {
+        audio.volume = 0.5;
+        audio.currentTime = 0;
+        audio.play();
+      }
+      
 
       setSender("");
       setMessage("");
