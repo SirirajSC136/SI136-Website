@@ -18,7 +18,7 @@ type PropType = {
 
 const EmblaCarousel: React.FC<PropType> = (props) => {
   const { slides, options } = props;
-  const birthDayDateStart = new Date("2026-04-02T00:00:00+07:00");
+  const birthDayDateStart = new Date("2026-04-03T00:00:00+07:00");
   const birthDayDateEnd = new Date("2026-04-03T23:59:59+07:00");
   const isBirthday =
     Date.now() >= birthDayDateStart.getTime() &&
