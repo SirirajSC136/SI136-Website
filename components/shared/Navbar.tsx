@@ -196,7 +196,7 @@ export default function Navbar({ session }: NavbarProps) {
             <ModeSwitch />
 
             <SessionControl
-              user={effectiveUser}
+              user={user}
               onSwitchAccount={handleSwitchAccount}
               switching={switching}
               isScrolled={isScrolled}
@@ -218,7 +218,7 @@ export default function Navbar({ session }: NavbarProps) {
       >
         <div className="flex flex-col items-center justify-center h-full gap-8">
           <SessionControl
-            user={effectiveUser}
+            user={user}
             onSwitchAccount={handleSwitchAccount}
             switching={switching}
             isScrolled={isScrolled}
