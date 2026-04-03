@@ -74,7 +74,7 @@ function SessionControl({
         compact ? "w-full justify-between px-4 py-3" : "px-3 py-2"
       } ${
         isScrolled
-          ? "hidden xl:block"
+          ? "hidden lg:block"
           : "md:hidden lg:flex"
       }`}
     >
