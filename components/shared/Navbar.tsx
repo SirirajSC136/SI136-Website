@@ -7,6 +7,11 @@ import { usePathname } from "next/navigation";
 import { Menu, RefreshCcw, X } from "lucide-react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { ModeSwitch } from "./ModeSwitch";
+import { SessionSummary } from "@/lib/auth/sessionSummary";
+
+type NavbarProps = {
+  session: SessionSummary;
+};
 
 const NavLink = ({
   href,
@@ -58,10 +63,10 @@ function SessionControl({
   const initial = label.trim().charAt(0).toUpperCase() || "U";
   const photoURL = user.photoURL
     ? user.photoURL
-      .replace(/&quot;/g, "")  
-      .replace(/^"|"$/g, "") 
-      .replace("=s96-c", "=s200-c")
-  : null;
+        .replace(/&quot;/g, "")
+        .replace(/^"|"$/g, "")
+        .replace("=s96-c", "=s200-c")
+    : null;
 
   return (
     <div
@@ -116,13 +121,22 @@ function SessionControl({
   );
 }
 
-export default function Navbar() {
+export default function Navbar({ session }: NavbarProps) {
   const { user, signInWithGoogle, signOut } = useAuth();
-
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [switching, setSwitching] = useState(false);
   const pathname = usePathname();
+
+  const sessionUser = session.isAuthenticated
+    ? {
+        displayName: session.name,
+        email: session.email,
+        photoURL: session.picture,
+      }
+    : null;
+
+  const effectiveUser = user ?? sessionUser;
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
@@ -146,6 +160,7 @@ export default function Navbar() {
     } catch (error) {
       console.error("Switch account failed:", error);
       alert("Could not switch accounts.");
+    } finally {
       setSwitching(false);
     }
   };
@@ -181,7 +196,7 @@ export default function Navbar() {
             <ModeSwitch />
 
             <SessionControl
-              user={user}
+              user={effectiveUser}
               onSwitchAccount={handleSwitchAccount}
               switching={switching}
               isScrolled={isScrolled}
@@ -203,7 +218,7 @@ export default function Navbar() {
       >
         <div className="flex flex-col items-center justify-center h-full gap-8">
           <SessionControl
-            user={user}
+            user={effectiveUser}
             onSwitchAccount={handleSwitchAccount}
             switching={switching}
             isScrolled={isScrolled}
