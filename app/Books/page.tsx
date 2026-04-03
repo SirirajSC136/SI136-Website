@@ -1,6 +1,8 @@
 // app/book/page.tsx
+"use client";
 
 import { getSessionUserFromCookies } from "@/lib/server/domains/auth/service";
+import { useAuth } from "@/components/auth/AuthProvider";
 import LoginButton from "@/components/LoginButton";
 import Image from "next/image";
 
@@ -107,8 +109,8 @@ const PageHero = ({ title, subtitle }: { title: string; subtitle: string }) => (
 	</div>
 );
 
-export default async function BookPage() {
-	const session = await getSessionUserFromCookies();
+export default function BookPage() {
+	const { user, loading } = useAuth();
 
 	return (
 		<main className="min-h-screen bg-background text-primary">
@@ -134,7 +136,7 @@ export default async function BookPage() {
 
 			{/* White content area */}
 			<section className="container mx-auto px-4 py-16">
-				{session ? (
+				{user ? (
 					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
 						{subjects.map((subject) => (
 							<a

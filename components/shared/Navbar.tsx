@@ -5,215 +5,225 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, RefreshCcw, X } from "lucide-react";
-import { SessionSummary } from "@/lib/auth/sessionSummary";
-import { resetAndSignInWithGoogle } from "@/lib/firebase/sessionClient";
+import { useAuth } from "@/components/auth/AuthProvider";
 import { ModeSwitch } from "./ModeSwitch";
 
-type NavbarProps = {
-	session: SessionSummary;
-};
-
 const NavLink = ({
-	href,
-	children,
+  href,
+  children,
 }: {
-	href: string;
-	children: React.ReactNode;
+  href: string;
+  children: React.ReactNode;
 }) => {
-	const pathname = usePathname();
-	const isActive = pathname === href;
+  const pathname = usePathname();
+  const isActive = pathname === href;
 
-	return (
-		<Link href={href} className="group relative px-3 py-2 transition-colors">
-			<span
-				className={`absolute inset-0 z-0 rounded-md transition-transform duration-300 ease-in-out ${
-					isActive
-						? "scale-100 bg-emerald-500/10"
-						: "scale-0 bg-gray-500/10 group-hover:scale-100"
-				}`}
-			/>
-			<span
-				className={`relative z-10 transition-colors duration-200 ${
-					isActive ? "font-semibold text-emerald-600" : "text-primary"
-				}`}
-			>
-				{children}
-			</span>
-		</Link>
-	);
+  return (
+    <Link href={href} className="group relative px-3 py-2 transition-colors">
+      <span
+        className={`absolute inset-0 z-0 rounded-md transition-transform duration-300 ${
+          isActive
+            ? "scale-100 bg-emerald-500/10"
+            : "scale-0 bg-gray-500/10 group-hover:scale-100"
+        }`}
+      />
+      <span
+        className={`relative z-10 ${
+          isActive ? "font-semibold text-emerald-600" : "text-primary"
+        }`}
+      >
+        {children}
+      </span>
+    </Link>
+  );
 };
 
 function SessionControl({
-	session,
-	onSwitchAccount,
-	switching,
-	compact = false,
+  user,
+  onSwitchAccount,
+  switching,
+  compact = false,
+  isScrolled,
 }: {
-	session: SessionSummary;
-	onSwitchAccount: () => void;
-	switching: boolean;
-	compact?: boolean;
+  user: any;
+  onSwitchAccount: () => void;
+  switching: boolean;
+  compact?: boolean;
+  isScrolled: boolean;
 }) {
-	if (!session.isAuthenticated) return null;
+  if (!user) return null;
 
-	const label = session.name || session.email || "Signed in";
-	const sublabel = session.email && session.email !== label ? session.email : undefined;
-	const initial = label.trim().charAt(0).toUpperCase() || "U";
+  const label = user.displayName || user.email || "Signed in";
+  const sublabel = user.email && user.email !== label ? user.email : undefined;
+  const initial = label.trim().charAt(0).toUpperCase() || "U";
+  const photoURL = user.photoURL
+    ? user.photoURL
+      .replace(/&quot;/g, "")  
+      .replace(/^"|"$/g, "") 
+      .replace("=s96-c", "=s200-c")
+  : null;
 
-	return (
-		<div
-			className={`flex items-center gap-3 rounded-2xl border border-border/80 bg-background/80 backdrop-blur-sm ${
-				compact ? "w-full justify-between px-4 py-3" : "px-3 py-2"
-			}`}
-		>
-			<div className="flex min-w-0 items-center gap-3">
-				<div
-					className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-sm font-semibold text-emerald-700"
-					style={
-						session.picture
-							? {
-									backgroundImage: `url(${session.picture})`,
-									backgroundPosition: "center",
-									backgroundSize: "cover",
-							  }
-							: undefined
-					}
-					aria-hidden="true"
-				>
-					{session.picture ? null : initial}
-				</div>
-				<div className="min-w-0">
-					<p className="truncate text-sm font-semibold text-primary">{label}</p>
-					{sublabel ? (
-						<p className="truncate text-xs text-muted-foreground">{sublabel}</p>
-					) : null}
-				</div>
-			</div>
-			<button
-				type="button"
-				onClick={onSwitchAccount}
-				disabled={switching}
-				className="inline-flex shrink-0 items-center gap-2 rounded-full bg-emerald-600 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
-			>
-				<RefreshCcw size={14} className={switching ? "animate-spin" : ""} />
-				{switching ? "Switching..." : "Switch account"}
-			</button>
-		</div>
-	);
+  return (
+    <div
+      className={`flex justify-center md:justify-between items-center gap-3 rounded-2xl transition-all duration-300 ${
+        compact ? "w-full justify-between px-4 py-3" : "px-3 py-2"
+      } ${
+        isScrolled
+          ? "lg:border border-border/0 lg:bg-background/0 hidden xl:block"
+          : "lg:border border-border/80 lg:bg-background/80 md:hidden lg:flex"
+      }`}
+    >
+      <div className={`flex min-w-0 items-center gap-3 `}>
+        <div
+          className={`flex h-9 w-9 items-center justify-center rounded-full bg-emerald-500/15 text-sm font-semibold text-emerald-700 `}
+          style={
+            photoURL
+              ? {
+                  backgroundImage: `url(${photoURL})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }
+              : undefined
+          }
+          aria-hidden="true"
+        >
+          {photoURL ? null : initial}
+        </div>
+
+        <div
+          className={`transition-all duration-300 ${
+            isScrolled ? "opacity-0 w-0 overflow-hidden" : "opacity-100 w-auto"
+          }`}
+        >
+          <p className="truncate text-sm font-semibold text-primary">{label}</p>
+          {sublabel && (
+            <p className="truncate text-xs text-muted-foreground">{sublabel}</p>
+          )}
+        </div>
+      </div>
+
+      {!isScrolled && (
+        <button
+          onClick={onSwitchAccount}
+          disabled={switching}
+          className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-3 py-2 text-xs font-semibold text-white hover:bg-emerald-700 disabled:opacity-60"
+        >
+          <RefreshCcw size={14} className={switching ? "animate-spin" : ""} />
+          {switching ? "Switching..." : "Switch"}
+        </button>
+      )}
+    </div>
+  );
 }
 
-export default function Navbar({ session }: NavbarProps) {
-	const [isOpen, setIsOpen] = useState(false);
-	const [isScrolled, setIsScrolled] = useState(false);
-	const [switchingAccount, setSwitchingAccount] = useState(false);
-	const pathname = usePathname();
+export default function Navbar() {
+  const { user, signInWithGoogle, signOut } = useAuth();
 
-	useEffect(() => {
-		const handleScroll = () => setIsScrolled(window.scrollY > 10);
-		window.addEventListener("scroll", handleScroll);
-		return () => window.removeEventListener("scroll", handleScroll);
-	}, []);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [switching, setSwitching] = useState(false);
+  const pathname = usePathname();
 
-	const navLinks = [
-		{ name: "Home", href: "/" },
-		{ name: "Academics", href: "/academics" },
-		{ name: "Books", href: "/Books" },
-		{ name: "Student Impact", href: "/StudentImpacts" },
-		{ name: "Useful Info", href: "/UsefulInfo" },
-		...(session.isAdmin ? [{ name: "Admin", href: "/admin" }] : []),
-	];
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-	const handleSwitchAccount = async () => {
-		setSwitchingAccount(true);
-		try {
-			await resetAndSignInWithGoogle();
-		} catch (error) {
-			console.error("Switch account failed:", error);
-			alert("Could not switch accounts. Please try again.");
-			setSwitchingAccount(false);
-		}
-	};
+  const navLinks = [
+    { name: "Home", href: "/" },
+    { name: "Academics", href: "/academics" },
+    { name: "Books", href: "/Books" },
+    { name: "Student Impact", href: "/StudentImpacts" },
+    { name: "Useful Info", href: "/UsefulInfo" },
+  ];
 
-	return (
-		<>
-			<nav
-				className={`sticky mx-auto z-50 transition-all duration-300 ease-in-out ${
-					isScrolled
-						? "top-1 w-3/5 rounded-2xl border border-border/80 bg-background/50 px-4 shadow-sm backdrop-blur-lg md:w-4/5 lg:w-[65%] xl:w-3/5"
-						: "top-0 w-full bg-transparent"
-				}`}
-			>
-				<div className="container mx-auto flex items-center justify-between p-4">
-					<Link
-						href="/"
-						className="flex items-center space-x-3 transition-transform hover:scale-105"
-					>
-						<Image
-							src="/images/logo.jpg"
-							alt="SI136 Logo"
-							width={36}
-							height={36}
-							className={`rounded-full ${!isScrolled ? "drop-shadow-lg" : ""}`}
-						/>
-						<span className="text-xl font-bold tracking-wide text-primary">SI136</span>
-					</Link>
+  const handleSwitchAccount = async () => {
+    setSwitching(true);
+    try {
+      await signOut();
+      await signInWithGoogle();
+    } catch (error) {
+      console.error("Switch account failed:", error);
+      alert("Could not switch accounts.");
+      setSwitching(false);
+    }
+  };
 
-					<div className="hidden items-center space-x-2 md:flex">
-						{navLinks.map((link) => (
-							<NavLink key={link.name} href={link.href}>
-								{link.name}
-							</NavLink>
-						))}
-						<ModeSwitch />
-						<SessionControl
-							session={session}
-							onSwitchAccount={() => void handleSwitchAccount()}
-							switching={switchingAccount}
-						/>
-					</div>
+  return (
+    <>
+      <nav
+        className={`sticky mx-auto z-50 transition-all duration-300 ${
+          isScrolled
+            ? "top-1 w-fit max-w-full min-w-4/5 md:min-w-3/4 rounded-2xl border bg-background/50 px-4 shadow backdrop-blur-lg"
+            : "top-0 w-full"
+        }`}
+      >
+        <div className=" container mx-auto flex items-center justify-between p-4">
+          <Link href="/" className="flex items-center gap-3 w-fit shrink-0">
+            <Image
+              src="/images/logo.jpg"
+              alt="SI136 Logo"
+              width={36}
+              height={36}
+              className="rounded-full"
+            />
+            <div className="text-xl font-bold text-primary">SI136</div>
+          </Link>
 
-					<div className="flex items-center gap-1 md:hidden">
-						{!isScrolled && <ModeSwitch />}
-						<button
-							onClick={() => setIsOpen((value) => !value)}
-							className="text-primary transition-colors"
-						>
-							{isOpen ? <X size={28} /> : <Menu size={28} />}
-						</button>
-					</div>
-				</div>
-			</nav>
+          <div className="hidden md:flex items-center gap-2 flex-nowrap whitespace-nowrap">
+            {navLinks.map((link) => (
+              <NavLink key={link.name} href={link.href}>
+                {link.name}
+              </NavLink>
+            ))}
 
-			<div
-				className={`fixed inset-0 z-40 bg-background transition-transform duration-300 ease-in-out md:hidden ${
-					isOpen ? "translate-x-0" : "translate-x-full"
-				}`}
-			>
-				<div className="flex h-full flex-col items-center justify-center space-y-8 px-6">
-					<SessionControl
-						session={session}
-						onSwitchAccount={() => void handleSwitchAccount()}
-						switching={switchingAccount}
-						compact
-					/>
-					{navLinks.map((link) => {
-						const isActive = pathname === link.href;
-						return (
-							<Link
-								key={link.name}
-								href={link.href}
-								onClick={() => setIsOpen(false)}
-								className={`text-3xl font-semibold transition-colors ${
-									isActive ? "text-emerald-600" : "text-primary"
-								}`}
-							>
-								{link.name}
-							</Link>
-						);
-					})}
-					<ModeSwitch />
-				</div>
-			</div>
-		</>
-	);
+            <ModeSwitch />
+
+            <SessionControl
+              user={user}
+              onSwitchAccount={handleSwitchAccount}
+              switching={switching}
+              isScrolled={isScrolled}
+            />
+          </div>
+
+          {/* Mobile */}
+          <button onClick={() => setIsOpen(!isOpen)} className="md:hidden">
+            {isOpen ? <X size={28} /> : <Menu size={28} />}
+          </button>
+        </div>
+      </nav>
+
+      {/* Mobile menu */}
+      <div
+        className={`fixed inset-0 z-40 bg-background transition-transform md:hidden ${
+          isOpen ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        <div className="flex flex-col items-center justify-center h-full gap-8">
+          <SessionControl
+            user={user}
+            onSwitchAccount={handleSwitchAccount}
+            switching={switching}
+            isScrolled={isScrolled}
+            compact
+          />
+
+          {navLinks.map((link) => (
+            <Link
+              key={link.name}
+              href={link.href}
+              onClick={() => setIsOpen(false)}
+              className="text-3xl font-semibold"
+            >
+              {link.name}
+            </Link>
+          ))}
+
+          <ModeSwitch />
+        </div>
+      </div>
+    </>
+  );
 }

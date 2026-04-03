@@ -35,4 +35,10 @@ export function getFirebaseClientFirestore(): Firestore {
   return getFirestore(initClientApp());
 }
 
-export const firebaseGoogleProvider = new GoogleAuthProvider();
+const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const storage = getStorage(app);
+const auth = getAuth(app);
+const googleProvider = new GoogleAuthProvider();
+
+export { db, storage, auth, googleProvider };

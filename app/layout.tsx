@@ -6,6 +6,7 @@ import NavbarServer from "@/components/shared/NavbarServer";
 import Footer from "@/components/shared/Footer";
 import { ThemeProvider } from "next-themes";
 import Script from "next/script";
+import { AuthProvider } from "@/components/auth/AuthProvider";
 
 // Set up the Kanit font from Google Fonts
 const kanit = Kanit({
@@ -24,22 +25,31 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="th" className={kanit.className} suppressHydrationWarning>
       <body>
-        <ThemeProvider attribute="class" enableSystem defaultTheme="light">
-          <NavbarServer />
-          <main>{children}</main>
-          <Footer />
-        </ThemeProvider>
-        <Script async src="https://www.googletagmanager.com/gtag/js?id=G-R8MS3KCQTR"></Script>
-        <Script>
-          {`window.dataLayer = window.dataLayer || [];
+        <AuthProvider>
+          <ThemeProvider attribute="class" enableSystem defaultTheme="light">
+            <NavbarServer />
+            <main>{children}</main>
+            <Footer />
+          </ThemeProvider>
+          <Script
+            async
+            src="https://www.googletagmanager.com/gtag/js?id=G-R8MS3KCQTR"
+          ></Script>
+          <Script>
+            {`window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
           gtag('config', 'G-R8MS3KCQTR');`}
-        </Script>
+          </Script>
+        </AuthProvider>
       </body>
     </html>
   );

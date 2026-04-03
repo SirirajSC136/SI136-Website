@@ -1,7 +1,7 @@
 "use client";
 
 import { signInWithPopup, signOut } from "firebase/auth";
-import { firebaseGoogleProvider, getFirebaseClientAuth } from "@/lib/firebase/client";
+import { googleProvider, getFirebaseClientAuth } from "@/lib/firebase/client";
 
 async function clearServerSession(): Promise<void> {
 	const response = await fetch("/api/auth/session", {
@@ -20,11 +20,11 @@ export async function resetAndSignInWithGoogle(): Promise<void> {
 	await signOut(auth).catch(() => undefined);
 	await clearServerSession();
 
-	firebaseGoogleProvider.setCustomParameters({
+	googleProvider.setCustomParameters({
 		prompt: "select_account",
 	});
 
-	const result = await signInWithPopup(auth, firebaseGoogleProvider);
+	const result = await signInWithPopup(auth, googleProvider);
 	const idToken = await result.user.getIdToken(true);
 	const sessionResponse = await fetch("/api/auth/session", {
 		method: "POST",

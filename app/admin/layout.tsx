@@ -1,4 +1,4 @@
-import LoginButton from "@/components/LoginButton";
+import AdminLoginButton from "@/components/AdminLoginButton";
 import { getSessionUserFromCookies } from "@/lib/server/domains/auth/service";
 
 type GuardCardProps = {
@@ -13,7 +13,7 @@ function GuardCard({ title, description, showLogin = false }: GuardCardProps) {
 			<div className="w-full max-w-md rounded-2xl border border-border bg-card p-8 text-center shadow-lg">
 				<h2 className="mb-3 text-2xl font-bold text-foreground">{title}</h2>
 				<p className="text-sm text-muted-foreground">{description}</p>
-				{showLogin ? <LoginButton /> : null}
+				{showLogin ? <AdminLoginButton /> : null}
 			</div>
 		</div>
 	);
