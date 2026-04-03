@@ -74,8 +74,8 @@ function SessionControl({
         compact ? "w-full justify-between px-4 py-3" : "px-3 py-2"
       } ${
         isScrolled
-          ? "lg:border border-border/0 lg:bg-background/0 hidden xl:block"
-          : "lg:border border-border/80 lg:bg-background/80 md:hidden lg:flex"
+          ? "hidden xl:block"
+          : "md:hidden lg:flex"
       }`}
     >
       <div className={`flex min-w-0 items-center gap-3 `}>
@@ -102,21 +102,20 @@ function SessionControl({
         >
           <p className="truncate text-sm font-semibold text-primary">{label}</p>
           {sublabel && (
-            <p className="truncate text-xs text-muted-foreground">{sublabel}</p>
+            <p className="truncate text-[10px] text-muted-foreground">{sublabel}</p>
           )}
         </div>
       </div>
 
-      {!isScrolled && (
+      {/* {!isScrolled && (
         <button
           onClick={onSwitchAccount}
           disabled={switching}
-          className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-3 py-2 text-xs font-semibold text-white hover:bg-emerald-700 disabled:opacity-60"
+          className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-2 py-2 text-xs font-semibold text-white hover:bg-emerald-700 disabled:opacity-60"
         >
           <RefreshCcw size={14} className={switching ? "animate-spin" : ""} />
-          {switching ? "Switching..." : "Switch"}
         </button>
-      )}
+      )} */}
     </div>
   );
 }
