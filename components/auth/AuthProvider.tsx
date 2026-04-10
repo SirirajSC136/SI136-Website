@@ -10,10 +10,12 @@ import React, {
 import {
   User,
   onAuthStateChanged,
-  signInWithPopup,
-  signOut as firebaseSignOut,
 } from "firebase/auth";
-import { auth, googleProvider } from "@/lib/firebase/client";
+import { auth } from "@/lib/firebase/client";
+import {
+  resetAndSignInWithGoogle,
+  signOutEverywhere,
+} from "@/lib/firebase/sessionClient";
 
 interface AuthContextType {
   user: User | null;
@@ -38,9 +40,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const checkAdmin = async () => {
       try {
-        const res = await fetch("/api/auth/me");
+        const res = await fetch("/api/auth/me", { cache: "no-store" });
+        if (!res.ok) {
+          throw new Error("Failed to fetch session");
+        }
         const data = await res.json();
-        setIsAdmin(data.isAdmin);
+        setIsAdmin(Boolean(data.user?.isAdmin));
       } catch {
         setIsAdmin(false);
       } finally {
@@ -60,7 +65,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         if (user && !user.email?.endsWith("@student.mahidol.edu")) {
           console.warn("Blocked non-Mahidol account:", user.email);
-          await firebaseSignOut(auth);
+          await signOutEverywhere().catch(() => undefined);
           alert("Only Mahidol accounts are allowed");
           setUser(null);
           setLoading(false);
@@ -87,12 +92,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signInWithGoogle = async () => {
     try {
-      googleProvider.setCustomParameters({
-        prompt: "select_account",
-        hd: "student.mahidol.edu",
-      });
-
-      await signInWithPopup(auth, googleProvider);
+      await resetAndSignInWithGoogle();
     } catch (error) {
       console.error("Google sign-in error:", error);
 
@@ -106,7 +106,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = async () => {
     try {
-      await firebaseSignOut(auth);
+      await signOutEverywhere();
+      setUser(null);
+      setIsAdmin(false);
     } catch (error) {
       console.error("Sign out error:", error);
       throw error;
