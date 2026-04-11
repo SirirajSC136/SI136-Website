@@ -1,4 +1,4 @@
-const ALLOWED_EMAIL_DOMAINS = ["@student.mahidol.edu", "@student.mahidol.ac.th"];
+const ALLOWED_EMAIL_DOMAINS = ["@student.mahidol.edu"];
 
 export function normalizeAdminEmail(email?: string | null): string | null {
 	if (!email) return null;
