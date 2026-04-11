@@ -32,11 +32,10 @@ export async function resetAndSignInWithGoogle(): Promise<void> {
 	const auth = getFirebaseClientAuth();
 
 	await signOut(auth).catch(() => undefined);
-	await clearServerSession();
+	await clearServerSession().catch(() => undefined);
 
 	googleProvider.setCustomParameters({
 		prompt: "select_account",
-		hd: "student.mahidol.edu",
 	});
 
 	const result = await signInWithPopup(auth, googleProvider);
