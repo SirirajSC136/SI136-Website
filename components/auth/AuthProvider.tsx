@@ -63,9 +63,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       try {
-        const ALLOWED_DOMAINS = ["@student.mahidol.edu", "@student.mahidol.ac.th"];
-        const isAllowed = ALLOWED_DOMAINS.some((d) => user.email?.endsWith(d));
-        if (user && !isAllowed) {
+        if (user && !user.email?.endsWith("@student.mahidol.edu")) {
           console.warn("Blocked non-Mahidol account:", user.email);
           await signOutEverywhere().catch(() => undefined);
           alert("Only Mahidol accounts are allowed");
